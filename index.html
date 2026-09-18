@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Greedy Algorithms Lab // Interactive Step Simulator</title>
+<title>Algorithms Laboratory // Greedy, Graphs & Disjoint Sets</title>
 <meta name="author" content="hameme 21">
 <meta name="copyright" content="hameme 21">
 <meta name="theme-color" content="#070a0f">
@@ -64,7 +64,7 @@
   }
 
   .container {
-    max-width: 1200px;
+    max-width: 1240px;
     margin: 0 auto;
     width: 100%;
   }
@@ -84,7 +84,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 10px;
+    padding: 4px 12px;
     border-radius: 9999px;
     background: rgba(20, 184, 166, 0.1);
     border: 1px solid rgba(20, 184, 166, 0.3);
@@ -98,7 +98,7 @@
 
   h1 {
     font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(19px, 5.5vw, 26px);
+    font-size: clamp(20px, 5vw, 28px);
     font-weight: 700;
     letter-spacing: -0.5px;
     color: #fff;
@@ -112,60 +112,75 @@
   .sub {
     color: var(--text-muted);
     font-size: clamp(12px, 3.2vw, 14px);
-    max-width: 680px;
+    max-width: 720px;
     line-height: 1.5;
   }
 
-  /* Tabs */
-  .tabs-wrapper {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 4px;
+  /* Nav Tabs */
+  .tabs-category-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    letter-spacing: 0.8px;
+    margin: 12px 0 6px 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tabs-category-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .tabs-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 4px;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 6px;
     margin-bottom: 16px;
-    width: 100%;
   }
 
   .tab-btn {
-    background: transparent;
-    border: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     padding: 10px 8px;
     color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(11px, 2.8vw, 13px);
+    font-size: 11.5px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
     text-align: center;
-    min-height: 42px;
+    min-height: 48px;
     user-select: none;
   }
 
   .tab-btn:hover {
     color: var(--text);
     background: var(--surface2);
+    border-color: var(--border-light);
   }
 
   .tab-btn.active {
     background: var(--surface2);
     color: var(--teal);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    border: 1px solid var(--border-light);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    border-color: var(--teal);
   }
 
   .tab-btn .tab-num {
-    font-size: 10px;
+    font-size: 9.5px;
     opacity: 0.7;
     background: rgba(255,255,255,0.06);
-    padding: 2px 5px;
+    padding: 1px 5px;
     border-radius: 4px;
   }
 
@@ -310,7 +325,7 @@
 
   svg.viz-svg {
     width: 100%;
-    min-width: 540px;
+    min-width: 560px;
     height: auto;
     display: block;
   }
@@ -405,6 +420,7 @@
   .desc-box .tag-take { color: var(--teal); font-weight: 600; }
   .desc-box .tag-reject { color: var(--rose); font-weight: 600; }
   .desc-box .tag-skip { color: var(--gray); font-weight: 600; }
+  .desc-box .tag-relax { color: var(--emerald); font-weight: 600; }
 
   /* Legend */
   .legend {
@@ -497,7 +513,7 @@
     line-height: 1.6;
     overflow-x: auto;
     color: #94a3b8;
-    max-height: 320px;
+    max-height: 340px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -575,7 +591,7 @@
     border: 1px solid var(--border-light);
     border-radius: var(--radius);
     width: 100%;
-    max-width: 620px;
+    max-width: 660px;
     max-height: 90vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -642,7 +658,7 @@
     padding: 10px 12px;
     color: var(--text);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 16px; /* 16px prevents iOS Safari auto-zoom */
+    font-size: 14px;
     outline: none;
     transition: border-color 0.15s;
     min-height: 42px;
@@ -655,7 +671,7 @@
   textarea.form-control {
     min-height: 100px;
     resize: vertical;
-    font-size: 13px;
+    font-size: 12.5px;
     line-height: 1.5;
   }
 
@@ -741,6 +757,50 @@
     line-height: 1.5;
   }
 
+  /* DSU Arrays Card Component */
+  .dsu-array-box {
+    margin-top: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+  }
+  .dsu-grid {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .dsu-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #090d14;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    min-width: 46px;
+    padding: 6px 4px;
+  }
+  .dsu-cell.active {
+    border-color: var(--amber);
+    box-shadow: 0 0 10px var(--amber-glow);
+  }
+  .dsu-cell-idx {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 2px;
+  }
+  .dsu-cell-parent {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--teal);
+  }
+  .dsu-cell-rank {
+    font-size: 9.5px;
+    color: var(--violet);
+    margin-top: 2px;
+  }
+
   /* Footer */
   footer {
     margin-top: 32px;
@@ -767,97 +827,40 @@
     color: var(--teal);
   }
 
-  /* =========================================================================
-     RESPONSIVE MEDIA QUERIES FOR MOBILE WEB
-     ========================================================================= */
   @media (max-width: 1024px) {
     .workspace {
       grid-template-columns: 1fr;
     }
-    .tabs-wrapper {
-      grid-template-columns: repeat(2, 1fr);
-    }
   }
 
   @media (max-width: 640px) {
-    .tabs-wrapper {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 6px;
+    .tabs-grid {
+      grid-template-columns: repeat(3, 1fr);
     }
-    
-    .tab-btn {
-      padding: 8px 6px;
-      font-size: 11.5px;
-    }
-
     .action-bar-inner {
       flex-direction: column;
       align-items: stretch;
     }
-
     .btn-group {
       width: 100%;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
-
-    .btn-group button.btn {
-      width: 100%;
-      padding: 10px 8px;
-      font-size: 11.5px;
-    }
-
     .stepper-buttons-row {
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
     }
-
-    .stepper-buttons-row button.btn {
-      min-height: 42px;
-    }
-
     .stepper-tools-row {
       flex-direction: column;
       align-items: stretch;
     }
-
-    .speed-select {
-      width: 100%;
-    }
-
     .step-counter {
       margin-left: 0;
       text-align: center;
-      padding-top: 4px;
     }
-
     .form-row {
       grid-template-columns: 1fr;
-    }
-
-    .modal {
-      width: 100%;
-      max-height: 94vh;
-      border-radius: 12px;
-      padding: 16px 14px;
-    }
-
-    .modal-actions {
-      flex-direction: column-reverse;
-      gap: 8px;
-    }
-
-    .modal-actions button.btn {
-      width: 100%;
-      min-height: 44px;
-    }
-
-    footer {
-      flex-direction: column;
-      text-align: center;
-      justify-content: center;
-      gap: 8px;
     }
   }
 </style>
@@ -866,13 +869,14 @@
 
 <div class="container">
   <header>
-    <div class="badge">Algorithmic Suite // Greedy Paradigm</div>
-    <h1>GREEDY ALGORITHMS LAB</h1>
-    <p class="sub">Step-by-step interactive simulator, custom problem workbench, dynamic SVG visualization, and execution tracing for core greedy algorithms.</p>
+    <div class="badge">Algorithmic Suite // Greedy, Graphs & Disjoint Sets</div>
+    <h1>ALGORITHMS LABORATORY</h1>
+    <p class="sub">Step-by-step interactive simulator, dynamic SVG graph & tree visualization, custom problem workbench, and live execution tracing.</p>
   </header>
 
-  <!-- Navigation Tabs -->
-  <div class="tabs-wrapper">
+  <!-- Categorized Tabs -->
+  <div class="tabs-category-label">Greedy Paradigms</div>
+  <div class="tabs-grid">
     <button class="tab-btn active" data-algo="activity">
       <span class="tab-num">01</span>
       <span>Activity Selection</span>
@@ -891,13 +895,40 @@
     </button>
   </div>
 
-  <!-- Workspace Grid -->
+  <div class="tabs-category-label">Trees & Minimum Spanning Forests</div>
+  <div class="tabs-grid">
+    <button class="tab-btn" data-algo="dsu">
+      <span class="tab-num">05</span>
+      <span>Disjoint Set (DSU)</span>
+    </button>
+    <button class="tab-btn" data-algo="prim">
+      <span class="tab-num">06</span>
+      <span>Prim's MST</span>
+    </button>
+    <button class="tab-btn" data-algo="kruskal">
+      <span class="tab-num">07</span>
+      <span>Kruskal's MST</span>
+    </button>
+  </div>
+
+  <div class="tabs-category-label">Shortest Path Algorithms</div>
+  <div class="tabs-grid">
+    <button class="tab-btn" data-algo="dijkstra">
+      <span class="tab-num">08</span>
+      <span>Dijkstra's SSSP</span>
+    </button>
+    <button class="tab-btn" data-algo="bellmanford">
+      <span class="tab-num">09</span>
+      <span>Bellman-Ford SSSP</span>
+    </button>
+  </div>
+
+  <!-- Main Workspace -->
   <div class="workspace">
-    
     <!-- Left Column: Visualizer, Controls, and Explanation -->
     <div class="main-content">
       
-      <!-- Top Action & Config Bar for current algorithm -->
+      <!-- Top Action & Config Bar -->
       <div class="card" style="padding: 14px 18px; margin-bottom: 14px;">
         <div class="action-bar-inner">
           <div class="algo-titles-box">
@@ -928,14 +959,14 @@
         </div>
 
         <div class="visualizer-box">
-          <svg id="main-svg" class="viz-svg" viewBox="0 0 800 360"></svg>
+          <svg id="main-svg" class="viz-svg" viewBox="0 0 800 380">
+            <!-- Markers & dynamic content -->
+          </svg>
           <div id="svg-tooltip" class="tooltip"></div>
         </div>
 
         <!-- Legend -->
-        <div class="legend" id="main-legend">
-          <!-- Dynamic legend injected via JS -->
-        </div>
+        <div class="legend" id="main-legend"></div>
 
         <!-- Stepper Controls -->
         <div class="stepper-bar">
@@ -952,7 +983,7 @@
             </div>
 
             <select class="speed-select" id="speed-select" aria-label="Playback Speed">
-              <option value="1500">0.5x</option>
+              <option value="1600">0.5x</option>
               <option value="900" selected>1.0x</option>
               <option value="500">1.5x</option>
               <option value="250">2.5x</option>
@@ -964,7 +995,7 @@
 
         <!-- Step Narrative Description -->
         <div class="desc-box" id="step-description">
-          Welcome! Click <b>Next &rarr;</b> or <b>Play &#9654;</b> to step through the greedy decision process.
+          Welcome! Click <b>Next &rarr;</b> or <b>Play &#9654;</b> to step through the execution process.
         </div>
       </div>
 
@@ -973,7 +1004,7 @@
         <div class="card-header">
           <div class="card-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
-            Live Problem State & Breakdown
+            Live Problem State & Data Vectors
           </div>
         </div>
         <div class="table-container">
@@ -981,6 +1012,14 @@
             <thead id="state-table-head"></thead>
             <tbody id="state-table-body"></tbody>
           </table>
+        </div>
+
+        <!-- DSU Array Vector component -->
+        <div id="dsu-extra-tools" style="display:none;" class="dsu-array-box">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:600; color:var(--teal); margin-bottom:8px;">
+            DSU State Arrays: parent[i] &amp; rank[i]
+          </div>
+          <div class="dsu-grid" id="dsu-grid-cells"></div>
         </div>
 
         <!-- Extra Huffman interactive playground container -->
@@ -1009,9 +1048,7 @@
             Algorithm Pseudocode
           </div>
         </div>
-        <div class="code-viewer" id="pseudocode-container">
-          <!-- Populated by JS -->
-        </div>
+        <div class="code-viewer" id="pseudocode-container"></div>
       </div>
 
       <!-- Theoretical Foundation -->
@@ -1019,56 +1056,51 @@
         <div class="card-header">
           <div class="card-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            Greedy Theory & Invariants
+            Algorithmic Invariants & Complexity
           </div>
         </div>
         <div>
           <div>
             <span class="theory-pill">Time: <b id="theory-time">O(n log n)</b></span>
             <span class="theory-pill">Space: <b id="theory-space">O(n)</b></span>
-            <span class="theory-pill">Greedy Choice: <b id="theory-choice">Local Optimal</b></span>
+            <span class="theory-pill">Strategy: <b id="theory-choice">Local Optimal</b></span>
           </div>
           <div class="theory-text" id="theory-description">
-            Greedy algorithms make the locally optimal choice at each stage with the hope of finding a global optimum.
+            Algorithmic description and invariants will load here.
           </div>
         </div>
       </div>
 
-    </div> <!-- .sidebar -->
-  </div> <!-- .workspace -->
+    </div>
+  </div>
 
-  <!-- Footer with Copyright -->
+  <!-- Footer -->
   <footer>
     <div class="copyright-badge">
       <span>&copy; 2026 <b>hameme 21</b>. All rights reserved.</span>
     </div>
     <div style="font-size: 11px; color: var(--text-dim);">
-      Greedy Algorithms Studio // Built for algorithmic problem solving
+      Algorithms Suite // Greedy Paradigms, Spanning Trees, Shortest Paths &amp; DSU
     </div>
   </footer>
 </div>
 
-<!-- CUSTOM PROBLEM MODAL -->
+<!-- Custom Problem Modal -->
 <div class="modal-overlay" id="custom-modal">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title" id="modal-title">Custom Problem Configuration</div>
+      <div class="modal-title" id="modal-title">Custom Configuration</div>
       <button class="close-modal" id="btn-close-modal" aria-label="Close modal">&times;</button>
     </div>
-
     <div>
       <div class="form-group">
         <label class="form-label">Select a Preset Scenario:</label>
         <div class="preset-pills" id="preset-container"></div>
       </div>
-
-      <div id="modal-form-fields">
-        <!-- Injected per algorithm -->
-      </div>
-
+      <div id="modal-form-fields"></div>
       <div class="modal-actions">
         <button class="btn" id="btn-modal-cancel">Cancel</button>
-        <button class="btn btn-primary" id="btn-modal-apply">Apply & Simulate</button>
+        <button class="btn btn-primary" id="btn-modal-apply">Apply &amp; Simulate</button>
       </div>
     </div>
   </div>
@@ -1076,24 +1108,22 @@
 
 <script>
 /* =========================================================================
-   GREEDY ALGORITHMS SIMULATION SUITE - CORE ENGINE
+   ALGORITHMS SUITE - UNIFIED STEP SIMULATOR ENGINE
    ========================================================================= */
 
-// Global State
 let currentAlgo = 'activity';
 let currentStepIdx = 0;
 let steps = [];
 let isPlaying = false;
 let playInterval = null;
 
-// Audio Beep Effect (Micro-interaction, muted if error)
 function playTickSound() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(480, ctx.currentTime);
+    osc.frequency.setValueAtTime(520, ctx.currentTime);
     gain.gain.setValueAtTime(0.015, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
     osc.connect(gain);
@@ -1104,61 +1134,37 @@ function playTickSound() {
 }
 
 /* =========================================================================
-   1. ACTIVITY SELECTION PROBLEM
+   1. ACTIVITY SELECTION
    ========================================================================= */
 const ActivityModule = {
   data: [
-    { id: 1, s: 1, f: 4 },
-    { id: 2, s: 3, f: 5 },
-    { id: 3, s: 0, f: 6 },
-    { id: 4, s: 5, f: 7 },
-    { id: 5, s: 3, f: 9 },
-    { id: 6, s: 5, f: 9 },
-    { id: 7, s: 6, f: 10 },
-    { id: 8, s: 8, f: 11 },
-    { id: 9, s: 8, f: 12 },
-    { id: 10, s: 2, f: 14 },
-    { id: 11, s: 12, f: 16 }
+    { id: 1, s: 1, f: 4 }, { id: 2, s: 3, f: 5 }, { id: 3, s: 0, f: 6 },
+    { id: 4, s: 5, f: 7 }, { id: 5, s: 3, f: 9 }, { id: 6, s: 5, f: 9 },
+    { id: 7, s: 6, f: 10 }, { id: 8, s: 8, f: 11 }, { id: 9, s: 8, f: 12 },
+    { id: 10, s: 2, f: 14 }, { id: 11, s: 12, f: 16 }
   ],
-
   presets: [
-    {
-      name: "CLRS Standard (11 acts)",
-      data: [{s:1,f:4},{s:3,f:5},{s:0,f:6},{s:5,f:7},{s:3,f:9},{s:5,f:9},{s:6,f:10},{s:8,f:11},{s:8,f:12},{s:2,f:14},{s:12,f:16}]
-    },
-    {
-      name: "Dense Overlaps & Tight Fit",
-      data: [{s:1,f:3},{s:2,f:5},{s:4,f:7},{s:6,f:9},{s:8,f:10},{s:1,f:10},{s:3,f:8},{s:7,f:12},{s:9,f:14},{s:11,f:15}]
-    },
-    {
-      name: "Non-Conflicting Chain (Max Pick)",
-      data: [{s:1,f:3},{s:3,f:6},{s:6,f:9},{s:9,f:12},{s:12,f:15},{s:15,f:18}]
-    },
-    {
-      name: "Long Blocking vs Short (Greedy Win)",
-      data: [{s:0,f:20},{s:1,f:3},{s:3,f:6},{s:7,f:10},{s:11,f:14},{s:15,f:18}]
-    }
+    { name: "CLRS Standard (11 acts)", data: [{s:1,f:4},{s:3,f:5},{s:0,f:6},{s:5,f:7},{s:3,f:9},{s:5,f:9},{s:6,f:10},{s:8,f:11},{s:8,f:12},{s:2,f:14},{s:12,f:16}] },
+    { name: "Dense Overlaps", data: [{s:1,f:3},{s:2,f:5},{s:4,f:7},{s:6,f:9},{s:8,f:10},{s:1,f:10},{s:3,f:8},{s:7,f:12},{s:9,f:14},{s:11,f:15}] },
+    { name: "Non-Conflicting Chain", data: [{s:1,f:3},{s:3,f:6},{s:6,f:9},{s:9,f:12},{s:12,f:15},{s:15,f:18}] }
   ],
-
   pseudocode: [
     { line: 1, code: "ACTIVITY-SELECTOR(s, f, n):", func: true },
     { line: 2, code: "  Sort activities such that f[1] ≤ f[2] ≤ ... ≤ f[n]" },
-    { line: 3, code: "  A = { a[1] }  // Always pick earliest finisher" },
+    { line: 3, code: "  A = { a[1] }  // Pick earliest finisher" },
     { line: 4, code: "  k = 1         // Track last selected index" },
     { line: 5, code: "  for m = 2 to n:" },
     { line: 6, code: "    if s[m] ≥ f[k]:  // Compatible?" },
-    { line: 7, code: "      A = A ∪ { a[m] }  // Select" },
-    { line: 8, code: "      k = m             // Update finish time" },
+    { line: 7, code: "      A = A ∪ { a[m] }" },
+    { line: 8, code: "      k = m" },
     { line: 9, code: "  return A" }
   ],
-
   theory: {
     time: "O(n log n)",
     space: "O(1) or O(n)",
     choice: "Earliest Finish Time (f_i)",
-    desc: "By always choosing the compatible activity with earliest finish time f_i, we greedily leave maximum remaining timeline capacity for remaining activities. This has optimal substructure and satisfies the greedy choice property."
+    desc: "By always choosing the compatible activity with earliest finish time f_i, we greedily leave maximum remaining timeline capacity for remaining activities."
   },
-
   generateRandom(n = 8) {
     const list = [];
     for(let i=0; i<n; i++) {
@@ -1168,13 +1174,10 @@ const ActivityModule = {
     }
     return list;
   },
-
   buildSteps(items) {
     const sorted = items.map((it, idx) => ({ ...it, origId: it.id || idx + 1 }))
                         .sort((a, b) => a.f - b.f || a.s - b.s);
-
     const steps = [];
-    // Step 0: Sort
     steps.push({
       type: 'sort',
       lineHighlight: 2,
@@ -1183,7 +1186,7 @@ const ActivityModule = {
       rejectedIds: [],
       activeId: null,
       lastFinish: -Infinity,
-      desc: `<b>Step 1 — Sort by Finish Time:</b> Sort all <span class="num">${sorted.length}</span> activities in ascending order of finish time ($f_i$). Earliest finishers finish first, freeing resources as quickly as possible.`
+      desc: `<b>Step 1 — Sort by Finish Time:</b> Sort all <span class="num">${sorted.length}</span> activities in ascending order of finish time ($f_i$).`
     });
 
     let lastFinish = -Infinity;
@@ -1193,8 +1196,6 @@ const ActivityModule = {
     for (let i = 0; i < sorted.length; i++) {
       const act = sorted[i];
       const compatible = act.s >= lastFinish;
-      
-      // Step: Check activity
       steps.push({
         type: 'inspect',
         lineHighlight: i === 0 ? 3 : 6,
@@ -1206,7 +1207,7 @@ const ActivityModule = {
         idx: i,
         compatible,
         lastFinish,
-        desc: `<b>Inspecting Activity A${act.origId}</b> [start: <span class="num">${act.s}</span>, finish: <span class="num">${act.f}</span>]. Last selected activity finished at <span class="num">${lastFinish === -Infinity ? '0 (none)' : lastFinish}</span>.<br>` +
+        desc: `<b>Inspecting Activity A${act.origId}</b> [start: <span class="num">${act.s}</span>, finish: <span class="num">${act.f}</span>]. Last finish = <span class="num">${lastFinish === -Infinity ? '0' : lastFinish}</span>.<br>` +
               (compatible 
                 ? `&bull; $s_{${act.origId}} (${act.s}) \\ge f_{last} (${lastFinish === -Infinity ? 0 : lastFinish})$ &rarr; <span class="tag-take">COMPATIBLE &rarr; SELECT A${act.origId}</span>.`
                 : `&bull; $s_{${act.origId}} (${act.s}) < f_{last} (${lastFinish})$ &rarr; <span class="tag-reject">OVERLAPS &rarr; REJECT A${act.origId}</span>.`)
@@ -1219,8 +1220,6 @@ const ActivityModule = {
         rejected.push(act.origId);
       }
     }
-
-    // Step: Done
     steps.push({
       type: 'done',
       lineHighlight: 9,
@@ -1229,36 +1228,27 @@ const ActivityModule = {
       rejectedIds: [...rejected],
       activeId: null,
       lastFinish,
-      desc: `<b>Optimal Set Found:</b> Successfully selected <span class="num">${selected.length}</span> mutually compatible activities (<b>${selected.map(id => 'A' + id).join(', ')}</b>). No larger compatible subset exists!`
+      desc: `<b>Optimal Set Found:</b> Successfully selected <span class="num">${selected.length}</span> mutually compatible activities (<b>${selected.map(id => 'A' + id).join(', ')}</b>).`
     });
-
     return steps;
   },
-
   renderCanvas(svg, step, items) {
     const sorted = step.sortedList || items;
     const maxT = Math.max(...sorted.map(a => a.f), 10) + 1;
     const X0 = 60, X1 = 760, ROWH = Math.min(26, Math.max(18, 260 / sorted.length)), Y0 = 36;
     const scaleX = t => X0 + (t / maxT) * (X1 - X0);
 
-    let html = '';
-
-    // Timeline Axis Grid
-    html += `<line x1="${X0}" y1="${Y0-10}" x2="${X1}" y2="${Y0-10}" stroke="#243347" stroke-width="1.5"/>`;
+    let html = `<line x1="${X0}" y1="${Y0-10}" x2="${X1}" y2="${Y0-10}" stroke="#243347" stroke-width="1.5"/>`;
     for (let t = 0; t <= maxT; t += (maxT > 20 ? 4 : 2)) {
       html += `<text x="${scaleX(t)}" y="${Y0-16}" fill="#64748b" font-size="10" font-family="JetBrains Mono" text-anchor="middle">${t}</text>`;
       html += `<line x1="${scaleX(t)}" y1="${Y0-12}" x2="${scaleX(t)}" y2="${Y0-8}" stroke="#324765" stroke-width="1"/>`;
       html += `<line x1="${scaleX(t)}" y1="${Y0-6}" x2="${scaleX(t)}" y2="${Y0 + sorted.length * ROWH + 10}" stroke="#1e293b" stroke-width="1" stroke-dasharray="2,4"/>`;
     }
-
-    // Last finish line marker
     if (step.lastFinish > -Infinity && step.lastFinish !== null) {
       const xLf = scaleX(step.lastFinish);
       html += `<line x1="${xLf}" y1="${Y0-12}" x2="${xLf}" y2="${Y0 + sorted.length * ROWH + 15}" stroke="#14b8a6" stroke-width="2" stroke-dasharray="4,4"/>`;
       html += `<text x="${xLf + 4}" y="${Y0 - 16}" fill="#14b8a6" font-size="10" font-family="JetBrains Mono" font-weight="600">f_last=${step.lastFinish}</text>`;
     }
-
-    // Activity Bars
     sorted.forEach((a, i) => {
       const y = Y0 + i * ROWH + 4;
       const h = ROWH - 6;
@@ -1268,32 +1258,17 @@ const ActivityModule = {
       const isActive = step.activeId === a.origId;
 
       let fill = '#1e293b', stroke = '#334155', textCol = '#94a3b8', op = 0.6;
+      if (isSelected) { fill = '#14b8a6'; stroke = '#2dd4bf'; textCol = '#042f2e'; op = 0.9; }
+      else if (isRejected) { fill = '#f43f5e'; stroke = '#fb7185'; textCol = '#fff'; op = 0.45; }
+      if (isActive) { stroke = '#f59e0b'; fill = step.compatible ? '#10b981' : '#f43f5e'; op = 1; textCol = '#fff'; }
 
-      if (isSelected) {
-        fill = '#14b8a6'; stroke = '#2dd4bf'; textCol = '#042f2e'; op = 0.9;
-      } else if (isRejected) {
-        fill = '#f43f5e'; stroke = '#fb7185'; textCol = '#fff'; op = 0.45;
-      }
-
-      if (isActive) {
-        stroke = '#f59e0b';
-        fill = step.compatible ? '#10b981' : '#f43f5e';
-        op = 1;
-        textCol = '#fff';
-      }
-
-      html += `<g class="act-bar" data-id="${a.origId}" data-s="${a.s}" data-f="${a.f}">`;
-      html += `<rect x="${x1}" y="${y}" width="${Math.max(x2 - x1, 4)}" height="${h}" rx="4" fill="${fill}" fill-opacity="${op}" stroke="${stroke}" stroke-width="${isActive ? 2.5 : 1}"/>`;
+      html += `<g><rect x="${x1}" y="${y}" width="${Math.max(x2 - x1, 4)}" height="${h}" rx="4" fill="${fill}" fill-opacity="${op}" stroke="${stroke}" stroke-width="${isActive ? 2.5 : 1}"/>`;
       html += `<text x="${X0 - 12}" y="${y + h/2 + 3.5}" fill="${isActive ? '#f59e0b' : '#94a3b8'}" font-size="11" font-family="JetBrains Mono" text-anchor="end" font-weight="${isActive ? 700 : 400}">A${a.origId}</text>`;
-      html += `<text x="${x1 + (x2 - x1)/2}" y="${y + h/2 + 3.5}" fill="${textCol}" font-size="10" font-family="JetBrains Mono" text-anchor="middle" font-weight="600">${a.s}-${a.f}</text>`;
-      html += `</g>`;
+      html += `<text x="${x1 + (x2 - x1)/2}" y="${y + h/2 + 3.5}" fill="${textCol}" font-size="10" font-family="JetBrains Mono" text-anchor="middle" font-weight="600">${a.s}-${a.f}</text></g>`;
     });
-
-    const totalHeight = Y0 + sorted.length * ROWH + 24;
-    svg.setAttribute('viewBox', `0 0 800 ${totalHeight}`);
+    svg.setAttribute('viewBox', `0 0 800 ${Y0 + sorted.length * ROWH + 24}`);
     svg.innerHTML = html;
   },
-
   renderTable(thead, tbody, step, items) {
     thead.innerHTML = `<tr><th>Activity</th><th>Start ($s_i$)</th><th>Finish ($f_i$)</th><th>Duration</th><th>Status</th></tr>`;
     const sorted = step.sortedList || items;
@@ -1303,81 +1278,32 @@ const ActivityModule = {
       const isRej = step.rejectedIds && step.rejectedIds.includes(a.origId);
       const isAct = step.activeId === a.origId;
       let status = '<span style="color:var(--text-dim)">Pending</span>';
-      let rowClass = '';
-
-      if (isSel) { status = '<span style="color:var(--teal); font-weight:600;">Selected</span>'; rowClass = 'selected-row'; }
-      if (isRej) { status = '<span style="color:var(--rose)">Rejected (Overlap)</span>'; }
-      if (isAct) { rowClass = 'active-row'; status = '<span style="color:var(--amber); font-weight:600;">Evaluating...</span>'; }
-
-      rows += `<tr class="${rowClass}">
-        <td><b>A${a.origId}</b></td>
-        <td>${a.s}</td>
-        <td>${a.f}</td>
-        <td>${a.f - a.s}</td>
-        <td>${status}</td>
-      </tr>`;
+      let rowClass = isAct ? 'active-row' : (isSel ? 'selected-row' : '');
+      if (isSel) status = '<span style="color:var(--teal); font-weight:600;">Selected</span>';
+      if (isRej) status = '<span style="color:var(--rose)">Rejected</span>';
+      if (isAct) status = '<span style="color:var(--amber); font-weight:600;">Evaluating...</span>';
+      rows += `<tr class="${rowClass}"><td><b>A${a.origId}</b></td><td>${a.s}</td><td>${a.f}</td><td>${a.f - a.s}</td><td>${status}</td></tr>`;
     });
     tbody.innerHTML = rows;
   },
-
   legend: [
-    { color: 'var(--teal)', label: 'Selected (Compatible)' },
-    { color: 'var(--rose)', label: 'Rejected (Overlaps last)' },
-    { color: 'var(--amber)', label: 'Currently Evaluating' },
-    { color: 'var(--gray)', label: 'Pending / Unchecked' }
+    { color: 'var(--teal)', label: 'Selected' },
+    { color: 'var(--rose)', label: 'Rejected (Overlap)' },
+    { color: 'var(--amber)', label: 'Evaluating' },
+    { color: 'var(--gray)', label: 'Pending' }
   ]
 };
 
 /* =========================================================================
-   2. FRACTIONAL KNAPSACK PROBLEM
+   2. FRACTIONAL KNAPSACK
    ========================================================================= */
 const KnapsackModule = {
   capacity: 50,
-  data: [
-    { name: 'Item 1', v: 60, w: 10 },
-    { name: 'Item 2', v: 100, w: 20 },
-    { name: 'Item 3', v: 120, w: 30 }
-  ],
-
+  data: [{ name: 'Item 1', v: 60, w: 10 }, { name: 'Item 2', v: 100, w: 20 }, { name: 'Item 3', v: 120, w: 30 }],
   presets: [
-    {
-      name: "CLRS Classic (Cap=50, 3 items)",
-      capacity: 50,
-      data: [{ name: 'Item 1', v: 60, w: 10 }, { name: 'Item 2', v: 100, w: 20 }, { name: 'Item 3', v: 120, w: 30 }]
-    },
-    {
-      name: "Precious Minerals (Cap=60, 5 items)",
-      capacity: 60,
-      data: [
-        { name: 'Diamond', v: 280, w: 10 },
-        { name: 'Gold', v: 200, w: 20 },
-        { name: 'Silver', v: 150, w: 25 },
-        { name: 'Platinum', v: 180, w: 15 },
-        { name: 'Copper', v: 80, w: 40 }
-      ]
-    },
-    {
-      name: "High Value Bulky vs Light (Cap=40)",
-      capacity: 40,
-      data: [
-        { name: 'Heavy Ore', v: 300, w: 50 },
-        { name: 'Rare Gem', v: 150, w: 10 },
-        { name: 'Spices', v: 90, w: 15 },
-        { name: 'Silk', v: 80, w: 20 }
-      ]
-    },
-    {
-      name: "Equal Density Edge Case (Cap=45)",
-      capacity: 45,
-      data: [
-        { name: 'Item A', v: 50, w: 10 },
-        { name: 'Item B', v: 100, w: 20 },
-        { name: 'Item C', v: 75, w: 15 },
-        { name: 'Item D', v: 40, w: 8 }
-      ]
-    }
+    { name: "CLRS Classic (Cap=50)", capacity: 50, data: [{ name: 'Item 1', v: 60, w: 10 }, { name: 'Item 2', v: 100, w: 20 }, { name: 'Item 3', v: 120, w: 30 }] },
+    { name: "Minerals (Cap=60)", capacity: 60, data: [{ name: 'Diamond', v: 280, w: 10 }, { name: 'Gold', v: 200, w: 20 }, { name: 'Silver', v: 150, w: 25 }, { name: 'Platinum', v: 180, w: 15 }, { name: 'Copper', v: 80, w: 40 }] }
   ],
-
   pseudocode: [
     { line: 1, code: "FRACTIONAL-KNAPSACK(V, W, Capacity):", func: true },
     { line: 2, code: "  Calculate density ratio[i] = V[i] / W[i] for all items" },
@@ -1385,41 +1311,28 @@ const KnapsackModule = {
     { line: 4, code: "  totalValue = 0, remainingCap = Capacity" },
     { line: 5, code: "  for each item i in sorted items:" },
     { line: 6, code: "    if remainingCap == 0: break" },
-    { line: 7, code: "    if W[i] ≤ remainingCap:  // Take 100%" },
-    { line: 8, code: "      fraction[i] = 1; remainingCap -= W[i]; totalValue += V[i]" },
-    { line: 9, code: "    else:                    // Take fraction" },
-    { line: 10, code: "      fraction[i] = remainingCap / W[i]" },
-    { line: 11, code: "      totalValue += V[i] * fraction[i]; remainingCap = 0" },
-    { line: 12, code: "  return totalValue, fraction" }
+    { line: 7, code: "    if W[i] ≤ remainingCap: fraction[i] = 1; remainingCap -= W[i]; totalValue += V[i]" },
+    { line: 8, code: "    else: fraction[i] = remainingCap / W[i]; totalValue += V[i] * fraction[i]; break" },
+    { line: 9, code: "  return totalValue" }
   ],
-
   theory: {
     time: "O(n log n)",
     space: "O(1) auxiliary",
     choice: "Max Value Density (v_i / w_i)",
-    desc: "Since items can be divided into arbitrary fractions, greedily packing the item with the highest value-per-unit-weight guaranteed to achieve the maximum total value. (Note: Greedy fails for 0/1 Knapsack where DP is required)."
+    desc: "Because items can be partitioned continuously, packing highest value-per-kg items greedily guarantees optimal total profit."
   },
-
   generateRandom(n = 5) {
     const list = [];
-    for(let i=1; i<=n; i++) {
-      const w = Math.floor(Math.random() * 25) + 5;
-      const v = Math.floor(Math.random() * 150) + 20;
-      list.push({ name: `Item ${i}`, v, w });
-    }
-    return { capacity: Math.floor(Math.random() * 50) + 40, data: list };
+    for(let i=1; i<=n; i++) list.push({ name: `Item ${i}`, v: Math.floor(Math.random() * 140) + 20, w: Math.floor(Math.random() * 25) + 5 });
+    return { capacity: Math.floor(Math.random() * 40) + 40, data: list };
   },
-
   buildSteps(items, capacity) {
     const withRatio = items.map(it => ({ ...it, ratio: it.v / it.w }));
     const sorted = [...withRatio].sort((a, b) => b.ratio - a.ratio);
-
     const steps = [];
-    let remaining = capacity;
-    let totalValue = 0;
+    let remaining = capacity, totalValue = 0;
     const fractions = sorted.map(() => 0);
 
-    // Step 0: Calculate ratio & sort
     steps.push({
       type: 'sort',
       lineHighlight: 3,
@@ -1429,32 +1342,15 @@ const KnapsackModule = {
       remaining,
       totalValue,
       capacity,
-      desc: `<b>Step 1 — Sort by Value Density:</b> Compute ratio $\\rho_i = \\frac{v_i}{w_i}$ for each item, then sort in descending order. Items with highest profit per kg will be prioritized.`
+      desc: `<b>Step 1 — Sort by Value Density:</b> Compute ratio $\\rho_i = \\frac{v_i}{w_i}$, then sort in descending order.`
     });
 
     for (let i = 0; i < sorted.length; i++) {
       const it = sorted[i];
-      let frac = 0;
-      let note = '';
-      let lineH = 7;
-
-      if (remaining <= 0) {
-        frac = 0;
-        note = 'skip';
-        lineH = 6;
-      } else if (it.w <= remaining) {
-        frac = 1;
-        remaining -= it.w;
-        totalValue += it.v;
-        note = 'full';
-        lineH = 8;
-      } else {
-        frac = remaining / it.w;
-        totalValue += it.v * frac;
-        remaining = 0;
-        note = 'partial';
-        lineH = 10;
-      }
+      let frac = 0, note = '', lineH = 7;
+      if (remaining <= 0) { frac = 0; note = 'skip'; lineH = 6; }
+      else if (it.w <= remaining) { frac = 1; remaining -= it.w; totalValue += it.v; note = 'full'; lineH = 7; }
+      else { frac = remaining / it.w; totalValue += it.v * frac; remaining = 0; note = 'partial'; lineH = 8; }
       fractions[i] = frac;
 
       steps.push({
@@ -1463,238 +1359,136 @@ const KnapsackModule = {
         sortedList: [...sorted],
         fractions: [...fractions],
         activeIdx: i,
-        it,
-        frac,
-        note,
-        remaining,
-        totalValue,
-        capacity,
-        desc: `<b>Considering ${it.name}</b> (value: <span class="num">${it.v}</span>, weight: <span class="num">${it.w}</span> kg, density: <span class="num">${it.ratio.toFixed(2)}</span>).<br>` +
-              (note === 'full' 
-                ? `&bull; Fits completely ($w_i \\le \\text{rem}$): Take <span class="tag-take">100% (+${it.v} value)</span>. Rem capacity = <span class="num">${remaining.toFixed(1)}</span> kg.`
-                : (note === 'partial' 
-                  ? `&bull; Exceeds remaining capacity: Take fraction <span class="tag-take">${(frac * 100).toFixed(1)}%</span> (${(it.w * frac).toFixed(1)} kg, +${(it.v * frac).toFixed(1)} value). Knapsack full!`
-                  : `&bull; Knapsack capacity exhausted &rarr; <span class="tag-skip">Skip item</span>.`))
+        it, frac, note, remaining, totalValue, capacity,
+        desc: `<b>Considering ${it.name}</b> (v: <span class="num">${it.v}</span>, w: <span class="num">${it.w}</span>kg, density: <span class="num">${it.ratio.toFixed(2)}</span>). ` +
+              (note === 'full' ? `Fits completely: Take <span class="tag-take">100% (+${it.v})</span>.` :
+               (note === 'partial' ? `Takes partial fraction <span class="tag-take">${(frac*100).toFixed(1)}%</span> (+${(it.v*frac).toFixed(1)} val). Capacity full!` :
+                `<span class="tag-skip">Capacity filled. Skip item</span>.`))
       });
     }
-
-    // Step: Complete
     steps.push({
       type: 'done',
-      lineHighlight: 12,
+      lineHighlight: 9,
       sortedList: [...sorted],
       fractions: [...fractions],
       activeIdx: -1,
-      remaining,
-      totalValue,
-      capacity,
-      desc: `<b>Optimal Packing Complete:</b> Maximum achievable profit = <span class="num">${totalValue.toFixed(2)}</span> utilizing <span class="num">${(capacity - remaining).toFixed(1)} / ${capacity}</span> kg of total capacity.`
+      remaining, totalValue, capacity,
+      desc: `<b>Optimal Packing Complete:</b> Total value = <span class="num">${totalValue.toFixed(2)}</span> utilizing <span class="num">${(capacity - remaining).toFixed(1)} / ${capacity}</span> kg.`
     });
-
     return steps;
   },
-
   renderCanvas(svg, step) {
-    const sorted = step.sortedList;
-    const cap = step.capacity;
+    const sorted = step.sortedList, cap = step.capacity;
     let usedW = 0;
     sorted.forEach((it, i) => { usedW += step.fractions[i] * it.w; });
-
-    let html = '';
-    // Main Knapsack Capacity Gauge
     const barX = 40, barY = 24, barW = 720, barH = 30;
     const usedPx = (usedW / cap) * barW;
 
-    html += `<rect x="${barX}" y="${barY}" width="${barW}" height="${barH}" rx="8" fill="#141d2c" stroke="#223249" stroke-width="1.5"/>`;
-    html += `<rect x="${barX}" y="${barY}" width="${Math.min(usedPx, barW)}" height="${barH}" rx="8" fill="url(#knapsack-grad)" fill-opacity="0.8"/>`;
-    html += `<text x="${barX + barW/2}" y="${barY + barH/2 + 4}" text-anchor="middle" fill="#fff" font-size="12" font-family="JetBrains Mono" font-weight="600">Knapsack Used: ${usedW.toFixed(1)} / ${cap} kg (${((usedW/cap)*100).toFixed(1)}%) | Total Value: ${step.totalValue.toFixed(1)}</text>`;
+    let html = `<rect x="${barX}" y="${barY}" width="${barW}" height="${barH}" rx="8" fill="#141d2c" stroke="#223249" stroke-width="1.5"/>`;
+    html += `<rect x="${barX}" y="${barY}" width="${Math.min(usedPx, barW)}" height="${barH}" rx="8" fill="#14b8a6" fill-opacity="0.85"/>`;
+    html += `<text x="${barX + barW/2}" y="${barY + barH/2 + 4}" text-anchor="middle" fill="#fff" font-size="12" font-family="JetBrains Mono" font-weight="600">Knapsack: ${usedW.toFixed(1)} / ${cap} kg (${((usedW/cap)*100).toFixed(1)}%) | Total Value: ${step.totalValue.toFixed(1)}</text>`;
 
-    // Defs for gradient
-    html += `<defs>
-      <linearGradient id="knapsack-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#0f766e" />
-        <stop offset="100%" stop-color="#14b8a6" />
-      </linearGradient>
-    </defs>`;
-
-    // Items Breakdown Bars
-    const rowY0 = 85;
-    const rowH = Math.min(65, Math.max(45, 260 / sorted.length));
-    const maxW = Math.max(...sorted.map(o => o.w));
-
+    const rowY0 = 85, rowH = Math.min(65, Math.max(45, 260 / sorted.length)), maxW = Math.max(...sorted.map(o => o.w));
     sorted.forEach((it, i) => {
       const y = rowY0 + i * rowH;
       const frac = step.fractions[i];
       const isActive = step.activeIdx === i;
-
-      let fill = '#141d2c';
-      if (frac === 1) fill = '#14b8a6';
-      else if (frac > 0) fill = '#f59e0b';
-      else if (step.remaining === 0 && frac === 0) fill = '#334155';
-
+      let fill = frac === 1 ? '#14b8a6' : (frac > 0 ? '#f59e0b' : '#334155');
       const boxW = (it.w / maxW) * 440;
       const filledW = boxW * frac;
 
       html += `<rect x="50" y="${y}" width="${boxW}" height="22" rx="5" fill="#141d2c" stroke="${isActive ? '#f59e0b' : '#223249'}" stroke-width="${isActive ? 2.5 : 1}"/>`;
-      if (filledW > 0) {
-        html += `<rect x="50" y="${y}" width="${filledW}" height="22" rx="5" fill="${fill}" fill-opacity="0.85"/>`;
-      }
-
-      html += `<text x="50" y="${y - 6}" fill="#f1f5f9" font-size="12" font-family="JetBrains Mono" font-weight="${isActive ? 700 : 500}">${it.name} &bull; v=${it.v} | w=${it.w}kg | ratio=${it.ratio.toFixed(2)}</text>`;
-      html += `<text x="${50 + boxW + 12}" y="${y + 15}" fill="${frac > 0 ? (frac === 1 ? '#2dd4bf' : '#f59e0b') : '#64748b'}" font-size="11" font-family="JetBrains Mono" font-weight="600">${(frac * 100).toFixed(1)}% (${(frac * it.w).toFixed(1)}kg &rarr; +${(frac * it.v).toFixed(1)} val)</text>`;
+      if (filledW > 0) html += `<rect x="50" y="${y}" width="${filledW}" height="22" rx="5" fill="${fill}" fill-opacity="0.85"/>`;
+      html += `<text x="50" y="${y - 6}" fill="#f1f5f9" font-size="12" font-family="JetBrains Mono" font-weight="${isActive ? 700 : 500}">${it.name} • v=${it.v} | w=${it.w}kg | ratio=${it.ratio.toFixed(2)}</text>`;
+      html += `<text x="${50 + boxW + 12}" y="${y + 15}" fill="${frac > 0 ? (frac === 1 ? '#2dd4bf' : '#f59e0b') : '#64748b'}" font-size="11" font-family="JetBrains Mono" font-weight="600">${(frac * 100).toFixed(1)}% (${(frac * it.w).toFixed(1)}kg → +${(frac * it.v).toFixed(1)})</text>`;
     });
-
-    const totalHeight = rowY0 + sorted.length * rowH + 20;
-    svg.setAttribute('viewBox', `0 0 800 ${totalHeight}`);
+    svg.setAttribute('viewBox', `0 0 800 ${rowY0 + sorted.length * rowH + 20}`);
     svg.innerHTML = html;
   },
-
   renderTable(thead, tbody, step) {
-    thead.innerHTML = `<tr><th>Item</th><th>Value ($v_i$)</th><th>Weight ($w_i$)</th><th>Density ($v_i/w_i$)</th><th>Fraction Taken ($x_i$)</th><th>Contrib Value</th></tr>`;
+    thead.innerHTML = `<tr><th>Item</th><th>Value</th><th>Weight</th><th>Density</th><th>Fraction</th><th>Contrib Value</th></tr>`;
     let rows = '';
     step.sortedList.forEach((it, i) => {
       const frac = step.fractions[i];
       const isAct = step.activeIdx === i;
-      let rowClass = isAct ? 'active-row' : (frac > 0 ? 'selected-row' : '');
-
-      rows += `<tr class="${rowClass}">
-        <td><b>${it.name}</b></td>
-        <td>${it.v}</td>
-        <td>${it.w} kg</td>
-        <td><b style="color:var(--amber)">${it.ratio.toFixed(2)}</b></td>
-        <td><b>${(frac * 100).toFixed(1)}%</b></td>
-        <td>${(frac * it.v).toFixed(2)}</td>
-      </tr>`;
+      rows += `<tr class="${isAct ? 'active-row' : (frac > 0 ? 'selected-row' : '')}"><td><b>${it.name}</b></td><td>${it.v}</td><td>${it.w} kg</td><td><b style="color:var(--amber)">${it.ratio.toFixed(2)}</b></td><td><b>${(frac * 100).toFixed(1)}%</b></td><td>${(frac * it.v).toFixed(2)}</td></tr>`;
     });
-
-    rows += `<tr class="highlight-total">
-      <td colspan="4">Total Accumulated</td>
-      <td>${((step.capacity - step.remaining) / step.capacity * 100).toFixed(1)}% Cap</td>
-      <td><b>${step.totalValue.toFixed(2)}</b></td>
-    </tr>`;
+    rows += `<tr class="highlight-total"><td colspan="4">Total Accumulated</td><td>${((step.capacity - step.remaining) / step.capacity * 100).toFixed(1)}% Cap</td><td><b>${step.totalValue.toFixed(2)}</b></td></tr>`;
     tbody.innerHTML = rows;
   },
-
   legend: [
     { color: 'var(--teal)', label: '100% Fully Taken' },
-    { color: 'var(--amber)', label: 'Fractional / Partial Fill' },
-    { color: 'var(--gray)', label: 'Skipped (Out of Cap)' }
+    { color: 'var(--amber)', label: 'Partial Fraction' },
+    { color: 'var(--gray)', label: 'Skipped' }
   ]
 };
 
 /* =========================================================================
-   3. HUFFMAN CODING PROBLEM
+   3. HUFFMAN CODING
    ========================================================================= */
 const HuffmanModule = {
   rawText: "beep boop beer!",
-  data: [
-    { ch: 'a', f: 45 },
-    { ch: 'b', f: 13 },
-    { ch: 'c', f: 12 },
-    { ch: 'd', f: 16 },
-    { ch: 'e', f: 9 },
-    { ch: 'f', f: 5 }
-  ],
-
+  data: [{ ch: 'a', f: 45 }, { ch: 'b', f: 13 }, { ch: 'c', f: 12 }, { ch: 'd', f: 16 }, { ch: 'e', f: 9 }, { ch: 'f', f: 5 }],
   presets: [
-    {
-      name: "CLRS Textbook (6 chars)",
-      data: [{ ch: 'a', f: 45 }, { ch: 'b', f: 13 }, { ch: 'c', f: 12 }, { ch: 'd', f: 16 }, { ch: 'e', f: 9 }, { ch: 'f', f: 5 }]
-    },
-    {
-      name: "Pangram Sentence ('quick brown fox')",
-      rawText: "the quick brown fox jumps over the lazy dog"
-    },
-    {
-      name: "DNA Sequence ('AAGCTTAA...')",
-      rawText: "AAGCTTAAGCGCTAAGCTTTTTAAACGATCGATCGATC"
-    },
-    {
-      name: "Fibonacci Frequencies (Skewed Tree)",
-      data: [{ ch: 'A', f: 1 }, { ch: 'B', f: 2 }, { ch: 'C', f: 3 }, { ch: 'D', f: 5 }, { ch: 'E', f: 8 }, { ch: 'F', f: 13 }, { ch: 'G', f: 21 }]
-    }
+    { name: "CLRS Textbook (6 chars)", data: [{ ch: 'a', f: 45 }, { ch: 'b', f: 13 }, { ch: 'c', f: 12 }, { ch: 'd', f: 16 }, { ch: 'e', f: 9 }, { ch: 'f', f: 5 }] },
+    { name: "Pangram Sentence", rawText: "the quick brown fox jumps over the lazy dog" }
   ],
-
   pseudocode: [
     { line: 1, code: "HUFFMAN(C):", func: true },
-    { line: 2, code: "  n = |C|" },
-    { line: 3, code: "  Q = BuildMinPriorityQueue(C)  // By frequency" },
-    { line: 4, code: "  for i = 1 to n - 1:" },
-    { line: 5, code: "    allocate new internal node z" },
-    { line: 6, code: "    z.left = x = EXTRACT-MIN(Q)" },
-    { line: 7, code: "    z.right = y = EXTRACT-MIN(Q)" },
-    { line: 8, code: "    z.freq = x.freq + y.freq" },
-    { line: 9, code: "    INSERT(Q, z)" },
-    { line: 10, code: "  return EXTRACT-MIN(Q)  // Root of tree" }
+    { line: 2, code: "  Q = BuildMinPriorityQueue(C)" },
+    { line: 3, code: "  for i = 1 to n - 1:" },
+    { line: 4, code: "    z = allocate new node" },
+    { line: 5, code: "    z.left = x = EXTRACT-MIN(Q)" },
+    { line: 6, code: "    z.right = y = EXTRACT-MIN(Q)" },
+    { line: 7, code: "    z.freq = x.freq + y.freq" },
+    { line: 8, code: "    INSERT(Q, z)" },
+    { line: 9, code: "  return EXTRACT-MIN(Q)  // Root" }
   ],
-
   theory: {
     time: "O(n log n)",
     space: "O(n)",
-    choice: "Merge 2 Minimum Frequency Subtrees",
-    desc: "Huffman coding achieves optimal prefix-free binary data compression by repeatedly merging the two least frequent nodes. High frequency symbols stay close to the root (fewer bits), while rare symbols descend deeper."
+    choice: "Merge 2 Min-Frequency Trees",
+    desc: "Optimal prefix-free variable length binary code. Frequent symbols stay near root with short codes; rare symbols descend deep."
   },
-
   freqsFromText(text) {
     const map = {};
-    for (let char of text) {
-      map[char] = (map[char] || 0) + 1;
-    }
+    for (let char of text) map[char] = (map[char] || 0) + 1;
     return Object.entries(map).map(([ch, f]) => ({ ch, f }));
   },
-
   generateRandom() {
-    const chars = "ABCDEFGH";
-    const data = [];
-    for (let i = 0; i < chars.length; i++) {
-      data.push({ ch: chars[i], f: Math.floor(Math.random() * 40) + 2 });
-    }
+    const chars = "ABCDEFGH", data = [];
+    for (let i = 0; i < chars.length; i++) data.push({ ch: chars[i], f: Math.floor(Math.random() * 40) + 2 });
     return { data };
   },
-
   buildSteps(freqList) {
     let nid = 0;
     const makeLeaf = (ch, f) => ({ id: ++nid, ch, f, left: null, right: null });
     const makeMerge = (l, r) => ({ id: ++nid, ch: null, f: l.f + r.f, left: l, right: r });
-
     let forest = freqList.map(d => makeLeaf(d.ch, d.f)).sort((a, b) => a.f - b.f);
     const steps = [];
 
-    // Step 0: Priority queue initialized
     steps.push({
       type: 'init',
-      lineHighlight: 3,
+      lineHighlight: 2,
       forest: JSON.parse(JSON.stringify(forest)),
-      mergedNode: null,
-      extractPair: null,
-      desc: `<b>Step 1 — Build Min-Priority Queue $Q$:</b> Created <span class="num">${forest.length}</span> leaf nodes sorted by ascending frequency: ${forest.map(n => `'${n.ch}':<b>${n.f}</b>`).join(', ')}. Repeatedly extract the 2 smallest frequencies.`
+      desc: `<b>Build Priority Queue:</b> Initialized <span class="num">${forest.length}</span> symbol nodes sorted by frequency: ${forest.map(n => `'${n.ch}':<b>${n.f}</b>`).join(', ')}.`
     });
 
     while (forest.length > 1) {
       forest.sort((a, b) => a.f - b.f);
-      const x = forest[0];
-      const y = forest[1];
+      const x = forest[0], y = forest[1];
       const z = makeMerge(x, y);
-
       const before = JSON.parse(JSON.stringify(forest));
       forest = [z, ...forest.slice(2)].sort((a, b) => a.f - b.f);
-      const after = JSON.parse(JSON.stringify(forest));
-
       steps.push({
         type: 'merge',
-        lineHighlight: 6,
+        lineHighlight: 5,
         before,
-        after,
         extractPair: [x.id, y.id],
-        mergedNode: z,
-        desc: `<b>Greedy Merge Step:</b> Extract 2 lowest frequency nodes: ` +
-              `<b>${x.ch ? `'${x.ch}'` : 'Subtree'}(${x.f})</b> and <b>${y.ch ? `'${y.ch}'` : 'Subtree'}(${y.f})</b>.<br>` +
-              `Combine into new internal node with weight <span class="num">${z.f}</span> ($${x.f} + ${y.f} = ${z.f}$). Left branch = <b>0</b>, Right branch = <b>1</b>. Re-insert into priority queue.`
+        desc: `<b>Greedy Merge:</b> Extract min nodes <b>${x.ch ? `'${x.ch}'` : 'Tree'}(${x.f})</b> &amp; <b>${y.ch ? `'${y.ch}'` : 'Tree'}(${y.f})</b>. Combined frequency = <span class="num">${z.f}</span>.`
       });
     }
-
-    const root = forest[0];
-    const codes = {};
+    const root = forest[0], codes = {};
     function computeCodes(n, p = '') {
       if (!n) return;
       if (n.ch !== null) { codes[n.ch] = p || '0'; return; }
@@ -1703,197 +1497,106 @@ const HuffmanModule = {
     }
     computeCodes(root);
 
-    // Final Tree Step
     steps.push({
       type: 'done',
-      lineHighlight: 10,
+      lineHighlight: 9,
       root,
       codes,
-      freqList,
-      desc: `<b>Huffman Tree Complete:</b> All symbols organized in optimal prefix-free tree! Root frequency = <span class="num">${root.f}</span>. Prefix codes read from root to leaves (0=left, 1=right).`
+      desc: `<b>Huffman Tree Complete:</b> All symbols encoded into prefix-free optimal binary tree.`
     });
-
     return steps;
   },
-
   renderCanvas(svg, step) {
-    if (step.type === 'done' && step.root) {
-      this.renderFullTree(svg, step.root);
-    } else {
-      this.renderForestState(svg, step.forest || step.before, step.extractPair, step.mergedNode);
-    }
+    if (step.type === 'done' && step.root) this.renderFullTree(svg, step.root);
+    else this.renderForestState(svg, step.forest || step.before, step.extractPair);
   },
-
-  renderForestState(svg, list, extractPair = [], mergedNode = null) {
+  renderForestState(svg, list, extractPair = []) {
     let html = '';
     const boxW = 68, boxH = 50, gap = 14;
     const totalW = list.length * boxW + (list.length - 1) * gap;
     const startX = Math.max(20, (800 - totalW) / 2);
-
     html += `<text x="400" y="30" text-anchor="middle" fill="#94a3b8" font-size="12" font-family="JetBrains Mono">Min-Priority Queue Forest (${list.length} trees remaining)</text>`;
-
     list.forEach((n, i) => {
       const x = startX + i * (boxW + gap);
       const y = 80;
       const isExtract = extractPair && extractPair.includes(n.id);
-      let fill = '#141d2c', stroke = '#223249';
-
-      if (isExtract) {
-        fill = '#f59e0b'; stroke = '#fbbf24';
-      }
-
-      html += `<rect x="${x}" y="${y}" width="${boxW}" height="${boxH}" rx="8" fill="${fill}" fill-opacity="${isExtract ? 0.9 : 0.6}" stroke="${stroke}" stroke-width="${isExtract ? 2.5 : 1}"/>`;
-      const label = n.ch !== null ? `'${n.ch}'` : `[Tree]`;
-      html += `<text x="${x + boxW/2}" y="${y + 20}" text-anchor="middle" fill="${isExtract ? '#fff' : '#e2e8f0'}" font-size="12" font-family="JetBrains Mono" font-weight="600">${label}</text>`;
+      html += `<rect x="${x}" y="${y}" width="${boxW}" height="${boxH}" rx="8" fill="${isExtract ? '#f59e0b' : '#141d2c'}" fill-opacity="${isExtract ? 0.9 : 0.6}" stroke="${isExtract ? '#fbbf24' : '#223249'}" stroke-width="${isExtract ? 2.5 : 1}"/>`;
+      html += `<text x="${x + boxW/2}" y="${y + 20}" text-anchor="middle" fill="#fff" font-size="12" font-family="JetBrains Mono" font-weight="600">${n.ch !== null ? `'${n.ch}'` : '[Tree]'}</text>`;
       html += `<text x="${x + boxW/2}" y="${y + 38}" text-anchor="middle" fill="${isExtract ? '#fff' : '#14b8a6'}" font-size="12" font-family="JetBrains Mono" font-weight="700">f=${n.f}</text>`;
     });
-
     svg.setAttribute('viewBox', '0 0 800 200');
     svg.innerHTML = html;
   },
-
   renderFullTree(svg, root) {
-    let leafX = 0;
-    const nodes = [];
+    let leafX = 0; const nodes = [];
     function assignCoords(n, depth) {
-      if (!n.left && !n.right) {
-        n.x = leafX; leafX += 1; n.depth = depth;
-        nodes.push(n); return;
-      }
+      if (!n.left && !n.right) { n.x = leafX; leafX += 1; n.depth = depth; nodes.push(n); return; }
       if (n.left) assignCoords(n.left, depth + 1);
       if (n.right) assignCoords(n.right, depth + 1);
       n.x = ((n.left ? n.left.x : leafX) + (n.right ? n.right.x : leafX)) / 2;
-      n.depth = depth;
-      nodes.push(n);
+      n.depth = depth; nodes.push(n);
     }
     assignCoords(root, 0);
-
     const leafCount = Math.max(leafX, 1);
     const spacing = Math.min(95, 700 / leafCount);
     const startX = 50 + (700 - (leafCount - 1) * spacing) / 2;
-    let maxDepth = 0;
-    nodes.forEach(n => { maxDepth = Math.max(maxDepth, n.depth); });
-
+    let maxDepth = 0; nodes.forEach(n => { maxDepth = Math.max(maxDepth, n.depth); });
     const px = n => startX + n.x * spacing;
     const py = n => 45 + n.depth * 65;
 
     let html = '';
-    // Edges
     nodes.forEach(n => {
       if (n.left) {
         html += `<line x1="${px(n)}" y1="${py(n)}" x2="${px(n.left)}" y2="${py(n.left)}" stroke="#14b8a6" stroke-width="1.8"/>`;
-        html += `<rect x="${(px(n) + px(n.left))/2 - 8}" y="${(py(n) + py(n.left))/2 - 8}" width="16" height="14" rx="3" fill="#090d14" />`;
         html += `<text x="${(px(n) + px(n.left))/2}" y="${(py(n) + py(n.left))/2 + 3}" fill="#2dd4bf" font-size="10" font-family="JetBrains Mono" font-weight="700" text-anchor="middle">0</text>`;
       }
       if (n.right) {
         html += `<line x1="${px(n)}" y1="${py(n)}" x2="${px(n.right)}" y2="${py(n.right)}" stroke="#8b5cf6" stroke-width="1.8"/>`;
-        html += `<rect x="${(px(n) + px(n.right))/2 - 8}" y="${(py(n) + py(n.right))/2 - 8}" width="16" height="14" rx="3" fill="#090d14" />`;
         html += `<text x="${(px(n) + px(n.right))/2}" y="${(py(n) + py(n.right))/2 + 3}" fill="#c4b5fd" font-size="10" font-family="JetBrains Mono" font-weight="700" text-anchor="middle">1</text>`;
       }
     });
-
-    // Nodes
     nodes.forEach(n => {
       const isLeaf = !n.left && !n.right;
-      const r = isLeaf ? 18 : 15;
-      const fill = isLeaf ? '#14b8a6' : '#1e293b';
-      const stroke = isLeaf ? '#2dd4bf' : '#334155';
-
-      html += `<circle cx="${px(n)}" cy="${py(n)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+      html += `<circle cx="${px(n)}" cy="${py(n)}" r="${isLeaf ? 18 : 15}" fill="${isLeaf ? '#14b8a6' : '#1e293b'}" stroke="${isLeaf ? '#2dd4bf' : '#334155'}" stroke-width="2"/>`;
       if (isLeaf) {
         html += `<text x="${px(n)}" y="${py(n) + 4}" text-anchor="middle" font-size="11" font-family="JetBrains Mono" fill="#042f2e" font-weight="700">'${n.ch}'</text>`;
-        html += `<text x="${px(n)}" y="${py(n) + 30}" text-anchor="middle" font-size="10" font-family="JetBrains Mono" fill="#94a3b8">f=${n.f}</text>`;
       } else {
         html += `<text x="${px(n)}" y="${py(n) + 4}" text-anchor="middle" font-size="10" font-family="JetBrains Mono" fill="#f1f5f9" font-weight="600">${n.f}</text>`;
       }
     });
-
-    const totalHeight = 60 + maxDepth * 65 + 45;
-    svg.setAttribute('viewBox', `0 0 800 ${totalHeight}`);
+    svg.setAttribute('viewBox', `0 0 800 ${60 + maxDepth * 65 + 45}`);
     svg.innerHTML = html;
   },
-
   renderTable(thead, tbody, step, freqList) {
-    thead.innerHTML = `<tr><th>Symbol</th><th>Frequency</th><th>Prefix Code</th><th>Bits / Char</th><th>Total Bits ($f_i \\times L_i$)</th><th>Fixed 8-bit ASCII</th></tr>`;
+    thead.innerHTML = `<tr><th>Symbol</th><th>Frequency</th><th>Prefix Code</th><th>Bits / Char</th><th>Total Bits</th><th>Fixed 8-bit ASCII</th></tr>`;
     const codes = step.codes || {};
-    let rows = '';
-    let totalFreq = 0;
-    let totalBits = 0;
-    let totalAscii = 0;
-
+    let rows = '', totalFreq = 0, totalBits = 0, totalAscii = 0;
     freqList.forEach(item => {
       const code = codes[item.ch] || '-';
       const bitLen = code === '-' ? 0 : code.length;
-      const subtotal = bitLen * item.f;
-      totalFreq += item.f;
-      totalBits += subtotal;
-      totalAscii += item.f * 8;
-
-      rows += `<tr>
-        <td><b>'${item.ch}'</b></td>
-        <td>${item.f}</td>
-        <td><span style="font-family:'JetBrains Mono'; color:var(--teal); font-weight:700;">${code}</span></td>
-        <td>${bitLen > 0 ? bitLen : '-'}</td>
-        <td>${subtotal > 0 ? subtotal : '-'}</td>
-        <td>${item.f * 8} bits</td>
-      </tr>`;
+      totalFreq += item.f; totalBits += bitLen * item.f; totalAscii += item.f * 8;
+      rows += `<tr><td><b>'${item.ch}'</b></td><td>${item.f}</td><td><span style="color:var(--teal); font-weight:700;">${code}</span></td><td>${bitLen || '-'}</td><td>${bitLen * item.f || '-'}</td><td>${item.f * 8} bits</td></tr>`;
     });
-
-    const compression = totalAscii > 0 ? (((totalAscii - totalBits) / totalAscii) * 100).toFixed(1) : 0;
-    rows += `<tr class="highlight-total">
-      <td>Total</td>
-      <td>${totalFreq}</td>
-      <td>—</td>
-      <td>Avg: ${(totalBits / (totalFreq || 1)).toFixed(2)}</td>
-      <td><b>${totalBits} bits</b></td>
-      <td>${totalAscii} bits (<b style="color:var(--emerald)">${compression}% saved</b>)</td>
-    </tr>`;
-
+    const saved = totalAscii > 0 ? (((totalAscii - totalBits) / totalAscii) * 100).toFixed(1) : 0;
+    rows += `<tr class="highlight-total"><td>Total</td><td>${totalFreq}</td><td>—</td><td>Avg: ${(totalBits/(totalFreq||1)).toFixed(2)}</td><td><b>${totalBits} bits</b></td><td>${totalAscii} bits (<b style="color:var(--emerald)">${saved}% saved</b>)</td></tr>`;
     tbody.innerHTML = rows;
 
-    // Huffman Live Playground update
     const huffExtra = document.getElementById('huffman-extra-tools');
     if (step.type === 'done' && step.codes) {
       huffExtra.style.display = 'block';
-      this.attachPlayground(step.codes);
-    } else {
-      huffExtra.style.display = 'none';
-    }
+      const inp = document.getElementById('huffman-test-input'), out = document.getElementById('huffman-bitstream-output'), st = document.getElementById('huffman-compression-stats');
+      inp.oninput = () => {
+        let stream = '';
+        for (let ch of inp.value) stream += (codes[ch] !== undefined ? codes[ch] : `[?${ch}]`);
+        out.innerHTML = `<b>Encoded Bitstream:</b> ${stream || '(empty)'}`;
+        st.innerHTML = inp.value.length ? `Encoded ${inp.value.length} chars into <b>${stream.length} bits</b> vs ${inp.value.length*8} bits ASCII.` : '';
+      };
+    } else huffExtra.style.display = 'none';
   },
-
-  attachPlayground(codes) {
-    const input = document.getElementById('huffman-test-input');
-    const out = document.getElementById('huffman-bitstream-output');
-    const stats = document.getElementById('huffman-compression-stats');
-
-    input.oninput = () => {
-      const val = input.value;
-      let bitstream = '';
-      let unknown = false;
-      for (let ch of val) {
-        if (codes[ch] !== undefined) {
-          bitstream += codes[ch];
-        } else {
-          bitstream += `[? '${ch}']`;
-          unknown = true;
-        }
-      }
-      out.innerHTML = `<b>Encoded Bitstream:</b> ${bitstream || '(empty)'}`;
-      if (val.length > 0 && !unknown) {
-        const asciiBits = val.length * 8;
-        const huffBits = bitstream.length;
-        const saved = (((asciiBits - huffBits) / asciiBits) * 100).toFixed(1);
-        stats.innerHTML = `Encoded ${val.length} chars into <b>${huffBits} bits</b> vs ${asciiBits} bits ASCII &rarr; <b>${saved}% storage savings!</b>`;
-      } else {
-        stats.innerHTML = '';
-      }
-    };
-  },
-
   legend: [
-    { color: 'var(--teal)', label: 'Left Branch (0) / Leaf Symbol' },
+    { color: 'var(--teal)', label: 'Leaf / Left (0)' },
     { color: 'var(--violet)', label: 'Right Branch (1)' },
-    { color: 'var(--amber)', label: 'Currently Merged Pair' }
+    { color: 'var(--amber)', label: 'Merged Pair' }
   ]
 };
 
@@ -1901,100 +1604,50 @@ const HuffmanModule = {
    4. JOB SEQUENCING WITH DEADLINES
    ========================================================================= */
 const JobSeqModule = {
-  data: [
-    { id: 'J1', d: 2, p: 100 },
-    { id: 'J2', d: 1, p: 19 },
-    { id: 'J3', d: 2, p: 27 },
-    { id: 'J4', d: 1, p: 25 },
-    { id: 'J5', d: 3, p: 15 }
-  ],
-
+  data: [{ id: 'J1', d: 2, p: 100 }, { id: 'J2', d: 1, p: 19 }, { id: 'J3', d: 2, p: 27 }, { id: 'J4', d: 1, p: 25 }, { id: 'J5', d: 3, p: 15 }],
   presets: [
-    {
-      name: "CLRS Standard 5 Jobs",
-      data: [{ id: 'J1', d: 2, p: 100 }, { id: 'J2', d: 1, p: 19 }, { id: 'J3', d: 2, p: 27 }, { id: 'J4', d: 1, p: 25 }, { id: 'J5', d: 3, p: 15 }]
-    },
-    {
-      name: "High Competition for Slot 1 & 2",
-      data: [
-        { id: 'J1', d: 1, p: 90 },
-        { id: 'J2', d: 2, p: 80 },
-        { id: 'J3', d: 1, p: 70 },
-        { id: 'J4', d: 2, p: 60 },
-        { id: 'J5', d: 3, p: 50 },
-        { id: 'J6', d: 2, p: 40 }
-      ]
-    },
-    {
-      name: "Wide Deadlines (Up to Slot 5)",
-      data: [
-        { id: 'Task A', d: 4, p: 70 },
-        { id: 'Task B', d: 2, p: 60 },
-        { id: 'Task C', d: 4, p: 50 },
-        { id: 'Task D', d: 3, p: 40 },
-        { id: 'Task E', d: 1, p: 30 },
-        { id: 'Task F', d: 5, p: 20 }
-      ]
-    }
+    { name: "CLRS Standard 5 Jobs", data: [{ id: 'J1', d: 2, p: 100 }, { id: 'J2', d: 1, p: 19 }, { id: 'J3', d: 2, p: 27 }, { id: 'J4', d: 1, p: 25 }, { id: 'J5', d: 3, p: 15 }] },
+    { name: "High Competition for Slot 1 & 2", data: [{ id: 'J1', d: 1, p: 90 }, { id: 'J2', d: 2, p: 80 }, { id: 'J3', d: 1, p: 70 }, { id: 'J4', d: 2, p: 60 }, { id: 'J5', d: 3, p: 50 }] }
   ],
-
   pseudocode: [
     { line: 1, code: "JOB-SEQUENCING(Jobs, n):", func: true },
-    { line: 2, code: "  Sort Jobs in descending order of profit (P[i])" },
-    { line: 3, code: "  maxDeadline = max(d[i] for all jobs)" },
-    { line: 4, code: "  slots = array of size maxDeadline (all empty)" },
-    { line: 5, code: "  for each job i in sorted jobs:" },
-    { line: 6, code: "    for t = min(n, d[i]) down to 1:  // Find latest free slot" },
-    { line: 7, code: "      if slots[t] is free:" },
-    { line: 8, code: "        slots[t] = job i; totalProfit += P[i]" },
-    { line: 9, code: "        break  // Scheduled successfully" },
-    { line: 10, code: "  return slots, totalProfit" }
+    { line: 2, code: "  Sort Jobs in descending order of profit" },
+    { line: 3, code: "  slots = array of size maxDeadline (empty)" },
+    { line: 4, code: "  for each job i in sorted jobs:" },
+    { line: 5, code: "    for t = min(n, d[i]) down to 1:" },
+    { line: 6, code: "      if slots[t] is free: slots[t] = job i; totalProfit += P[i]; break" },
+    { line: 7, code: "  return slots, totalProfit" }
   ],
-
   theory: {
     time: "O(n log n + n * d_max)",
     space: "O(d_max)",
-    choice: "Highest Profit First; Scheduled at latest available slot ≤ deadline",
-    desc: "By sorting jobs by decreasing profit, we greedily capture the highest payouts first. We place each chosen job in the latest possible open time slot before its deadline, leaving earlier slots flexible for tighter jobs."
+    choice: "Highest Profit First at Latest Open Slot",
+    desc: "Sort jobs by profit descending. Place each job in the latest open slot before its deadline to preserve early slots for tighter jobs."
   },
-
   generateRandom(n = 6) {
     const list = [];
-    for (let i = 1; i <= n; i++) {
-      list.push({
-        id: `J${i}`,
-        d: Math.floor(Math.random() * 4) + 1,
-        p: Math.floor(Math.random() * 90) + 10
-      });
-    }
+    for (let i = 1; i <= n; i++) list.push({ id: `J${i}`, d: Math.floor(Math.random() * 4) + 1, p: Math.floor(Math.random() * 90) + 10 });
     return { data: list };
   },
-
   buildSteps(items) {
     const sorted = [...items].sort((a, b) => b.p - a.p);
     const maxD = Math.max(...sorted.map(j => j.d));
     const slots = new Array(maxD).fill(null);
-
     const steps = [];
     let totalProfit = 0;
 
-    // Step 0: Sort
     steps.push({
       type: 'sort',
       lineHighlight: 2,
       sortedList: [...sorted],
       slots: [...slots],
-      activeJob: null,
-      maxD,
-      totalProfit,
-      desc: `<b>Step 1 — Sort by Profit:</b> Sorted <span class="num">${sorted.length}</span> jobs in descending order of profit. Total timeline slots available = <span class="num">${maxD}</span>.`
+      maxD, totalProfit,
+      desc: `<b>Step 1 — Sort by Profit:</b> Sorted <span class="num">${sorted.length}</span> jobs in descending order of profit.`
     });
 
     for (let i = 0; i < sorted.length; i++) {
       const job = sorted[i];
       let assignedSlot = -1;
-
-      // Find latest free slot <= job.d
       for (let t = Math.min(maxD, job.d) - 1; t >= 0; t--) {
         if (slots[t] === null) {
           assignedSlot = t;
@@ -2003,59 +1656,36 @@ const JobSeqModule = {
           break;
         }
       }
-
       steps.push({
         type: 'schedule',
-        lineHighlight: assignedSlot !== -1 ? 8 : 6,
+        lineHighlight: assignedSlot !== -1 ? 6 : 5,
         sortedList: [...sorted],
         slots: [...slots],
         activeJob: job,
-        assignedSlot,
-        maxD,
-        totalProfit,
-        desc: `<b>Considering Job ${job.id}</b> (profit: <span class="num">${job.p}</span>, deadline: <span class="num">${job.d}</span>).<br>` +
-              (assignedSlot !== -1 
-                ? `&bull; Latest available open slot &le; ${job.d} is <b>Slot ${assignedSlot + 1}</b> &rarr; <span class="tag-take">SCHEDULED (+${job.p} profit)</span>.`
-                : `&bull; All slots &le; ${job.d} are already occupied &rarr; <span class="tag-reject">CANNOT SCHEDULE (Skipped)</span>.`)
+        assignedSlot, maxD, totalProfit,
+        desc: `<b>Considering Job ${job.id}</b> (profit: <span class="num">${job.p}</span>, deadline: <span class="num">${job.d}</span>). ` +
+              (assignedSlot !== -1 ? `Assigned to latest open <span class="tag-take">Slot ${assignedSlot + 1} (+${job.p})</span>.` : `<span class="tag-reject">All slots occupied before deadline. Skipped.</span>`)
       });
     }
-
-    // Step Done
     steps.push({
       type: 'done',
-      lineHighlight: 10,
+      lineHighlight: 7,
       sortedList: [...sorted],
       slots: [...slots],
-      activeJob: null,
-      assignedSlot: -1,
-      maxD,
-      totalProfit,
-      desc: `<b>Optimal Job Schedule Completed:</b> Maximum total profit achieved = <span class="num">${totalProfit}</span> with jobs <b>${slots.filter(Boolean).map(j => j.id).join(' &rarr; ')}</b>.`
+      maxD, totalProfit,
+      desc: `<b>Optimal Job Schedule Complete:</b> Total profit earned = <span class="num">${totalProfit}</span>.`
     });
-
     return steps;
   },
-
   renderCanvas(svg, step) {
-    const slots = step.slots;
-    const maxD = step.maxD;
-    const slotW = Math.min(130, 680 / maxD);
-    const startX = 60 + (680 - maxD * slotW) / 2;
-    const slotY = 60, slotH = 75;
-
-    let html = '';
-    html += `<text x="400" y="32" text-anchor="middle" fill="#94a3b8" font-size="13" font-family="JetBrains Mono" font-weight="600">Timeline Schedule Slots (1 to ${maxD})</text>`;
-
+    const slots = step.slots, maxD = step.maxD, slotW = Math.min(130, 680 / maxD);
+    const startX = 60 + (680 - maxD * slotW) / 2, slotY = 60, slotH = 75;
+    let html = `<text x="400" y="32" text-anchor="middle" fill="#94a3b8" font-size="13" font-family="JetBrains Mono" font-weight="600">Timeline Slots (1 to ${maxD})</text>`;
     for (let t = 0; t < maxD; t++) {
-      const x = startX + t * slotW;
-      const job = slots[t];
+      const x = startX + t * slotW, job = slots[t];
       const isJustAssigned = step.assignedSlot === t;
-      const fill = job ? (isJustAssigned ? '#10b981' : '#14b8a6') : '#141d2c';
-      const stroke = isJustAssigned ? '#f59e0b' : (job ? '#2dd4bf' : '#223249');
-
-      html += `<rect x="${x}" y="${slotY}" width="${slotW - 10}" height="${slotH}" rx="8" fill="${fill}" fill-opacity="${job ? 0.85 : 0.5}" stroke="${stroke}" stroke-width="${isJustAssigned ? 2.5 : 1}"/>`;
-      html += `<text x="${x + (slotW-10)/2}" y="${slotY - 8}" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="JetBrains Mono">Slot ${t+1} [${t}-${t+1}]</text>`;
-
+      html += `<rect x="${x}" y="${slotY}" width="${slotW - 10}" height="${slotH}" rx="8" fill="${job ? (isJustAssigned ? '#10b981' : '#14b8a6') : '#141d2c'}" fill-opacity="${job ? 0.85 : 0.5}" stroke="${isJustAssigned ? '#f59e0b' : (job ? '#2dd4bf' : '#223249')}" stroke-width="${isJustAssigned ? 2.5 : 1}"/>`;
+      html += `<text x="${x + (slotW-10)/2}" y="${slotY - 8}" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="JetBrains Mono">Slot ${t+1}</text>`;
       if (job) {
         html += `<text x="${x + (slotW-10)/2}" y="${slotY + 30}" text-anchor="middle" fill="#042f2e" font-size="14" font-family="JetBrains Mono" font-weight="700">${job.id}</text>`;
         html += `<text x="${x + (slotW-10)/2}" y="${slotY + 54}" text-anchor="middle" fill="#042f2e" font-size="11" font-family="JetBrains Mono" font-weight="600">+$${job.p}</text>`;
@@ -2063,60 +1693,1240 @@ const JobSeqModule = {
         html += `<text x="${x + (slotW-10)/2}" y="${slotY + slotH/2 + 4}" text-anchor="middle" fill="#475569" font-size="12" font-family="JetBrains Mono">[Empty]</text>`;
       }
     }
-
     svg.setAttribute('viewBox', '0 0 800 180');
     svg.innerHTML = html;
   },
-
   renderTable(thead, tbody, step) {
     thead.innerHTML = `<tr><th>Job ID</th><th>Deadline</th><th>Profit</th><th>Scheduled Slot</th><th>Status</th></tr>`;
     let rows = '';
     step.sortedList.forEach(job => {
       const slotIndex = step.slots.findIndex(s => s && s.id === job.id);
       const isAct = step.activeJob && step.activeJob.id === job.id;
-      let status = '<span style="color:var(--text-dim)">Pending</span>';
-      let rowClass = isAct ? 'active-row' : '';
-
-      if (slotIndex !== -1) {
-        status = `<span style="color:var(--teal); font-weight:600;">Slot ${slotIndex + 1}</span>`;
-        rowClass = 'selected-row';
-      } else if (step.type === 'done' || (isAct && step.assignedSlot === -1)) {
-        status = '<span style="color:var(--rose)">Rejected (No Slot)</span>';
-      }
-
-      rows += `<tr class="${rowClass}">
-        <td><b>${job.id}</b></td>
-        <td>${job.d}</td>
-        <td>$${job.p}</td>
-        <td>${slotIndex !== -1 ? `Slot ${slotIndex + 1}` : '—'}</td>
-        <td>${status}</td>
-      </tr>`;
+      rows += `<tr class="${isAct ? 'active-row' : (slotIndex !== -1 ? 'selected-row' : '')}"><td><b>${job.id}</b></td><td>${job.d}</td><td>$${job.p}</td><td>${slotIndex !== -1 ? `Slot ${slotIndex + 1}` : '—'}</td><td>${slotIndex !== -1 ? '<span style="color:var(--teal)">Scheduled</span>' : '<span style="color:var(--text-dim)">—</span>'}</td></tr>`;
     });
-
-    rows += `<tr class="highlight-total">
-      <td colspan="2">Total Profit Earned</td>
-      <td><b>$${step.totalProfit}</b></td>
-      <td colspan="2">${step.slots.filter(Boolean).length} / ${step.maxD} slots filled</td>
-    </tr>`;
-
+    rows += `<tr class="highlight-total"><td colspan="2">Total Profit Earned</td><td><b>$${step.totalProfit}</b></td><td colspan="2">${step.slots.filter(Boolean).length} / ${step.maxD} slots filled</td></tr>`;
     tbody.innerHTML = rows;
   },
-
   legend: [
     { color: 'var(--teal)', label: 'Scheduled Job' },
-    { color: 'var(--amber)', label: 'Just Assigned to Slot' },
-    { color: 'var(--gray)', label: 'Empty Slot / Pending' }
+    { color: 'var(--amber)', label: 'Just Assigned' },
+    { color: 'var(--gray)', label: 'Empty Slot' }
   ]
 };
 
 /* =========================================================================
-   CONTROLLER & UI INTERACTION MANAGEMENT
+   5. DISJOINT SET UNION (DSU / UNION-FIND)
+   ========================================================================= */
+const DsuModule = {
+  elements: [0, 1, 2, 3, 4, 5, 6],
+  operations: [
+    { op: 'union', u: 1, v: 2 },
+    { op: 'union', u: 3, v: 4 },
+    { op: 'union', u: 5, v: 6 },
+    { op: 'union', u: 2, v: 4 },
+    { op: 'find', u: 1 },
+    { op: 'union', u: 1, v: 6 },
+    { op: 'find', u: 4 }
+  ],
+  presets: [
+    {
+      name: "CLRS Standard Union & Find",
+      elements: [0, 1, 2, 3, 4, 5, 6],
+      operations: [
+        { op: 'union', u: 1, v: 2 }, { op: 'union', u: 3, v: 4 }, { op: 'union', u: 5, v: 6 },
+        { op: 'union', u: 2, v: 4 }, { op: 'find', u: 1 }, { op: 'union', u: 1, v: 6 }, { op: 'find', u: 4 }
+      ]
+    },
+    {
+      name: "Deep Chain & Path Compression",
+      elements: [0, 1, 2, 3, 4, 5],
+      operations: [
+        { op: 'union', u: 0, v: 1 }, { op: 'union', u: 1, v: 2 }, { op: 'union', u: 2, v: 3 },
+        { op: 'union', u: 3, v: 4 }, { op: 'union', u: 4, v: 5 }, { op: 'find', u: 0 }
+      ]
+    },
+    {
+      name: "Cycle Detection Simulator",
+      elements: [1, 2, 3, 4],
+      operations: [
+        { op: 'union', u: 1, v: 2 }, { op: 'union', u: 2, v: 3 }, { op: 'union', u: 3, v: 4 },
+        { op: 'union', u: 1, v: 4 }
+      ]
+    }
+  ],
+  pseudocode: [
+    { line: 1, code: "MAKE-SET(x): parent[x] = x, rank[x] = 0", func: true },
+    { line: 2, code: "FIND-SET(x):" },
+    { line: 3, code: "  if x ≠ parent[x]:" },
+    { line: 4, code: "    parent[x] = FIND-SET(parent[x])  // Path compression" },
+    { line: 5, code: "  return parent[x]" },
+    { line: 6, code: "UNION(x, y):" },
+    { line: 7, code: "  rootX = FIND-SET(x), rootY = FIND-SET(y)" },
+    { line: 8, code: "  if rootX == rootY: return  // Same set (cycle)" },
+    { line: 9, code: "  if rank[rootX] < rank[rootY]: parent[rootX] = rootY" },
+    { line: 10, code: "  else: parent[rootY] = rootX; if rank[rootX] == rank[rootY]: rank[rootX]++" }
+  ],
+  theory: {
+    time: "O(α(n)) per op ≈ O(1)",
+    space: "O(n)",
+    choice: "Union by Rank + Path Compression",
+    desc: "Disjoint Set Union maintains dynamic partitions of disjoint elements. Path compression flattens tree depths during Find, while Union-by-Rank attaches smaller trees under larger ones, achieving near-linear time bounded by the inverse Ackermann function α(n)."
+  },
+  generateRandom() {
+    const n = 6;
+    const elements = Array.from({ length: n }, (_, i) => i);
+    const ops = [];
+    for (let i = 0; i < 5; i++) {
+      const u = Math.floor(Math.random() * n);
+      let v = Math.floor(Math.random() * n);
+      if (u === v) v = (v + 1) % n;
+      ops.push({ op: 'union', u, v });
+    }
+    ops.push({ op: 'find', u: Math.floor(Math.random() * n) });
+    return { elements, operations: ops };
+  },
+  buildSteps(elements, operations) {
+    const parent = {};
+    const rank = {};
+    elements.forEach(e => { parent[e] = e; rank[e] = 0; });
+
+    const steps = [];
+    steps.push({
+      type: 'init',
+      lineHighlight: 1,
+      elements: [...elements],
+      parent: { ...parent },
+      rank: { ...rank },
+      activeNodes: [],
+      desc: `<b>MAKE-SET Initialized:</b> Created <span class="num">${elements.length}</span> disjoint sets. Each element is its own representative ($parent[x] = x$, $rank[x] = 0$).`
+    });
+
+    for (let opIdx = 0; opIdx < operations.length; opIdx++) {
+      const cmd = operations[opIdx];
+      if (cmd.op === 'find') {
+        const u = cmd.u;
+        let curr = u;
+        const path = [];
+        while (curr !== parent[curr]) {
+          path.push(curr);
+          curr = parent[curr];
+        }
+        const root = curr;
+        path.push(root);
+
+        steps.push({
+          type: 'find_trace',
+          lineHighlight: 2,
+          elements: [...elements],
+          parent: { ...parent },
+          rank: { ...rank },
+          activeNodes: [...path],
+          desc: `<b>FIND-SET(${u}):</b> Traversing parent pointers: <b>${path.join(' &rarr; ')}</b>. Root representative is <span class="num">${root}</span>.`
+        });
+
+        let compressed = false;
+        for (let node of path) {
+          if (node !== root && parent[node] !== root) {
+            parent[node] = root;
+            compressed = true;
+          }
+        }
+        if (compressed) {
+          steps.push({
+            type: 'compress',
+            lineHighlight: 4,
+            elements: [...elements],
+            parent: { ...parent },
+            rank: { ...rank },
+            activeNodes: [u, root],
+            desc: `<b>Path Compression Applied:</b> Flattened direct parent pointers for nodes on the path to point directly to root <span class="num">${root}</span>.`
+          });
+        }
+      } else if (cmd.op === 'union') {
+        const { u, v } = cmd;
+        let rootU = u;
+        while (rootU !== parent[rootU]) rootU = parent[rootU];
+        let rootV = v;
+        while (rootV !== parent[rootV]) rootV = parent[rootV];
+
+        steps.push({
+          type: 'union_eval',
+          lineHighlight: 7,
+          elements: [...elements],
+          parent: { ...parent },
+          rank: { ...rank },
+          activeNodes: [u, v, rootU, rootV],
+          desc: `<b>UNION(${u}, ${v}):</b> Find roots: $root(${u}) = ${rootU}$, $root(${v}) = ${rootV}$.` +
+                (rootU === rootV ? ` Roots match &rarr; <span class="tag-reject">Already in the same set (Redundant edge / Cycle)</span>!` :
+                 ` Different sets ($rank[${rootU}]=${rank[rootU]}$, $rank[${rootV}]=${rank[rootV]}$).`)
+        });
+
+        if (rootU !== rootV) {
+          if (rank[rootU] < rank[rootV]) {
+            parent[rootU] = rootV;
+          } else if (rank[rootU] > rank[rootV]) {
+            parent[rootV] = rootU;
+          } else {
+            parent[rootV] = rootU;
+            rank[rootU]++;
+          }
+          steps.push({
+            type: 'union_apply',
+            lineHighlight: rank[rootU] < rank[rootV] ? 9 : 10,
+            elements: [...elements],
+            parent: { ...parent },
+            rank: { ...rank },
+            activeNodes: [rootU, rootV],
+            desc: `<b>Union by Rank Complete:</b> Attached tree under root with higher rank. ` +
+                  (parent[rootU] === rootV ? `Set $parent[${rootU}] = ${rootV}$.` : `Set $parent[${rootV}] = ${rootU}$. New rank[${rootU}] = <span class="num">${rank[rootU]}</span>.`)
+          });
+        }
+      }
+    }
+
+    steps.push({
+      type: 'done',
+      lineHighlight: 5,
+      elements: [...elements],
+      parent: { ...parent },
+      rank: { ...rank },
+      activeNodes: [],
+      desc: `<b>DSU Operations Sequence Finished:</b> All operations evaluated.`
+    });
+    return steps;
+  },
+  renderCanvas(svg, step) {
+    const elements = step.elements;
+    const parent = step.parent;
+    const rank = step.rank;
+
+    const roots = {};
+    elements.forEach(e => {
+      let r = e;
+      while (r !== parent[r]) r = parent[r];
+      if (!roots[r]) roots[r] = [];
+      roots[r].push(e);
+    });
+
+    const rootKeys = Object.keys(roots);
+    const colWidth = Math.min(200, 740 / rootKeys.length);
+    const startX = 50 + (740 - rootKeys.length * colWidth) / 2;
+
+    let html = `<defs>
+      <marker id="dsu-arrow" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#14b8a6"/>
+      </marker>
+    </defs>`;
+
+    html += `<text x="400" y="24" text-anchor="middle" fill="#94a3b8" font-size="12" font-family="JetBrains Mono">Disjoint Sets Forest (${rootKeys.length} components)</text>`;
+
+    rootKeys.forEach((rk, cIdx) => {
+      const rootVal = parseInt(rk, 10);
+      const members = roots[rk];
+      const cx = startX + cIdx * colWidth + colWidth / 2;
+      const rootY = 75;
+
+      const nonRoots = members.filter(m => m !== rootVal);
+      const nodePos = { [rootVal]: { x: cx, y: rootY } };
+
+      const subCols = Math.max(nonRoots.length, 1);
+      const subSpacing = Math.min(60, (colWidth - 20) / subCols);
+      const subStartX = cx - ((nonRoots.length - 1) * subSpacing) / 2;
+
+      nonRoots.forEach((m, idx) => {
+        let depth = 1;
+        let p = parent[m];
+        while (p !== rootVal && p !== parent[p]) { depth++; p = parent[p]; }
+        nodePos[m] = {
+          x: nonRoots.length === 1 ? cx : subStartX + idx * subSpacing,
+          y: rootY + depth * 70
+        };
+      });
+
+      members.forEach(m => {
+        if (m !== rootVal) {
+          const p = parent[m];
+          const pPos = nodePos[p] || nodePos[rootVal];
+          const mPos = nodePos[m];
+          const isActEdge = step.activeNodes.includes(m) && step.activeNodes.includes(p);
+          html += `<line x1="${mPos.x}" y1="${mPos.y}" x2="${pPos.x}" y2="${pPos.y}" stroke="${isActEdge ? '#f59e0b' : '#14b8a6'}" stroke-width="${isActEdge ? 2.5 : 1.8}" marker-end="url(#dsu-arrow)"/>`;
+        }
+      });
+
+      members.forEach(m => {
+        const pos = nodePos[m];
+        const isRoot = m === rootVal;
+        const isAct = step.activeNodes.includes(m);
+        const fill = isAct ? '#f59e0b' : (isRoot ? '#0f766e' : '#1e293b');
+        const stroke = isAct ? '#fbbf24' : (isRoot ? '#14b8a6' : '#334155');
+
+        html += `<circle cx="${pos.x}" cy="${pos.y}" r="18" fill="${fill}" stroke="${stroke}" stroke-width="${isAct ? 2.5 : 1.5}"/>`;
+        html += `<text x="${pos.x}" y="${pos.y + 4}" text-anchor="middle" fill="#fff" font-size="12" font-family="JetBrains Mono" font-weight="700">${m}</text>`;
+        if (isRoot) {
+          html += `<rect x="${pos.x - 22}" y="${pos.y - 30}" width="44" height="14" rx="3" fill="#14b8a6" fill-opacity="0.2" stroke="#14b8a6"/>`;
+          html += `<text x="${pos.x}" y="${pos.y - 20}" text-anchor="middle" fill="#2dd4bf" font-size="9" font-family="JetBrains Mono">ROOT (r:${rank[m]})</text>`;
+        }
+      });
+    });
+
+    svg.setAttribute('viewBox', '0 0 800 320');
+    svg.innerHTML = html;
+  },
+  renderTable(thead, tbody, step) {
+    thead.innerHTML = `<tr><th>Element (x)</th><th>Parent Pointer [parent[x]]</th><th>Rank [rank[x]]</th><th>Component Representative</th></tr>`;
+    let rows = '';
+    step.elements.forEach(x => {
+      let r = x;
+      while (r !== step.parent[r]) r = step.parent[r];
+      const isAct = step.activeNodes.includes(x);
+      rows += `<tr class="${isAct ? 'active-row' : ''}">
+        <td><b>${x}</b></td>
+        <td><b style="color:var(--teal)">${step.parent[x]}</b></td>
+        <td>${step.rank[x]}</td>
+        <td><span style="color:${x === r ? 'var(--emerald)' : 'var(--text-muted)'}; font-weight:600;">${r} ${x === r ? '(Self Root)' : ''}</span></td>
+      </tr>`;
+    });
+    tbody.innerHTML = rows;
+
+    const dsuExtra = document.getElementById('dsu-extra-tools');
+    const dsuCells = document.getElementById('dsu-grid-cells');
+    dsuExtra.style.display = 'block';
+    let cellHtml = '';
+    step.elements.forEach(x => {
+      const isAct = step.activeNodes.includes(x);
+      cellHtml += `<div class="dsu-cell ${isAct ? 'active' : ''}">
+        <span class="dsu-cell-idx">idx ${x}</span>
+        <span class="dsu-cell-parent">${step.parent[x]}</span>
+        <span class="dsu-cell-rank">rk ${step.rank[x]}</span>
+      </div>`;
+    });
+    dsuCells.innerHTML = cellHtml;
+  },
+  legend: [
+    { color: 'var(--teal)', label: 'Root / Tree Representative' },
+    { color: 'var(--amber)', label: 'Active Node in Operation' },
+    { color: 'var(--gray)', label: 'Non-Root Member' }
+  ]
+};
+
+/* =========================================================================
+   6. PRIM'S MINIMUM SPANNING TREE ALGORITHM
+   ========================================================================= */
+const PrimModule = {
+  startNode: 'A',
+  nodes: {
+    A: { x: 90, y: 190 }, B: { x: 230, y: 80 }, C: { x: 420, y: 80 }, D: { x: 590, y: 80 },
+    E: { x: 710, y: 190 }, F: { x: 590, y: 300 }, G: { x: 420, y: 300 }, H: { x: 230, y: 300 }, I: { x: 320, y: 190 }
+  },
+  edges: [
+    { u: 'A', v: 'B', w: 4 }, { u: 'A', v: 'H', w: 8 },
+    { u: 'B', v: 'C', w: 8 }, { u: 'B', v: 'H', w: 11 },
+    { u: 'C', v: 'I', w: 2 }, { u: 'C', v: 'D', w: 7 }, { u: 'C', v: 'F', w: 4 },
+    { u: 'D', v: 'E', w: 9 }, { u: 'D', v: 'F', w: 14 },
+    { u: 'E', v: 'F', w: 10 },
+    { u: 'F', v: 'G', w: 2 },
+    { u: 'G', v: 'H', w: 1 }, { u: 'G', v: 'I', w: 6 },
+    { u: 'H', v: 'I', w: 7 }
+  ],
+  presets: [
+    {
+      name: "CLRS 9-Vertex Graph (MST=37)",
+      startNode: 'A',
+      nodes: {
+        A: { x: 90, y: 190 }, B: { x: 230, y: 80 }, C: { x: 420, y: 80 }, D: { x: 590, y: 80 },
+        E: { x: 710, y: 190 }, F: { x: 590, y: 300 }, G: { x: 420, y: 300 }, H: { x: 230, y: 300 }, I: { x: 320, y: 190 }
+      },
+      edges: [
+        { u: 'A', v: 'B', w: 4 }, { u: 'A', v: 'H', w: 8 }, { u: 'B', v: 'C', w: 8 }, { u: 'B', v: 'H', w: 11 },
+        { u: 'C', v: 'I', w: 2 }, { u: 'C', v: 'D', w: 7 }, { u: 'C', v: 'F', w: 4 }, { u: 'D', v: 'E', w: 9 },
+        { u: 'D', v: 'F', w: 14 }, { u: 'E', v: 'F', w: 10 }, { u: 'F', v: 'G', w: 2 }, { u: 'G', v: 'H', w: 1 },
+        { u: 'G', v: 'I', w: 6 }, { u: 'H', v: 'I', w: 7 }
+      ]
+    },
+    {
+      name: "Simple 5-Vertex Diamond",
+      startNode: '1',
+      nodes: {
+        '1': { x: 120, y: 190 }, '2': { x: 320, y: 80 }, '3': { x: 320, y: 300 },
+        '4': { x: 520, y: 80 }, '5': { x: 680, y: 190 }
+      },
+      edges: [
+        { u: '1', v: '2', w: 2 }, { u: '1', v: '3', w: 3 }, { u: '2', v: '3', w: 1 },
+        { u: '2', v: '4', w: 5 }, { u: '3', v: '5', w: 7 }, { u: '4', v: '5', w: 2 }
+      ]
+    }
+  ],
+  pseudocode: [
+    { line: 1, code: "PRIM(G, w, r):", func: true },
+    { line: 2, code: "  for each u ∈ G.V: key[u] = ∞, parent[u] = NIL" },
+    { line: 3, code: "  key[r] = 0; Q = G.V" },
+    { line: 4, code: "  while Q ≠ ∅:" },
+    { line: 5, code: "    u = EXTRACT-MIN(Q)  // Add u to MST cut" },
+    { line: 6, code: "    for each v ∈ G.Adj[u]:" },
+    { line: 7, code: "      if v ∈ Q and w(u, v) < key[v]:" },
+    { line: 8, code: "        parent[v] = u; key[v] = w(u, v)  // Decrease key" },
+    { line: 9, code: "  return parent" }
+  ],
+  theory: {
+    time: "O(E log V) with Binary Heap",
+    space: "O(V)",
+    choice: "Min-weight crossing edge across cut (S, V \\ S)",
+    desc: "Prim's algorithm grows a single connected spanning tree by repeatedly selecting the minimum-weight crossing edge connecting a vertex in the visited set S to a vertex outside S (the cut property)."
+  },
+  generateRandom() {
+    const names = ['A', 'B', 'C', 'D', 'E', 'F'];
+    const nodes = {
+      A: { x: 120, y: 190 }, B: { x: 280, y: 90 }, C: { x: 480, y: 90 },
+      D: { x: 650, y: 190 }, E: { x: 480, y: 290 }, F: { x: 280, y: 290 }
+    };
+    const edges = [
+      { u: 'A', v: 'B', w: Math.floor(Math.random() * 8) + 1 },
+      { u: 'A', v: 'F', w: Math.floor(Math.random() * 8) + 1 },
+      { u: 'B', v: 'C', w: Math.floor(Math.random() * 8) + 1 },
+      { u: 'B', v: 'F', w: Math.floor(Math.random() * 8) + 1 },
+      { u: 'C', v: 'D', w: Math.floor(Math.random() * 8) + 1 },
+      { u: 'C', v: 'E', w: Math.floor(Math.random() * 8) + 1 },
+      { u: 'D', v: 'E', w: Math.floor(Math.random() * 8) + 1 },
+      { u: 'E', v: 'F', w: Math.floor(Math.random() * 8) + 1 }
+    ];
+    return { startNode: 'A', nodes, edges };
+  },
+  buildSteps(nodes, edges, start) {
+    const nodeKeys = Object.keys(nodes);
+    const key = {};
+    const parent = {};
+    nodeKeys.forEach(v => { key[v] = Infinity; parent[v] = null; });
+    key[start] = 0;
+
+    const inMST = new Set();
+    const mstEdges = [];
+    let totalWeight = 0;
+    const steps = [];
+
+    steps.push({
+      type: 'init',
+      lineHighlight: 3,
+      inMST: new Set(inMST),
+      mstEdges: [...mstEdges],
+      key: { ...key },
+      parent: { ...parent },
+      activeNode: start,
+      activeEdge: null,
+      totalWeight,
+      desc: `<b>Initialize Prim's Algorithm:</b> Set root $key[${start}] = 0$ and all other vertex keys = $\\infty$. Priority queue holds all vertices.`
+    });
+
+    while (inMST.size < nodeKeys.length) {
+      let u = null;
+      let minK = Infinity;
+      for (let v of nodeKeys) {
+        if (!inMST.has(v) && key[v] < minK) {
+          minK = key[v];
+          u = v;
+        }
+      }
+      if (u === null) break;
+
+      inMST.add(u);
+      if (parent[u] !== null) {
+        mstEdges.push({ u: parent[u], v: u, w: key[u] });
+        totalWeight += key[u];
+      }
+
+      steps.push({
+        type: 'extract',
+        lineHighlight: 5,
+        inMST: new Set(inMST),
+        mstEdges: [...mstEdges],
+        key: { ...key },
+        parent: { ...parent },
+        activeNode: u,
+        activeEdge: parent[u] ? { u: parent[u], v: u } : null,
+        totalWeight,
+        desc: `<b>Extract-Min:</b> Vertex <span class="num">${u}</span> has minimum key (<span class="num">${key[u]}</span>). Added to MST cut $S$.` +
+              (parent[u] ? ` Added edge <b>(${parent[u]}, ${u})</b> with weight <span class="tag-take">${key[u]}</span> to MST.` : ` (Root start node)`)
+      });
+
+      for (let edge of edges) {
+        let neighbor = null;
+        if (edge.u === u) neighbor = edge.v;
+        else if (edge.v === u) neighbor = edge.u;
+
+        if (neighbor && !inMST.has(neighbor)) {
+          const w = edge.w;
+          const relaxed = w < key[neighbor];
+          if (relaxed) {
+            key[neighbor] = w;
+            parent[neighbor] = u;
+          }
+          steps.push({
+            type: 'inspect_edge',
+            lineHighlight: relaxed ? 8 : 7,
+            inMST: new Set(inMST),
+            mstEdges: [...mstEdges],
+            key: { ...key },
+            parent: { ...parent },
+            activeNode: u,
+            activeEdge: { u, v: neighbor, w },
+            totalWeight,
+            desc: `<b>Inspect Edge (${u}, ${neighbor})</b> weight = <span class="num">${w}</span>. Neighbor ${neighbor} key is ${key[neighbor] === Infinity ? '∞' : key[neighbor]}.<br>` +
+                  (relaxed ? `&bull; $w(${u}, ${neighbor}) < key[${neighbor}]$ &rarr; <span class="tag-relax">Decrease Key</span>: $key[${neighbor}] = ${w}$, $parent[${neighbor}] = ${u}$.`
+                           : `&bull; Current key is already smaller or equal. No update.`)
+          });
+        }
+      }
+    }
+
+    steps.push({
+      type: 'done',
+      lineHighlight: 9,
+      inMST: new Set(inMST),
+      mstEdges: [...mstEdges],
+      key: { ...key },
+      parent: { ...parent },
+      activeNode: null,
+      activeEdge: null,
+      totalWeight,
+      desc: `<b>Minimum Spanning Tree Complete:</b> All vertices spanned with <span class="num">${mstEdges.length}</span> edges. Total MST Weight = <span class="num">${totalWeight}</span>.`
+    });
+    return steps;
+  },
+  renderCanvas(svg, step, nodes, edges) {
+    let html = '';
+    edges.forEach(e => {
+      const p1 = nodes[e.u], p2 = nodes[e.v];
+      if (!p1 || !p2) return;
+      const inMST = step.mstEdges.some(me => (me.u === e.u && me.v === e.v) || (me.u === e.v && me.v === e.u));
+      const isAct = step.activeEdge && ((step.activeEdge.u === e.u && step.activeEdge.v === e.v) || (step.activeEdge.u === e.v && step.activeEdge.v === e.u));
+
+      let stroke = '#223249', strokeW = 1.8;
+      if (inMST) { stroke = '#14b8a6'; strokeW = 3.5; }
+      else if (isAct) { stroke = '#f59e0b'; strokeW = 3; }
+
+      html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${stroke}" stroke-width="${strokeW}"/>`;
+      const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+      html += `<rect x="${midX - 12}" y="${midY - 9}" width="24" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
+      html += `<text x="${midX}" y="${midY + 4}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+    });
+
+    Object.keys(nodes).forEach(v => {
+      const p = nodes[v];
+      const isSettled = step.inMST.has(v);
+      const isAct = step.activeNode === v;
+      let fill = isSettled ? '#0f766e' : '#141d2c';
+      let stroke = isSettled ? '#14b8a6' : '#334155';
+      if (isAct) { fill = '#f59e0b'; stroke = '#fbbf24'; }
+
+      html += `<circle cx="${p.x}" cy="${p.y}" r="18" fill="${fill}" stroke="${stroke}" stroke-width="${isAct ? 3 : 2}"/>`;
+      html += `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#fff" font-size="12" font-family="JetBrains Mono" font-weight="700">${v}</text>`;
+      const kVal = step.key[v] === Infinity ? '∞' : step.key[v];
+      html += `<text x="${p.x}" y="${p.y - 24}" text-anchor="middle" fill="${isSettled ? '#2dd4bf' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono">k:${kVal}</text>`;
+    });
+
+    svg.setAttribute('viewBox', '0 0 800 380');
+    svg.innerHTML = html;
+  },
+  renderTable(thead, tbody, step, nodes) {
+    thead.innerHTML = `<tr><th>Vertex</th><th>In MST Cut ($S$)</th><th>Key ($key[v]$)</th><th>Parent ($parent[v]$)</th></tr>`;
+    let rows = '';
+    Object.keys(nodes).forEach(v => {
+      const isSettled = step.inMST.has(v);
+      const isAct = step.activeNode === v;
+      rows += `<tr class="${isAct ? 'active-row' : (isSettled ? 'selected-row' : '')}">
+        <td><b>${v}</b></td>
+        <td><span style="color:${isSettled ? 'var(--teal)' : 'var(--text-dim)'}; font-weight:600;">${isSettled ? 'Yes (In Cut S)' : 'No (In Q)'}</span></td>
+        <td><b style="color:var(--amber)">${step.key[v] === Infinity ? '∞' : step.key[v]}</b></td>
+        <td>${step.parent[v] || 'NIL'}</td>
+      </tr>`;
+    });
+    rows += `<tr class="highlight-total"><td colspan="2">Total MST Weight Accumulator</td><td colspan="2"><b>${step.totalWeight}</b> (${step.mstEdges.length} edges)</td></tr>`;
+    tbody.innerHTML = rows;
+  },
+  legend: [
+    { color: 'var(--teal)', label: 'Included in MST / Cut S' },
+    { color: 'var(--amber)', label: 'Currently Evaluated / Active' },
+    { color: 'var(--gray)', label: 'Unvisited in Priority Queue' }
+  ]
+};
+
+/* =========================================================================
+   7. KRUSKAL'S MINIMUM SPANNING TREE ALGORITHM
+   ========================================================================= */
+const KruskalModule = {
+  nodes: {
+    A: { x: 90, y: 190 }, B: { x: 230, y: 80 }, C: { x: 420, y: 80 }, D: { x: 590, y: 80 },
+    E: { x: 710, y: 190 }, F: { x: 590, y: 300 }, G: { x: 420, y: 300 }, H: { x: 230, y: 300 }, I: { x: 320, y: 190 }
+  },
+  edges: [
+    { u: 'A', v: 'B', w: 4 }, { u: 'A', v: 'H', w: 8 },
+    { u: 'B', v: 'C', w: 8 }, { u: 'B', v: 'H', w: 11 },
+    { u: 'C', v: 'I', w: 2 }, { u: 'C', v: 'D', w: 7 }, { u: 'C', v: 'F', w: 4 },
+    { u: 'D', v: 'E', w: 9 }, { u: 'D', v: 'F', w: 14 },
+    { u: 'E', v: 'F', w: 10 },
+    { u: 'F', v: 'G', w: 2 },
+    { u: 'G', v: 'H', w: 1 }, { u: 'G', v: 'I', w: 6 },
+    { u: 'H', v: 'I', w: 7 }
+  ],
+  presets: [
+    {
+      name: "CLRS 9-Vertex Graph (MST=37)",
+      nodes: {
+        A: { x: 90, y: 190 }, B: { x: 230, y: 80 }, C: { x: 420, y: 80 }, D: { x: 590, y: 80 },
+        E: { x: 710, y: 190 }, F: { x: 590, y: 300 }, G: { x: 420, y: 300 }, H: { x: 230, y: 300 }, I: { x: 320, y: 190 }
+      },
+      edges: [
+        { u: 'A', v: 'B', w: 4 }, { u: 'A', v: 'H', w: 8 }, { u: 'B', v: 'C', w: 8 }, { u: 'B', v: 'H', w: 11 },
+        { u: 'C', v: 'I', w: 2 }, { u: 'C', v: 'D', w: 7 }, { u: 'C', v: 'F', w: 4 }, { u: 'D', v: 'E', w: 9 },
+        { u: 'D', v: 'F', w: 14 }, { u: 'E', v: 'F', w: 10 }, { u: 'F', v: 'G', w: 2 }, { u: 'G', v: 'H', w: 1 },
+        { u: 'G', v: 'I', w: 6 }, { u: 'H', v: 'I', w: 7 }
+      ]
+    },
+    {
+      name: "Cycle Heavy 6-Vertex Graph",
+      nodes: {
+        '1': { x: 140, y: 120 }, '2': { x: 380, y: 100 }, '3': { x: 620, y: 120 },
+        '4': { x: 140, y: 280 }, '5': { x: 380, y: 300 }, '6': { x: 620, y: 280 }
+      },
+      edges: [
+        { u: '1', v: '2', w: 1 }, { u: '2', v: '3', w: 2 }, { u: '1', v: '4', w: 3 },
+        { u: '2', v: '5', w: 2 }, { u: '3', v: '6', w: 4 }, { u: '4', v: '5', w: 3 },
+        { u: '5', v: '6', w: 1 }, { u: '1', v: '5', w: 4 }
+      ]
+    }
+  ],
+  pseudocode: [
+    { line: 1, code: "KRUSKAL(G, w):", func: true },
+    { line: 2, code: "  A = ∅; for each v ∈ G.V: MAKE-SET(v)" },
+    { line: 3, code: "  Sort edges E into non-decreasing order by weight w" },
+    { line: 4, code: "  for each edge (u, v) ∈ E in sorted order:" },
+    { line: 5, code: "    if FIND-SET(u) ≠ FIND-SET(v):  // No cycle" },
+    { line: 6, code: "      A = A ∪ {(u, v)}" },
+    { line: 7, code: "      UNION(u, v)" },
+    { line: 8, code: "    else: reject (u, v)  // Creates cycle" },
+    { line: 9, code: "  return A" }
+  ],
+  theory: {
+    time: "O(E log E) or O(E log V)",
+    space: "O(V)",
+    choice: "Lightest edge connecting distinct components via DSU",
+    desc: "Kruskal's algorithm sorts all edges by weight, then greedily incorporates the lightest available edge into the growing forest, using Disjoint Set Union (DSU) to test for cycles in near constant time O(α(V))."
+  },
+  generateRandom() {
+    return PrimModule.generateRandom();
+  },
+  buildSteps(nodes, edges) {
+    const nodeKeys = Object.keys(nodes);
+    const sortedEdges = [...edges].map((e, idx) => ({ ...e, id: idx })).sort((a, b) => a.w - b.w);
+    const parent = {};
+    const rank = {};
+    nodeKeys.forEach(v => { parent[v] = v; rank[v] = 0; });
+
+    function find(i) {
+      if (parent[i] === i) return i;
+      return parent[i] = find(parent[i]);
+    }
+    function union(i, j) {
+      const ri = find(i), rj = find(j);
+      if (ri !== rj) {
+        if (rank[ri] < rank[rj]) parent[ri] = rj;
+        else if (rank[ri] > rank[rj]) parent[rj] = ri;
+        else { parent[rj] = ri; rank[ri]++; }
+        return true;
+      }
+      return false;
+    }
+
+    const steps = [];
+    const mstEdges = [];
+    const rejectedEdges = [];
+    let totalWeight = 0;
+
+    steps.push({
+      type: 'sort',
+      lineHighlight: 3,
+      sortedEdges: [...sortedEdges],
+      activeEdge: null,
+      mstEdges: [...mstEdges],
+      rejectedEdges: [...rejectedEdges],
+      totalWeight,
+      desc: `<b>Step 1 — Sort Edges by Weight:</b> Sorted <span class="num">${sortedEdges.length}</span> edges in non-decreasing order. Initialized DSU sets for all vertices.`
+    });
+
+    for (let i = 0; i < sortedEdges.length; i++) {
+      const e = sortedEdges[i];
+      const rootU = find(e.u);
+      const rootV = find(e.v);
+      const makesCycle = rootU === rootV;
+
+      if (!makesCycle) {
+        union(e.u, e.v);
+        mstEdges.push(e);
+        totalWeight += e.w;
+        steps.push({
+          type: 'take',
+          lineHighlight: 6,
+          sortedEdges: [...sortedEdges],
+          activeEdge: e,
+          mstEdges: [...mstEdges],
+          rejectedEdges: [...rejectedEdges],
+          totalWeight,
+          desc: `<b>Inspecting Edge (${e.u}, ${e.v})</b> [weight: <span class="num">${e.w}</span>].<br>` +
+                `$FIND(${e.u}) = ${rootU} \\ne FIND(${e.v}) = ${rootV}$ &rarr; Distinct components &rarr; <span class="tag-take">ACCEPTED into MST (+${e.w})</span>. Disjoint sets merged.`
+        });
+      } else {
+        rejectedEdges.push(e);
+        steps.push({
+          type: 'reject',
+          lineHighlight: 8,
+          sortedEdges: [...sortedEdges],
+          activeEdge: e,
+          mstEdges: [...mstEdges],
+          rejectedEdges: [...rejectedEdges],
+          totalWeight,
+          desc: `<b>Inspecting Edge (${e.u}, ${e.v})</b> [weight: <span class="num">${e.w}</span>].<br>` +
+                `$FIND(${e.u}) = FIND(${e.v}) = ${rootU}$ &rarr; Already connected &rarr; <span class="tag-reject">REJECTED (Forms a cycle)</span>!`
+        });
+      }
+      if (mstEdges.length === nodeKeys.length - 1) break;
+    }
+
+    steps.push({
+      type: 'done',
+      lineHighlight: 9,
+      sortedEdges: [...sortedEdges],
+      activeEdge: null,
+      mstEdges: [...mstEdges],
+      rejectedEdges: [...rejectedEdges],
+      totalWeight,
+      desc: `<b>Kruskal's MST Found:</b> Selected <span class="num">${mstEdges.length}</span> edges spanning all ${nodeKeys.length} vertices. Total MST Weight = <span class="num">${totalWeight}</span>.`
+    });
+    return steps;
+  },
+  renderCanvas(svg, step, nodes) {
+    let html = '';
+    step.sortedEdges.forEach(e => {
+      const p1 = nodes[e.u], p2 = nodes[e.v];
+      if (!p1 || !p2) return;
+      const isMST = step.mstEdges.some(m => m.id === e.id);
+      const isRej = step.rejectedEdges.some(m => m.id === e.id);
+      const isAct = step.activeEdge && step.activeEdge.id === e.id;
+
+      let stroke = '#223249', strokeW = 1.8, strokeDash = 'none';
+      if (isMST) { stroke = '#14b8a6'; strokeW = 3.5; }
+      else if (isRej) { stroke = '#f43f5e'; strokeW = 2; strokeDash = '4,4'; }
+      if (isAct) { stroke = '#f59e0b'; strokeW = 3.5; strokeDash = 'none'; }
+
+      html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${stroke}" stroke-width="${strokeW}" stroke-dasharray="${strokeDash}"/>`;
+      const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+      html += `<rect x="${midX - 12}" y="${midY - 9}" width="24" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
+      html += `<text x="${midX}" y="${midY + 4}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+    });
+
+    Object.keys(nodes).forEach(v => {
+      const p = nodes[v];
+      html += `<circle cx="${p.x}" cy="${p.y}" r="18" fill="#141d2c" stroke="#334155" stroke-width="2"/>`;
+      html += `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#fff" font-size="12" font-family="JetBrains Mono" font-weight="700">${v}</text>`;
+    });
+
+    svg.setAttribute('viewBox', '0 0 800 380');
+    svg.innerHTML = html;
+  },
+  renderTable(thead, tbody, step) {
+    thead.innerHTML = `<tr><th>Edge (u, v)</th><th>Weight</th><th>Status</th><th>Cumulative MST Weight</th></tr>`;
+    let rows = '';
+    step.sortedEdges.forEach(e => {
+      const isMST = step.mstEdges.some(m => m.id === e.id);
+      const isRej = step.rejectedEdges.some(m => m.id === e.id);
+      const isAct = step.activeEdge && step.activeEdge.id === e.id;
+      let status = '<span style="color:var(--text-dim)">Pending</span>';
+      let rowClass = isAct ? 'active-row' : (isMST ? 'selected-row' : '');
+      if (isMST) status = '<span style="color:var(--teal); font-weight:600;">Accepted (In MST)</span>';
+      if (isRej) status = '<span style="color:var(--rose)">Rejected (Cycle)</span>';
+      if (isAct) status = '<span style="color:var(--amber); font-weight:600;">Testing DSU sets...</span>';
+      rows += `<tr class="${rowClass}"><td><b>(${e.u}, ${e.v})</b></td><td><b style="color:var(--amber)">${e.w}</b></td><td>${status}</td><td>—</td></tr>`;
+    });
+    rows += `<tr class="highlight-total"><td colspan="2">Total Accumulated MST Weight</td><td colspan="2"><b>${step.totalWeight}</b> (${step.mstEdges.length} edges)</td></tr>`;
+    tbody.innerHTML = rows;
+  },
+  legend: [
+    { color: 'var(--teal)', label: 'Accepted into MST' },
+    { color: 'var(--rose)', label: 'Rejected (Cycle in DSU)' },
+    { color: 'var(--amber)', label: 'Currently Testing' },
+    { color: 'var(--gray)', label: 'Unprocessed' }
+  ]
+};
+
+/* =========================================================================
+   8. DIJKSTRA'S SHORTEST PATH ALGORITHM
+   ========================================================================= */
+const DijkstraModule = {
+  source: 's',
+  nodes: {
+    s: { x: 120, y: 200 },
+    t: { x: 280, y: 90 },
+    y: { x: 280, y: 310 },
+    x: { x: 520, y: 90 },
+    z: { x: 520, y: 310 }
+  },
+  edges: [
+    { u: 's', v: 't', w: 10 }, { u: 's', v: 'y', w: 5 },
+    { u: 't', v: 'x', w: 1 }, { u: 't', v: 'y', w: 2 },
+    { u: 'y', v: 't', w: 3 }, { u: 'y', v: 'x', w: 9 }, { u: 'y', v: 'z', w: 2 },
+    { u: 'x', v: 'z', w: 4 },
+    { u: 'z', v: 'x', w: 6 }, { u: 'z', v: 's', w: 7 }
+  ],
+  presets: [
+    {
+      name: "CLRS Standard Directed 5-Vertex",
+      source: 's',
+      nodes: {
+        s: { x: 120, y: 200 }, t: { x: 280, y: 90 }, y: { x: 280, y: 310 },
+        x: { x: 520, y: 90 }, z: { x: 520, y: 310 }
+      },
+      edges: [
+        { u: 's', v: 't', w: 10 }, { u: 's', v: 'y', w: 5 },
+        { u: 't', v: 'x', w: 1 }, { u: 't', v: 'y', w: 2 },
+        { u: 'y', v: 't', w: 3 }, { u: 'y', v: 'x', w: 9 }, { u: 'y', v: 'z', w: 2 },
+        { u: 'x', v: 'z', w: 4 },
+        { u: 'z', v: 'x', w: 6 }, { u: 'z', v: 's', w: 7 }
+      ]
+    },
+    {
+      name: "Diamond Shortest Path Test",
+      source: 'A',
+      nodes: {
+        A: { x: 120, y: 200 }, B: { x: 340, y: 90 }, C: { x: 340, y: 310 },
+        D: { x: 560, y: 90 }, E: { x: 560, y: 310 }, F: { x: 700, y: 200 }
+      },
+      edges: [
+        { u: 'A', v: 'B', w: 4 }, { u: 'A', v: 'C', w: 2 },
+        { u: 'C', v: 'B', w: 1 }, { u: 'B', v: 'D', w: 5 },
+        { u: 'C', v: 'E', w: 8 }, { u: 'B', v: 'E', w: 2 },
+        { u: 'D', v: 'F', w: 6 }, { u: 'E', v: 'F', w: 3 }
+      ]
+    }
+  ],
+  pseudocode: [
+    { line: 1, code: "DIJKSTRA(G, w, s):", func: true },
+    { line: 2, code: "  INITIALIZE-SINGLE-SOURCE(G, s)  // dist[s]=0, dist[v]=∞" },
+    { line: 3, code: "  S = ∅; Q = G.V" },
+    { line: 4, code: "  while Q ≠ ∅:" },
+    { line: 5, code: "    u = EXTRACT-MIN(Q)  // Permanent shortest distance" },
+    { line: 6, code: "    S = S ∪ {u}" },
+    { line: 7, code: "    for each v ∈ G.Adj[u]:" },
+    { line: 8, code: "      RELAX(u, v, w)  // if dist[v] > dist[u] + w(u,v)" },
+    { line: 9, code: "  return dist, parent" }
+  ],
+  theory: {
+    time: "O(E + V log V) with Fibonacci Heap (O(E log V) binary heap)",
+    space: "O(V)",
+    choice: "Extract vertex with minimum tentative distance",
+    desc: "Dijkstra's algorithm greedily finalizes the closest unvisited node at each step. Because all edge weights are non-negative ($w(u, v) \\ge 0$), the extracted vertex's distance can never be improved later."
+  },
+  generateRandom() {
+    return this.presets[0];
+  },
+  buildSteps(nodes, edges, source) {
+    const nodeKeys = Object.keys(nodes);
+    const dist = {};
+    const parent = {};
+    nodeKeys.forEach(v => { dist[v] = Infinity; parent[v] = null; });
+    dist[source] = 0;
+
+    const settled = new Set();
+    const steps = [];
+
+    steps.push({
+      type: 'init',
+      lineHighlight: 2,
+      dist: { ...dist },
+      parent: { ...parent },
+      settled: new Set(settled),
+      activeNode: source,
+      activeEdge: null,
+      desc: `<b>Dijkstra Initialized:</b> Source $dist[${source}] = 0$, all other vertices $\\infty$. Priority queue holds all vertices.`
+    });
+
+    while (settled.size < nodeKeys.length) {
+      let u = null, minD = Infinity;
+      for (let v of nodeKeys) {
+        if (!settled.has(v) && dist[v] < minD) {
+          minD = dist[v];
+          u = v;
+        }
+      }
+      if (u === null || minD === Infinity) break;
+
+      settled.add(u);
+      steps.push({
+        type: 'extract',
+        lineHighlight: 5,
+        dist: { ...dist },
+        parent: { ...parent },
+        settled: new Set(settled),
+        activeNode: u,
+        activeEdge: null,
+        desc: `<b>Extract-Min:</b> Settled vertex <span class="num">${u}</span> with final shortest distance $d[${u}] = <span class="num">${dist[u]}</span>$. Permanently added to settled set $S$.`
+      });
+
+      const outgoing = edges.filter(e => e.u === u);
+      for (let e of outgoing) {
+        const v = e.v;
+        if (!settled.has(v)) {
+          const newDist = dist[u] + e.w;
+          const relaxed = newDist < dist[v];
+          if (relaxed) {
+            dist[v] = newDist;
+            parent[v] = u;
+          }
+          steps.push({
+            type: 'relax',
+            lineHighlight: 8,
+            dist: { ...dist },
+            parent: { ...parent },
+            settled: new Set(settled),
+            activeNode: u,
+            activeEdge: e,
+            desc: `<b>Relax Edge (${u} &rarr; ${v})</b> [weight: <span class="num">${e.w}</span>].<br>` +
+                  (relaxed ? `&bull; $d[${u}] + w = ${dist[u]} + ${e.w} = ${newDist} < d[${v}]$ &rarr; <span class="tag-relax">RELAXED</span>: $dist[${v}] = ${newDist}$, $parent[${v}] = ${u}$.`
+                           : `&bull; $d[${u}] + w = ${newDist} \\ge d[${v}] (${dist[v]})$ &rarr; No relaxation needed.`)
+          });
+        }
+      }
+    }
+
+    steps.push({
+      type: 'done',
+      lineHighlight: 9,
+      dist: { ...dist },
+      parent: { ...parent },
+      settled: new Set(settled),
+      activeNode: null,
+      activeEdge: null,
+      desc: `<b>Dijkstra's Algorithm Complete:</b> Single-source shortest paths found from source <span class="num">${source}</span> to all reachable vertices.`
+    });
+    return steps;
+  },
+  renderCanvas(svg, step, nodes, edges) {
+    let html = `<defs>
+      <marker id="dijk-arrow" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#324765"/>
+      </marker>
+      <marker id="dijk-arrow-active" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#f59e0b"/>
+      </marker>
+      <marker id="dijk-arrow-tree" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#14b8a6"/>
+      </marker>
+    </defs>`;
+
+    edges.forEach(e => {
+      const p1 = nodes[e.u], p2 = nodes[e.v];
+      if (!p1 || !p2) return;
+      const isTreeEdge = step.parent[e.v] === e.u;
+      const isAct = step.activeEdge && step.activeEdge.u === e.u && step.activeEdge.v === e.v;
+
+      let stroke = '#223249', strokeW = 1.8, marker = 'url(#dijk-arrow)';
+      if (isTreeEdge) { stroke = '#14b8a6'; strokeW = 3; marker = 'url(#dijk-arrow-tree)'; }
+      if (isAct) { stroke = '#f59e0b'; strokeW = 3.5; marker = 'url(#dijk-arrow-active)'; }
+
+      html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+      const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+      html += `<rect x="${midX - 12}" y="${midY - 9}" width="24" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
+      html += `<text x="${midX}" y="${midY + 4}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+    });
+
+    Object.keys(nodes).forEach(v => {
+      const p = nodes[v];
+      const isSettled = step.settled.has(v);
+      const isAct = step.activeNode === v;
+      let fill = isSettled ? '#0f766e' : '#141d2c';
+      let stroke = isSettled ? '#14b8a6' : '#334155';
+      if (isAct) { fill = '#f59e0b'; stroke = '#fbbf24'; }
+
+      html += `<circle cx="${p.x}" cy="${p.y}" r="18" fill="${fill}" stroke="${stroke}" stroke-width="${isAct ? 3 : 2}"/>`;
+      html += `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#fff" font-size="12" font-family="JetBrains Mono" font-weight="700">${v}</text>`;
+      const dVal = step.dist[v] === Infinity ? '∞' : step.dist[v];
+      html += `<text x="${p.x}" y="${p.y - 24}" text-anchor="middle" fill="${isSettled ? '#2dd4bf' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono" font-weight="600">d:${dVal}</text>`;
+    });
+
+    svg.setAttribute('viewBox', '0 0 800 380');
+    svg.innerHTML = html;
+  },
+  renderTable(thead, tbody, step, nodes) {
+    thead.innerHTML = `<tr><th>Vertex</th><th>Shortest Distance ($d[v]$)</th><th>Predecessor ($parent[v]$)</th><th>Status</th></tr>`;
+    let rows = '';
+    Object.keys(nodes).forEach(v => {
+      const isSettled = step.settled.has(v);
+      const isAct = step.activeNode === v;
+      rows += `<tr class="${isAct ? 'active-row' : (isSettled ? 'selected-row' : '')}">
+        <td><b>${v}</b></td>
+        <td><b style="color:var(--amber)">${step.dist[v] === Infinity ? '∞' : step.dist[v]}</b></td>
+        <td>${step.parent[v] || 'NIL'}</td>
+        <td><span style="color:${isSettled ? 'var(--teal)' : 'var(--text-dim)'}; font-weight:600;">${isSettled ? 'Settled (Permanent)' : 'Tentative in Q'}</span></td>
+      </tr>`;
+    });
+    tbody.innerHTML = rows;
+  },
+  legend: [
+    { color: 'var(--teal)', label: 'Settled Node / Shortest Path Tree' },
+    { color: 'var(--amber)', label: 'Current Relaxing / Extract-Min' },
+    { color: 'var(--gray)', label: 'Unsettled in Priority Queue' }
+  ]
+};
+
+/* =========================================================================
+   9. BELLMAN-FORD SHORTEST PATH ALGORITHM
+   ========================================================================= */
+const BellmanFordModule = {
+  source: 's',
+  nodes: {
+    s: { x: 120, y: 200 },
+    t: { x: 280, y: 90 },
+    y: { x: 280, y: 310 },
+    x: { x: 520, y: 90 },
+    z: { x: 520, y: 310 }
+  },
+  edges: [
+    { u: 's', v: 't', w: 6 }, { u: 's', v: 'y', w: 7 },
+    { u: 't', v: 'x', w: 5 }, { u: 't', v: 'y', w: 8 }, { u: 't', v: 'z', w: -4 },
+    { u: 'x', v: 't', w: -2 },
+    { u: 'y', v: 'x', w: -3 }, { u: 'y', v: 'z', w: 9 },
+    { u: 'z', v: 'x', w: 7 }, { u: 'z', v: 's', w: 2 }
+  ],
+  presets: [
+    {
+      name: "CLRS Textbook Graph (Negative Weights)",
+      source: 's',
+      nodes: {
+        s: { x: 120, y: 200 }, t: { x: 280, y: 90 }, y: { x: 280, y: 310 },
+        x: { x: 520, y: 90 }, z: { x: 520, y: 310 }
+      },
+      edges: [
+        { u: 's', v: 't', w: 6 }, { u: 's', v: 'y', w: 7 },
+        { u: 't', v: 'x', w: 5 }, { u: 't', v: 'y', w: 8 }, { u: 't', v: 'z', w: -4 },
+        { u: 'x', v: 't', w: -2 },
+        { u: 'y', v: 'x', w: -3 }, { u: 'y', v: 'z', w: 9 },
+        { u: 'z', v: 'x', w: 7 }, { u: 'z', v: 's', w: 2 }
+      ]
+    },
+    {
+      name: "Negative Cycle Trap Detector",
+      source: '1',
+      nodes: {
+        '1': { x: 140, y: 200 }, '2': { x: 340, y: 100 },
+        '3': { x: 560, y: 100 }, '4': { x: 340, y: 300 }
+      },
+      edges: [
+        { u: '1', v: '2', w: 4 }, { u: '1', v: '4', w: 5 },
+        { u: '2', v: '3', w: -3 }, { u: '3', v: '2', w: 1 },
+        { u: '4', v: '3', w: 6 }
+      ]
+    }
+  ],
+  pseudocode: [
+    { line: 1, code: "BELLMAN-FORD(G, w, s):", func: true },
+    { line: 2, code: "  INITIALIZE-SINGLE-SOURCE(G, s)" },
+    { line: 3, code: "  for i = 1 to |G.V| - 1:  // Outer relaxation passes" },
+    { line: 4, code: "    for each edge (u, v) ∈ G.E:" },
+    { line: 5, code: "      RELAX(u, v, w)" },
+    { line: 6, code: "  for each edge (u, v) ∈ G.E:  // Negative cycle check" },
+    { line: 7, code: "    if dist[v] > dist[u] + w(u, v):" },
+    { line: 8, code: "      return FALSE  // Negative-weight cycle exists!" },
+    { line: 9, code: "  return TRUE, dist, parent" }
+  ],
+  theory: {
+    time: "O(V · E)",
+    space: "O(V)",
+    choice: "Dynamic edge relaxation + Negative Cycle Detection",
+    desc: "Relaxes all |E| edges |V|-1 times. Any simple shortest path has at most |V|-1 edges. A subsequent |V|-th pass that can still relax an edge proves the presence of a negative-weight cycle reachable from the source."
+  },
+  generateRandom() {
+    return this.presets[0];
+  },
+  buildSteps(nodes, edges, source) {
+    const nodeKeys = Object.keys(nodes);
+    const dist = {};
+    const parent = {};
+    nodeKeys.forEach(v => { dist[v] = Infinity; parent[v] = null; });
+    dist[source] = 0;
+
+    const steps = [];
+    const V = nodeKeys.length;
+
+    steps.push({
+      type: 'init',
+      lineHighlight: 2,
+      dist: { ...dist },
+      parent: { ...parent },
+      iteration: 0,
+      activeEdge: null,
+      cycleFound: false,
+      desc: `<b>Bellman-Ford Initialized:</b> Source $dist[${source}] = 0$, all other vertices $\\infty$. Needs up to <span class="num">${V - 1}</span> passes over all ${edges.length} edges.`
+    });
+
+    for (let pass = 1; pass <= V - 1; pass++) {
+      let changedInPass = false;
+      for (let eIdx = 0; eIdx < edges.length; eIdx++) {
+        const e = edges[eIdx];
+        let relaxed = false;
+        if (dist[e.u] !== Infinity) {
+          const newD = dist[e.u] + e.w;
+          if (newD < dist[e.v]) {
+            dist[e.v] = newD;
+            parent[e.v] = e.u;
+            relaxed = true;
+            changedInPass = true;
+          }
+        }
+        if (relaxed) {
+          steps.push({
+            type: 'relax',
+            lineHighlight: 5,
+            dist: { ...dist },
+            parent: { ...parent },
+            iteration: pass,
+            activeEdge: e,
+            cycleFound: false,
+            desc: `<b>Pass ${pass}/${V - 1} &bull; Relax Edge (${e.u} &rarr; ${e.v})</b> [w: <span class="num">${e.w}</span>].<br>` +
+                  `<span class="tag-relax">RELAXED</span>: $dist[${e.v}] = ${dist[e.u]} + (${e.w}) = <span class="num">${dist[e.v]}</span>$, $parent[${e.v}] = ${e.u}$.`
+          });
+        }
+      }
+      if (!changedInPass) {
+        steps.push({
+          type: 'converged',
+          lineHighlight: 3,
+          dist: { ...dist },
+          parent: { ...parent },
+          iteration: pass,
+          activeEdge: null,
+          cycleFound: false,
+          desc: `<b>Early Convergence:</b> Pass ${pass} completed with no edge relaxations! Distances have already converged to optimum.`
+        });
+        break;
+      }
+    }
+
+    let negCycleDetected = false;
+    let cycleEdge = null;
+    for (let e of edges) {
+      if (dist[e.u] !== Infinity && dist[e.u] + e.w < dist[e.v]) {
+        negCycleDetected = true;
+        cycleEdge = e;
+        break;
+      }
+    }
+
+    if (negCycleDetected) {
+      steps.push({
+        type: 'negative_cycle',
+        lineHighlight: 8,
+        dist: { ...dist },
+        parent: { ...parent },
+        iteration: V,
+        activeEdge: cycleEdge,
+        cycleFound: true,
+        desc: `<b style="color:var(--rose)">NEGATIVE WEIGHT CYCLE DETECTED!</b><br>` +
+              `Edge (${cycleEdge.u} &rarr; ${cycleEdge.v}) can still be relaxed ($d[${cycleEdge.u}] + ${cycleEdge.w} < d[${cycleEdge.v}]$). A negative cycle reachable from ${source} exists! Shortest paths are undefined (-∞).`
+      });
+    } else {
+      steps.push({
+        type: 'done',
+        lineHighlight: 9,
+        dist: { ...dist },
+        parent: { ...parent },
+        iteration: V,
+        activeEdge: null,
+        cycleFound: false,
+        desc: `<b>Bellman-Ford Verification Complete:</b> No negative-weight cycles exist. Final shortest distances confirmed.`
+      });
+    }
+
+    return steps;
+  },
+  renderCanvas(svg, step, nodes, edges) {
+    let html = `<defs>
+      <marker id="bf-arrow" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#324765"/>
+      </marker>
+      <marker id="bf-arrow-active" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#f59e0b"/>
+      </marker>
+      <marker id="bf-arrow-cycle" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#f43f5e"/>
+      </marker>
+      <marker id="bf-arrow-tree" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#14b8a6"/>
+      </marker>
+    </defs>`;
+
+    edges.forEach(e => {
+      const p1 = nodes[e.u], p2 = nodes[e.v];
+      if (!p1 || !p2) return;
+      const isTreeEdge = step.parent[e.v] === e.u;
+      const isAct = step.activeEdge && step.activeEdge.u === e.u && step.activeEdge.v === e.v;
+      const isCycleEdge = step.cycleFound && isAct;
+
+      let stroke = '#223249', strokeW = 1.8, marker = 'url(#bf-arrow)';
+      if (isTreeEdge) { stroke = '#14b8a6'; strokeW = 3; marker = 'url(#bf-arrow-tree)'; }
+      if (isAct) { stroke = '#f59e0b'; strokeW = 3.5; marker = 'url(#bf-arrow-active)'; }
+      if (isCycleEdge) { stroke = '#f43f5e'; strokeW = 4; marker = 'url(#bf-arrow-cycle)'; }
+
+      html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+      const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+      html += `<rect x="${midX - 12}" y="${midY - 9}" width="24" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
+      html += `<text x="${midX}" y="${midY + 4}" text-anchor="middle" fill="${e.w < 0 ? '#f43f5e' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+    });
+
+    Object.keys(nodes).forEach(v => {
+      const p = nodes[v];
+      const isSource = v === BellmanFordModule.source;
+      let fill = isSource ? '#0f766e' : '#141d2c';
+      let stroke = isSource ? '#14b8a6' : '#334155';
+
+      html += `<circle cx="${p.x}" cy="${p.y}" r="18" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+      html += `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#fff" font-size="12" font-family="JetBrains Mono" font-weight="700">${v}</text>`;
+      const dVal = step.dist[v] === Infinity ? '∞' : step.dist[v];
+      html += `<text x="${p.x}" y="${p.y - 24}" text-anchor="middle" fill="${step.dist[v] !== Infinity ? '#2dd4bf' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono" font-weight="600">d:${dVal}</text>`;
+    });
+
+    svg.setAttribute('viewBox', '0 0 800 380');
+    svg.innerHTML = html;
+  },
+  renderTable(thead, tbody, step, nodes) {
+    thead.innerHTML = `<tr><th>Vertex</th><th>Shortest Distance ($d[v]$)</th><th>Predecessor ($parent[v]$)</th><th>Pass Round</th></tr>`;
+    let rows = '';
+    Object.keys(nodes).forEach(v => {
+      rows += `<tr>
+        <td><b>${v}</b></td>
+        <td><b style="color:var(--amber)">${step.dist[v] === Infinity ? '∞' : step.dist[v]}</b></td>
+        <td>${step.parent[v] || 'NIL'}</td>
+        <td>Pass ${step.iteration}</td>
+      </tr>`;
+    });
+    tbody.innerHTML = rows;
+  },
+  legend: [
+    { color: 'var(--teal)', label: 'Relaxed Shortest Path Predecessor' },
+    { color: 'var(--amber)', label: 'Actively Relaxed Edge' },
+    { color: 'var(--rose)', label: 'Negative-Weight Edge / Cycle' }
+  ]
+};
+
+/* =========================================================================
+   CONTROLLER & UI MANAGEMENT
    ========================================================================= */
 const Modules = {
   activity: ActivityModule,
   knapsack: KnapsackModule,
   huffman: HuffmanModule,
-  jobseq: JobSeqModule
+  jobseq: JobSeqModule,
+  dsu: DsuModule,
+  prim: PrimModule,
+  kruskal: KruskalModule,
+  dijkstra: DijkstraModule,
+  bellmanford: BellmanFordModule
 };
 
 function getActiveModule() {
@@ -2134,7 +2944,7 @@ function updatePseudocodeView() {
     } else {
       let lineText = p.code
         .replace(/(\/\/.*$)/g, '<span class="code-comment">$1</span>')
-        .replace(/\b(for|if|else|return|to|down to|break|each)\b/g, '<span class="code-keyword">$1</span>');
+        .replace(/\b(for|if|else|return|to|down to|break|while|each|in|and)\b/g, '<span class="code-keyword">$1</span>');
       html += lineText;
     }
     html += `</span>`;
@@ -2162,15 +2972,15 @@ function updateLegend() {
 
 function computeStepsForCurrent() {
   const mod = getActiveModule();
-  if (currentAlgo === 'activity') {
-    steps = mod.buildSteps(mod.data);
-  } else if (currentAlgo === 'knapsack') {
-    steps = mod.buildSteps(mod.data, mod.capacity);
-  } else if (currentAlgo === 'huffman') {
-    steps = mod.buildSteps(mod.data);
-  } else if (currentAlgo === 'jobseq') {
-    steps = mod.buildSteps(mod.data);
-  }
+  if (currentAlgo === 'activity') steps = mod.buildSteps(mod.data);
+  else if (currentAlgo === 'knapsack') steps = mod.buildSteps(mod.data, mod.capacity);
+  else if (currentAlgo === 'huffman') steps = mod.buildSteps(mod.data);
+  else if (currentAlgo === 'jobseq') steps = mod.buildSteps(mod.data);
+  else if (currentAlgo === 'dsu') steps = mod.buildSteps(mod.elements, mod.operations);
+  else if (currentAlgo === 'prim') steps = mod.buildSteps(mod.nodes, mod.edges, mod.startNode);
+  else if (currentAlgo === 'kruskal') steps = mod.buildSteps(mod.nodes, mod.edges);
+  else if (currentAlgo === 'dijkstra') steps = mod.buildSteps(mod.nodes, mod.edges, mod.source);
+  else if (currentAlgo === 'bellmanford') steps = mod.buildSteps(mod.nodes, mod.edges, mod.source);
 }
 
 function renderCurrentStep() {
@@ -2180,7 +2990,6 @@ function renderCurrentStep() {
 
   playTickSound();
 
-  // Highlight Pseudocode
   document.querySelectorAll('.code-line').forEach(el => el.classList.remove('active'));
   if (step.lineHighlight) {
     const activeEl = document.getElementById(`code-line-${step.lineHighlight}`);
@@ -2190,36 +2999,34 @@ function renderCurrentStep() {
     }
   }
 
-  // Update SVGs
   const svg = document.getElementById('main-svg');
-  if (currentAlgo === 'activity') {
-    mod.renderCanvas(svg, step, mod.data);
-  } else if (currentAlgo === 'knapsack') {
-    mod.renderCanvas(svg, step);
-  } else if (currentAlgo === 'huffman') {
-    mod.renderCanvas(svg, step);
-  } else if (currentAlgo === 'jobseq') {
-    mod.renderCanvas(svg, step);
-  }
+  if (currentAlgo === 'activity') mod.renderCanvas(svg, step, mod.data);
+  else if (currentAlgo === 'knapsack') mod.renderCanvas(svg, step);
+  else if (currentAlgo === 'huffman') mod.renderCanvas(svg, step);
+  else if (currentAlgo === 'jobseq') mod.renderCanvas(svg, step);
+  else if (currentAlgo === 'dsu') mod.renderCanvas(svg, step);
+  else if (currentAlgo === 'prim') mod.renderCanvas(svg, step, mod.nodes, mod.edges);
+  else if (currentAlgo === 'kruskal') mod.renderCanvas(svg, step, mod.nodes);
+  else if (currentAlgo === 'dijkstra') mod.renderCanvas(svg, step, mod.nodes, mod.edges);
+  else if (currentAlgo === 'bellmanford') mod.renderCanvas(svg, step, mod.nodes, mod.edges);
 
-  // Description
-  const descEl = document.getElementById('step-description');
-  descEl.innerHTML = step.desc || '';
+  document.getElementById('step-description').innerHTML = step.desc || '';
 
-  // Tables
   const thead = document.getElementById('state-table-head');
   const tbody = document.getElementById('state-table-body');
-  if (currentAlgo === 'activity') {
-    mod.renderTable(thead, tbody, step, mod.data);
-  } else if (currentAlgo === 'knapsack') {
-    mod.renderTable(thead, tbody, step);
-  } else if (currentAlgo === 'huffman') {
-    mod.renderTable(thead, tbody, step, mod.data);
-  } else if (currentAlgo === 'jobseq') {
-    mod.renderTable(thead, tbody, step);
-  }
+  document.getElementById('dsu-extra-tools').style.display = 'none';
+  document.getElementById('huffman-extra-tools').style.display = 'none';
 
-  // Controls Bar
+  if (currentAlgo === 'activity') mod.renderTable(thead, tbody, step, mod.data);
+  else if (currentAlgo === 'knapsack') mod.renderTable(thead, tbody, step);
+  else if (currentAlgo === 'huffman') mod.renderTable(thead, tbody, step, mod.data);
+  else if (currentAlgo === 'jobseq') mod.renderTable(thead, tbody, step);
+  else if (currentAlgo === 'dsu') mod.renderTable(thead, tbody, step);
+  else if (currentAlgo === 'prim') mod.renderTable(thead, tbody, step, mod.nodes);
+  else if (currentAlgo === 'kruskal') mod.renderTable(thead, tbody, step);
+  else if (currentAlgo === 'dijkstra') mod.renderTable(thead, tbody, step, mod.nodes);
+  else if (currentAlgo === 'bellmanford') mod.renderTable(thead, tbody, step, mod.nodes);
+
   document.getElementById('ctrl-prev').disabled = currentStepIdx === 0;
   document.getElementById('ctrl-next').disabled = currentStepIdx === steps.length - 1;
   document.getElementById('step-indicator').innerHTML = `Step <b>${currentStepIdx + 1}</b> / ${steps.length}`;
@@ -2234,19 +3041,13 @@ function renderCurrentStep() {
   else statusBadge.textContent = `Executing (${currentStepIdx + 1}/${steps.length})`;
 }
 
-/* Play / Pause Engine */
 function togglePlay() {
-  if (isPlaying) {
-    pause();
-  } else {
-    play();
-  }
+  if (isPlaying) pause();
+  else play();
 }
 
 function play() {
-  if (currentStepIdx >= steps.length - 1) {
-    currentStepIdx = 0;
-  }
+  if (currentStepIdx >= steps.length - 1) currentStepIdx = 0;
   isPlaying = true;
   document.getElementById('ctrl-play').innerHTML = 'Pause &#10074;&#10074;';
   const speed = parseInt(document.getElementById('speed-select').value, 10);
@@ -2255,9 +3056,7 @@ function play() {
     if (currentStepIdx < steps.length - 1) {
       currentStepIdx++;
       renderCurrentStep();
-    } else {
-      pause();
-    }
+    } else pause();
   }, speed);
 }
 
@@ -2289,7 +3088,6 @@ function stepPrev() {
   }
 }
 
-/* Switch Algorithm Tab */
 function switchAlgorithm(algoKey) {
   pause();
   currentAlgo = algoKey;
@@ -2300,10 +3098,15 @@ function switchAlgorithm(algoKey) {
   });
 
   const titles = {
-    activity: { title: 'Activity Selection Problem', sub: 'Interval Scheduling & Resource Allocation' },
+    activity: { title: 'Activity Selection Problem', sub: 'Greedy Interval Scheduling' },
     knapsack: { title: 'Fractional Knapsack Problem', sub: 'Greedy Density Maximization' },
     huffman: { title: 'Huffman Coding Tree', sub: 'Optimal Prefix-Free Binary Data Compression' },
-    jobseq: { title: 'Job Sequencing with Deadlines', sub: 'Profit Maximization with Slot Deadlines' }
+    jobseq: { title: 'Job Sequencing with Deadlines', sub: 'Profit Maximization with Slot Deadlines' },
+    dsu: { title: 'Disjoint Set Union (DSU / Union-Find)', sub: 'Union by Rank & Path Compression' },
+    prim: { title: "Prim's Algorithm", sub: 'Minimum Spanning Tree (Greedy Cut Property)' },
+    kruskal: { title: "Kruskal's Algorithm", sub: 'Minimum Spanning Tree (Greedy Lightest Edge via DSU)' },
+    dijkstra: { title: "Dijkstra's Algorithm", sub: 'Single-Source Shortest Path (Non-Negative Weights)' },
+    bellmanford: { title: "Bellman-Ford Algorithm", sub: 'Single-Source Shortest Path & Negative Cycle Detection' }
   };
 
   document.getElementById('algo-heading').textContent = titles[algoKey].title;
@@ -2328,16 +3131,14 @@ const Modal = {
   open() {
     pause();
     const mod = getActiveModule();
-    this.title.textContent = `Custom Problem: ${document.getElementById('algo-heading').textContent}`;
-    
-    // Render Presets
+    this.title.textContent = `Custom Setup: ${document.getElementById('algo-heading').textContent}`;
+
     let presetHtml = '';
     mod.presets.forEach((p, idx) => {
       presetHtml += `<button class="preset-btn" data-pidx="${idx}">${p.name}</button>`;
     });
     this.presetsBox.innerHTML = presetHtml;
 
-    // Attach Preset click events
     this.presetsBox.querySelectorAll('.preset-btn').forEach(btn => {
       btn.onclick = () => {
         const p = mod.presets[parseInt(btn.dataset.pidx, 10)];
@@ -2345,7 +3146,6 @@ const Modal = {
       };
     });
 
-    // Render Fields
     this.renderFormFields();
     this.overlay.classList.add('open');
   },
@@ -2360,40 +3160,30 @@ const Modal = {
 
     if (currentAlgo === 'activity') {
       const txt = mod.data.map(d => `${d.s},${d.f}`).join('\n');
-      html += `<div class="form-group">
-        <label class="form-label">Activities (One per line: "start,finish"):</label>
-        <textarea class="form-control" id="custom-activity-input" rows="7" placeholder="1,4&#10;3,5&#10;0,6">${txt}</textarea>
-        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">Format: integer start time, integer finish time (start &lt; finish)</div>
-      </div>`;
+      html += `<div class="form-group"><label class="form-label">Activities ("start,finish"):</label><textarea class="form-control" id="custom-activity-input" rows="7">${txt}</textarea></div>`;
     } else if (currentAlgo === 'knapsack') {
       const txt = mod.data.map(d => `${d.name},${d.v},${d.w}`).join('\n');
-      html += `<div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Knapsack Capacity ($W$):</label>
-          <input type="number" class="form-control" id="custom-knapsack-cap" value="${mod.capacity}" min="1">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Items (One per line: "name,value,weight"):</label>
-        <textarea class="form-control" id="custom-knapsack-items" rows="6">${txt}</textarea>
-      </div>`;
+      html += `<div class="form-row"><div class="form-group"><label class="form-label">Knapsack Capacity:</label><input type="number" class="form-control" id="custom-knapsack-cap" value="${mod.capacity}"></div></div>
+               <div class="form-group"><label class="form-label">Items ("name,value,weight"):</label><textarea class="form-control" id="custom-knapsack-items" rows="6">${txt}</textarea></div>`;
     } else if (currentAlgo === 'huffman') {
       const txt = mod.data.map(d => `${d.ch}:${d.f}`).join(', ');
-      html += `<div class="form-group">
-        <label class="form-label">Method 1: Enter Raw Text (Auto-computes frequencies):</label>
-        <input type="text" class="form-control" id="custom-huffman-raw" placeholder="e.g. beep boop beer!" value="${mod.rawText || ''}">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Method 2: Custom Symbol Frequencies ("char:freq, char:freq"):</label>
-        <textarea class="form-control" id="custom-huffman-freqs" rows="4" placeholder="a:45, b:13, c:12, d:16, e:9, f:5">${txt}</textarea>
-      </div>`;
+      html += `<div class="form-group"><label class="form-label">Raw Text (Auto-computes frequencies):</label><input type="text" class="form-control" id="custom-huffman-raw" value="${mod.rawText || ''}"></div>
+               <div class="form-group"><label class="form-label">Custom Frequencies ("char:freq"):</label><textarea class="form-control" id="custom-huffman-freqs" rows="4">${txt}</textarea></div>`;
     } else if (currentAlgo === 'jobseq') {
       const txt = mod.data.map(d => `${d.id},${d.d},${d.p}`).join('\n');
-      html += `<div class="form-group">
-        <label class="form-label">Jobs (One per line: "JobName,Deadline,Profit"):</label>
-        <textarea class="form-control" id="custom-jobseq-input" rows="7">${txt}</textarea>
-        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">Deadlines must be &ge; 1 integer. Profits &ge; 0.</div>
-      </div>`;
+      html += `<div class="form-group"><label class="form-label">Jobs ("id,deadline,profit"):</label><textarea class="form-control" id="custom-jobseq-input" rows="7">${txt}</textarea></div>`;
+    } else if (currentAlgo === 'dsu') {
+      const opsTxt = mod.operations.map(o => o.op === 'union' ? `union ${o.u} ${o.v}` : `find ${o.u}`).join('\n');
+      html += `<div class="form-group"><label class="form-label">Elements List (comma separated):</label><input type="text" class="form-control" id="custom-dsu-elements" value="${mod.elements.join(', ')}"></div>
+               <div class="form-group"><label class="form-label">Operations (one per line: "union u v" or "find u"):</label><textarea class="form-control" id="custom-dsu-ops" rows="6">${opsTxt}</textarea></div>`;
+    } else if (['prim', 'kruskal', 'dijkstra', 'bellmanford'].includes(currentAlgo)) {
+      const edgeTxt = mod.edges.map(e => `${e.u},${e.v},${e.w}`).join('\n');
+      const hasSource = ['prim', 'dijkstra', 'bellmanford'].includes(currentAlgo);
+      if (hasSource) {
+        const srcVal = currentAlgo === 'prim' ? mod.startNode : mod.source;
+        html += `<div class="form-group"><label class="form-label">Source / Start Vertex:</label><input type="text" class="form-control" id="custom-graph-source" value="${srcVal}"></div>`;
+      }
+      html += `<div class="form-group"><label class="form-label">Graph Edges ("u,v,weight"):</label><textarea class="form-control" id="custom-graph-edges" rows="7">${edgeTxt}</textarea></div>`;
     }
 
     this.fieldsBox.innerHTML = html;
@@ -2401,21 +3191,18 @@ const Modal = {
 
   loadPreset(p) {
     const mod = getActiveModule();
-    if (currentAlgo === 'activity') {
-      mod.data = JSON.parse(JSON.stringify(p.data)).map((d, i) => ({ ...d, id: i + 1 }));
-    } else if (currentAlgo === 'knapsack') {
-      mod.capacity = p.capacity;
-      mod.data = JSON.parse(JSON.stringify(p.data));
-    } else if (currentAlgo === 'huffman') {
-      if (p.rawText) {
-        mod.rawText = p.rawText;
-        mod.data = mod.freqsFromText(p.rawText);
-      } else {
-        mod.rawText = '';
-        mod.data = JSON.parse(JSON.stringify(p.data));
-      }
-    } else if (currentAlgo === 'jobseq') {
-      mod.data = JSON.parse(JSON.stringify(p.data));
+    if (currentAlgo === 'activity') mod.data = JSON.parse(JSON.stringify(p.data)).map((d, i) => ({ ...d, id: i + 1 }));
+    else if (currentAlgo === 'knapsack') { mod.capacity = p.capacity; mod.data = JSON.parse(JSON.stringify(p.data)); }
+    else if (currentAlgo === 'huffman') {
+      if (p.rawText) { mod.rawText = p.rawText; mod.data = mod.freqsFromText(p.rawText); }
+      else { mod.rawText = ''; mod.data = JSON.parse(JSON.stringify(p.data)); }
+    } else if (currentAlgo === 'jobseq') mod.data = JSON.parse(JSON.stringify(p.data));
+    else if (currentAlgo === 'dsu') { mod.elements = [...p.elements]; mod.operations = JSON.parse(JSON.stringify(p.operations)); }
+    else if (['prim', 'kruskal', 'dijkstra', 'bellmanford'].includes(currentAlgo)) {
+      mod.nodes = JSON.parse(JSON.stringify(p.nodes));
+      mod.edges = JSON.parse(JSON.stringify(p.edges));
+      if (p.startNode) mod.startNode = p.startNode;
+      if (p.source) mod.source = p.source;
     }
     this.renderFormFields();
   },
@@ -2425,93 +3212,84 @@ const Modal = {
     try {
       if (currentAlgo === 'activity') {
         const lines = document.getElementById('custom-activity-input').value.trim().split('\n');
-        const parsed = [];
-        lines.forEach((l, idx) => {
-          if (!l.trim()) return;
-          const [sStr, fStr] = l.split(',');
-          const s = parseInt(sStr.trim(), 10);
-          const f = parseInt(fStr.trim(), 10);
-          if (isNaN(s) || isNaN(f) || s >= f) throw new Error(`Invalid line: "${l}". Must be "start,finish" with start < finish.`);
-          parsed.push({ id: idx + 1, s, f });
+        mod.data = lines.filter(Boolean).map((l, i) => {
+          const [s, f] = l.split(',').map(Number);
+          return { id: i + 1, s, f };
         });
-        if (parsed.length === 0) throw new Error("Please enter at least 1 valid activity.");
-        mod.data = parsed;
       } else if (currentAlgo === 'knapsack') {
-        const cap = parseFloat(document.getElementById('custom-knapsack-cap').value);
-        if (isNaN(cap) || cap <= 0) throw new Error("Capacity must be a positive number.");
+        mod.capacity = parseFloat(document.getElementById('custom-knapsack-cap').value);
         const lines = document.getElementById('custom-knapsack-items').value.trim().split('\n');
-        const parsed = [];
-        lines.forEach(l => {
-          if (!l.trim()) return;
-          const parts = l.split(',');
-          if (parts.length < 3) throw new Error(`Invalid item: "${l}". Must be "name,value,weight".`);
-          const name = parts[0].trim();
-          const v = parseFloat(parts[1].trim());
-          const w = parseFloat(parts[2].trim());
-          if (isNaN(v) || isNaN(w) || v < 0 || w <= 0) throw new Error(`Invalid numbers for "${name}".`);
-          parsed.push({ name, v, w });
+        mod.data = lines.filter(Boolean).map(l => {
+          const [name, v, w] = l.split(',');
+          return { name: name.trim(), v: parseFloat(v), w: parseFloat(w) };
         });
-        if (parsed.length === 0) throw new Error("Please enter at least 1 item.");
-        mod.capacity = cap;
-        mod.data = parsed;
       } else if (currentAlgo === 'huffman') {
         const raw = document.getElementById('custom-huffman-raw').value.trim();
-        if (raw) {
-          mod.rawText = raw;
-          mod.data = mod.freqsFromText(raw);
-        } else {
-          const rawFreqs = document.getElementById('custom-huffman-freqs').value.trim();
-          const parts = rawFreqs.split(/[,;\n]+/);
-          const parsed = [];
-          parts.forEach(p => {
-            if (!p.trim()) return;
-            const [ch, fStr] = p.split(':');
-            if (!ch || !fStr) throw new Error(`Invalid entry "${p}". Format must be "char:freq".`);
-            const f = parseInt(fStr.trim(), 10);
-            if (isNaN(f) || f <= 0) throw new Error(`Invalid frequency for '${ch}'.`);
-            parsed.push({ ch: ch.trim(), f });
-          });
-          if (parsed.length < 2) throw new Error("Huffman requires at least 2 distinct symbols.");
-          mod.rawText = '';
-          mod.data = parsed;
-        }
+        if (raw) { mod.rawText = raw; mod.data = mod.freqsFromText(raw); }
       } else if (currentAlgo === 'jobseq') {
         const lines = document.getElementById('custom-jobseq-input').value.trim().split('\n');
-        const parsed = [];
-        lines.forEach(l => {
-          if (!l.trim()) return;
-          const parts = l.split(',');
-          if (parts.length < 3) throw new Error(`Invalid job: "${l}". Must be "JobId,Deadline,Profit".`);
-          const id = parts[0].trim();
-          const d = parseInt(parts[1].trim(), 10);
-          const p = parseFloat(parts[2].trim());
-          if (isNaN(d) || isNaN(p) || d < 1 || p < 0) throw new Error(`Invalid values in job "${id}".`);
-          parsed.push({ id, d, p });
+        mod.data = lines.filter(Boolean).map(l => {
+          const [id, d, p] = l.split(',');
+          return { id: id.trim(), d: parseInt(d, 10), p: parseFloat(p) };
         });
-        if (parsed.length === 0) throw new Error("Please enter at least 1 job.");
-        mod.data = parsed;
+      } else if (currentAlgo === 'dsu') {
+        const elArr = document.getElementById('custom-dsu-elements').value.split(',').map(s => isNaN(s.trim()) ? s.trim() : parseInt(s.trim(), 10));
+        const opLines = document.getElementById('custom-dsu-ops').value.trim().split('\n');
+        const ops = [];
+        opLines.forEach(l => {
+          const p = l.trim().split(/\s+/);
+          if (p[0] === 'union') ops.push({ op: 'union', u: isNaN(p[1]) ? p[1] : parseInt(p[1], 10), v: isNaN(p[2]) ? p[2] : parseInt(p[2], 10) });
+          else if (p[0] === 'find') ops.push({ op: 'find', u: isNaN(p[1]) ? p[1] : parseInt(p[1], 10) });
+        });
+        mod.elements = elArr;
+        mod.operations = ops;
+      } else if (['prim', 'kruskal', 'dijkstra', 'bellmanford'].includes(currentAlgo)) {
+        const edgeLines = document.getElementById('custom-graph-edges').value.trim().split('\n');
+        const parsedEdges = [];
+        const nodeSet = new Set();
+        edgeLines.forEach(l => {
+          if (!l.trim()) return;
+          const [u, v, w] = l.split(',');
+          const uT = u.trim(), vT = v.trim(), wT = parseFloat(w.trim());
+          parsedEdges.push({ u: uT, v: vT, w: wT });
+          nodeSet.add(uT); nodeSet.add(vT);
+        });
+        mod.edges = parsedEdges;
+
+        const nodesArr = Array.from(nodeSet);
+        const newNodes = {};
+        const R = 150, cx = 400, cy = 200;
+        nodesArr.forEach((name, i) => {
+          const angle = (2 * Math.PI * i) / nodesArr.length - Math.PI / 2;
+          newNodes[name] = { x: Math.round(cx + R * Math.cos(angle)), y: Math.round(cy + R * Math.sin(angle)) };
+        });
+        mod.nodes = newNodes;
+
+        const srcEl = document.getElementById('custom-graph-source');
+        if (srcEl) {
+          if (currentAlgo === 'prim') mod.startNode = srcEl.value.trim();
+          else mod.source = srcEl.value.trim();
+        }
       }
 
       this.close();
       resetSimulation();
       computeStepsForCurrent();
       renderCurrentStep();
-    } catch (err) {
-      alert(err.message);
+    } catch(err) {
+      alert("Configuration Error: " + err.message);
     }
   }
 };
 
 /* =========================================================================
-   EVENT LISTENERS INITIALIZATION
+   EVENT LISTENERS & INIT
    ========================================================================= */
 document.addEventListener('DOMContentLoaded', () => {
-  // Tab Switchers
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.onclick = () => switchAlgorithm(btn.dataset.algo);
   });
 
-  // Playback Controls
   document.getElementById('ctrl-play').onclick = togglePlay;
   document.getElementById('ctrl-reset').onclick = resetSimulation;
   document.getElementById('ctrl-next').onclick = stepNext;
@@ -2524,13 +3302,9 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   document.getElementById('speed-select').onchange = () => {
-    if (isPlaying) {
-      pause();
-      play();
-    }
+    if (isPlaying) { pause(); play(); }
   };
 
-  // Custom Modal & Random Generator
   document.getElementById('btn-open-custom').onclick = () => Modal.open();
   document.getElementById('btn-close-modal').onclick = () => Modal.close();
   document.getElementById('btn-modal-cancel').onclick = () => Modal.close();
@@ -2543,35 +3317,31 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentAlgo === 'activity') mod.data = res.map((d, i) => ({ ...d, id: i + 1 }));
     else if (currentAlgo === 'knapsack') { mod.capacity = res.capacity; mod.data = res.data; }
     else if (currentAlgo === 'huffman') { mod.data = res.data; mod.rawText = ''; }
-    else if (currentAlgo === 'jobseq') { mod.data = res.data; }
-    
+    else if (currentAlgo === 'jobseq') mod.data = res.data;
+    else if (currentAlgo === 'dsu') { mod.elements = res.elements; mod.operations = res.operations; }
+    else if (['prim', 'kruskal', 'dijkstra', 'bellmanford'].includes(currentAlgo)) {
+      mod.nodes = res.nodes; mod.edges = res.edges;
+      if (res.startNode) mod.startNode = res.startNode;
+      if (res.source) mod.source = res.source;
+    }
     resetSimulation();
     computeStepsForCurrent();
     renderCurrentStep();
   };
 
-  // Keyboard Shortcuts
   window.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    if (e.code === 'Space') {
-      e.preventDefault();
-      togglePlay();
-    } else if (e.code === 'ArrowRight') {
-      e.preventDefault();
-      stepNext();
-    } else if (e.code === 'ArrowLeft') {
-      e.preventDefault();
-      stepPrev();
-    } else if (e.code === 'KeyR') {
-      e.preventDefault();
-      resetSimulation();
-    } else if (e.code === 'Digit1') switchAlgorithm('activity');
-    else if (e.code === 'Digit2') switchAlgorithm('knapsack');
-    else if (e.code === 'Digit3') switchAlgorithm('huffman');
-    else if (e.code === 'Digit4') switchAlgorithm('jobseq');
+    if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+    else if (e.code === 'ArrowRight') { e.preventDefault(); stepNext(); }
+    else if (e.code === 'ArrowLeft') { e.preventDefault(); stepPrev(); }
+    else if (e.code === 'KeyR') { e.preventDefault(); resetSimulation(); }
+    else if (e.key >= '1' && e.key <= '9') {
+      const algos = ['activity', 'knapsack', 'huffman', 'jobseq', 'dsu', 'prim', 'kruskal', 'dijkstra', 'bellmanford'];
+      const target = algos[parseInt(e.key, 10) - 1];
+      if (target) switchAlgorithm(target);
+    }
   });
 
-  // Initial Load
   switchAlgorithm('activity');
 });
 </script>
