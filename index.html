@@ -1724,9 +1724,8 @@ const DsuModule = {
     { op: 'union', u: 3, v: 4 },
     { op: 'union', u: 5, v: 6 },
     { op: 'union', u: 2, v: 4 },
-    { op: 'find', u: 1 },
     { op: 'union', u: 1, v: 6 },
-    { op: 'find', u: 4 }
+    { op: 'find', u: 6 } // Path compression on last node (6 -> 5 -> 1)
   ],
   presets: [
     {
@@ -1734,15 +1733,19 @@ const DsuModule = {
       elements: [0, 1, 2, 3, 4, 5, 6],
       operations: [
         { op: 'union', u: 1, v: 2 }, { op: 'union', u: 3, v: 4 }, { op: 'union', u: 5, v: 6 },
-        { op: 'union', u: 2, v: 4 }, { op: 'find', u: 1 }, { op: 'union', u: 1, v: 6 }, { op: 'find', u: 4 }
+        { op: 'union', u: 2, v: 4 }, { op: 'union', u: 1, v: 6 }, { op: 'find', u: 6 }
       ]
     },
     {
-      name: "Deep Chain & Path Compression",
+      name: "Deep Chain & Path Compression (Last Node)",
       elements: [0, 1, 2, 3, 4, 5],
       operations: [
-        { op: 'union', u: 0, v: 1 }, { op: 'union', u: 1, v: 2 }, { op: 'union', u: 2, v: 3 },
-        { op: 'union', u: 3, v: 4 }, { op: 'union', u: 4, v: 5 }, { op: 'find', u: 0 }
+        { op: 'link', u: 1, v: 0 },
+        { op: 'link', u: 2, v: 1 },
+        { op: 'link', u: 3, v: 2 },
+        { op: 'link', u: 4, v: 3 },
+        { op: 'link', u: 5, v: 4 },
+        { op: 'find', u: 5 } // Path compression flattens full chain 5->4->3->2->1->0 directly to 0!
       ]
     },
     {
@@ -1825,10 +1828,12 @@ const DsuModule = {
         });
 
         let compressed = false;
+        const compressedNodes = [];
         for (let node of path) {
           if (node !== root && parent[node] !== root) {
             parent[node] = root;
             compressed = true;
+            compressedNodes.push(node);
           }
         }
         if (compressed) {
@@ -1838,10 +1843,24 @@ const DsuModule = {
             elements: [...elements],
             parent: { ...parent },
             rank: { ...rank },
-            activeNodes: [u, root],
-            desc: `<b>Path Compression Applied:</b> Flattened direct parent pointers for nodes on the path to point directly to root <span class="num">${root}</span>.`
+            activeNodes: [...path],
+            compressedNodes: [...compressedNodes],
+            desc: `<b>Path Compression Applied (Last Node ${u}):</b> The pointer for node <span class="num">${u}</span>${compressedNodes.length > 1 ? ` and intermediate ancestors (${compressedNodes.join(', ')})` : ''} flattened directly to root <span class="num">${root}</span>! Depth reduced from <span class="num">${path.length - 1}</span> &rarr; <span class="num">1</span>.`
           });
         }
+      } else if (cmd.op === 'link') {
+        const { u, v } = cmd;
+        parent[u] = v;
+        rank[v] = Math.max(rank[v], rank[u] + 1);
+        steps.push({
+          type: 'link',
+          lineHighlight: 1,
+          elements: [...elements],
+          parent: { ...parent },
+          rank: { ...rank },
+          activeNodes: [u, v],
+          desc: `<b>Direct Chain Link:</b> Explicitly linked $parent[${u}] = ${v}$ to construct a deep branch ($rank[${v}] = ${rank[v]}$).`
+        });
       } else if (cmd.op === 'union') {
         const { u, v } = cmd;
         let rootU = u;
@@ -1948,8 +1967,14 @@ const DsuModule = {
           const p = parent[m];
           const pPos = nodePos[p] || nodePos[rootVal];
           const mPos = nodePos[m];
-          const isActEdge = step.activeNodes.includes(m) && step.activeNodes.includes(p);
-          html += `<line x1="${mPos.x}" y1="${mPos.y}" x2="${pPos.x}" y2="${pPos.y}" stroke="${isActEdge ? '#f59e0b' : '#14b8a6'}" stroke-width="${isActEdge ? 2.5 : 1.8}" marker-end="url(#dsu-arrow)"/>`;
+          const isActEdge = step.activeNodes && step.activeNodes.includes(m) && (step.activeNodes.includes(p) || p === rootVal);
+          const isCompressed = step.type === 'compress' && step.compressedNodes && step.compressedNodes.includes(m);
+
+          let stroke = '#14b8a6', strokeW = 1.8;
+          if (isCompressed) { stroke = '#10b981'; strokeW = 3.5; }
+          else if (isActEdge) { stroke = '#f59e0b'; strokeW = 2.5; }
+
+          html += `<line x1="${mPos.x}" y1="${mPos.y}" x2="${pPos.x}" y2="${pPos.y}" stroke="${stroke}" stroke-width="${strokeW}" marker-end="url(#dsu-arrow)"/>`;
         }
       });
 
@@ -2630,10 +2655,27 @@ const DijkstraModule = {
       if (isTreeEdge) { stroke = '#14b8a6'; strokeW = 3; marker = 'url(#dijk-arrow-tree)'; }
       if (isAct) { stroke = '#f59e0b'; strokeW = 3.5; marker = 'url(#dijk-arrow-active)'; }
 
-      html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
-      const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
-      html += `<rect x="${midX - 12}" y="${midY - 9}" width="24" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
-      html += `<text x="${midX}" y="${midY + 4}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+      const hasReverse = edges.some(other => other.u === e.v && other.v === e.u);
+      if (hasReverse) {
+        const dx = p2.x - p1.x, dy = p2.y - p1.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        const ux = dx / dist, uy = dy / dist;
+        const nx = -uy, ny = ux;
+        const curveOffset = 28;
+        const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
+        const cx = mx + nx * curveOffset, cy = my + ny * curveOffset;
+
+        html += `<path d="M ${p1.x} ${p1.y} Q ${cx} ${cy} ${p2.x} ${p2.y}" fill="none" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+        const labelX = mx + nx * (curveOffset * 0.72);
+        const labelY = my + ny * (curveOffset * 0.72);
+        html += `<rect x="${labelX - 14}" y="${labelY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
+        html += `<text x="${labelX}" y="${labelY + 4}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+      } else {
+        html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+        const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+        html += `<rect x="${midX - 14}" y="${midY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
+        html += `<text x="${midX}" y="${midY + 4}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+      }
     });
 
     Object.keys(nodes).forEach(v => {
@@ -2831,6 +2873,34 @@ const BellmanFordModule = {
               `Edge (${cycleEdge.u} &rarr; ${cycleEdge.v}) can still be relaxed ($d[${cycleEdge.u}] + ${cycleEdge.w} < d[${cycleEdge.v}]$). A negative cycle reachable from ${source} exists! Shortest paths are undefined (-∞).`
       });
     } else {
+      const nodeKeys = Object.keys(nodes);
+      const lastNode = nodeKeys[nodeKeys.length - 1];
+      let curr = lastNode;
+      const pathNodes = [];
+      const pathEdges = [];
+      while (curr !== null && curr !== source) {
+        pathNodes.unshift(curr);
+        const p = parent[curr];
+        if (p !== null) {
+          pathEdges.unshift({ u: p, v: curr });
+          curr = p;
+        } else {
+          break;
+        }
+      }
+      if (curr === source) pathNodes.unshift(source);
+
+      let mathDetails = '';
+      if (pathNodes.length > 1) {
+        const mathSteps = pathEdges.map(pe => {
+          const edgeObj = edges.find(e => e.u === pe.u && e.v === pe.v);
+          const w = edgeObj ? edgeObj.w : 0;
+          return `$d[${pe.v}] = d[${pe.u}] + (${w}) = ${dist[pe.u]} + (${w}) = ${dist[pe.v]}$`;
+        }).join(' &bull; ');
+        mathDetails = `<br><span class="tag-take">Shortest Path to Last Node (${lastNode}):</span> <b>${pathNodes.join(' &rarr; ')}</b> (Total Distance: <span class="num">${dist[lastNode]}</span>).<br>` +
+                      `<b>Mathematical Relaxation Chain for Last Node (${lastNode}):</b> ${mathSteps}.`;
+      }
+
       steps.push({
         type: 'done',
         lineHighlight: 9,
@@ -2839,7 +2909,10 @@ const BellmanFordModule = {
         iteration: V,
         activeEdge: null,
         cycleFound: false,
-        desc: `<b>Bellman-Ford Verification Complete:</b> No negative-weight cycles exist. Final shortest distances confirmed.`
+        lastNode,
+        pathNodes,
+        pathEdges,
+        desc: `<b>Bellman-Ford Verification Complete:</b> No negative-weight cycles exist. Final shortest distances confirmed.${mathDetails}`
       });
     }
 
@@ -2859,6 +2932,9 @@ const BellmanFordModule = {
       <marker id="bf-arrow-tree" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
         <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#14b8a6"/>
       </marker>
+      <marker id="bf-arrow-last" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#10b981"/>
+      </marker>
     </defs>`;
 
     edges.forEach(e => {
@@ -2867,28 +2943,51 @@ const BellmanFordModule = {
       const isTreeEdge = step.parent[e.v] === e.u;
       const isAct = step.activeEdge && step.activeEdge.u === e.u && step.activeEdge.v === e.v;
       const isCycleEdge = step.cycleFound && isAct;
+      const isPathToLast = step.type === 'done' && step.pathEdges && step.pathEdges.some(pe => pe.u === e.u && pe.v === e.v);
 
       let stroke = '#223249', strokeW = 1.8, marker = 'url(#bf-arrow)';
       if (isTreeEdge) { stroke = '#14b8a6'; strokeW = 3; marker = 'url(#bf-arrow-tree)'; }
+      if (isPathToLast) { stroke = '#10b981'; strokeW = 4; marker = 'url(#bf-arrow-last)'; }
       if (isAct) { stroke = '#f59e0b'; strokeW = 3.5; marker = 'url(#bf-arrow-active)'; }
       if (isCycleEdge) { stroke = '#f43f5e'; strokeW = 4; marker = 'url(#bf-arrow-cycle)'; }
 
-      html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
-      const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
-      html += `<rect x="${midX - 12}" y="${midY - 9}" width="24" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
-      html += `<text x="${midX}" y="${midY + 4}" text-anchor="middle" fill="${e.w < 0 ? '#f43f5e' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+      const hasReverse = edges.some(other => other.u === e.v && other.v === e.u);
+      if (hasReverse) {
+        const dx = p2.x - p1.x, dy = p2.y - p1.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        const ux = dx / dist, uy = dy / dist;
+        const nx = -uy, ny = ux;
+        const curveOffset = 30;
+        const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
+        const cx = mx + nx * curveOffset, cy = my + ny * curveOffset;
+
+        html += `<path d="M ${p1.x} ${p1.y} Q ${cx} ${cy} ${p2.x} ${p2.y}" fill="none" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+        const labelX = mx + nx * (curveOffset * 0.72);
+        const labelY = my + ny * (curveOffset * 0.72);
+        html += `<rect x="${labelX - 14}" y="${labelY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
+        html += `<text x="${labelX}" y="${labelY + 4}" text-anchor="middle" fill="${e.w < 0 ? '#f43f5e' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+      } else {
+        html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+        const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+        html += `<rect x="${midX - 14}" y="${midY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
+        html += `<text x="${midX}" y="${midY + 4}" text-anchor="middle" fill="${e.w < 0 ? '#f43f5e' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+      }
     });
 
     Object.keys(nodes).forEach(v => {
       const p = nodes[v];
       const isSource = v === BellmanFordModule.source;
-      let fill = isSource ? '#0f766e' : '#141d2c';
-      let stroke = isSource ? '#14b8a6' : '#334155';
+      const isLastNode = step.type === 'done' && step.lastNode && v === step.lastNode;
+      let fill = isSource ? '#0f766e' : (isLastNode ? '#047857' : '#141d2c');
+      let stroke = isSource ? '#14b8a6' : (isLastNode ? '#34d399' : '#334155');
 
-      html += `<circle cx="${p.x}" cy="${p.y}" r="18" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+      html += `<circle cx="${p.x}" cy="${p.y}" r="18" fill="${fill}" stroke="${stroke}" stroke-width="${isLastNode ? 3 : 2}"/>`;
       html += `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#fff" font-size="12" font-family="JetBrains Mono" font-weight="700">${v}</text>`;
       const dVal = step.dist[v] === Infinity ? '∞' : step.dist[v];
       html += `<text x="${p.x}" y="${p.y - 24}" text-anchor="middle" fill="${step.dist[v] !== Infinity ? '#2dd4bf' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono" font-weight="600">d:${dVal}</text>`;
+      if (isLastNode) {
+        html += `<text x="${p.x}" y="${p.y + 34}" text-anchor="middle" fill="#34d399" font-size="9" font-family="JetBrains Mono" font-weight="700">[LAST NODE: d=${dVal}]</text>`;
+      }
     });
 
     svg.setAttribute('viewBox', '0 0 800 380');
@@ -3239,6 +3338,7 @@ const Modal = {
         opLines.forEach(l => {
           const p = l.trim().split(/\s+/);
           if (p[0] === 'union') ops.push({ op: 'union', u: isNaN(p[1]) ? p[1] : parseInt(p[1], 10), v: isNaN(p[2]) ? p[2] : parseInt(p[2], 10) });
+          else if (p[0] === 'link') ops.push({ op: 'link', u: isNaN(p[1]) ? p[1] : parseInt(p[1], 10), v: isNaN(p[2]) ? p[2] : parseInt(p[2], 10) });
           else if (p[0] === 'find') ops.push({ op: 'find', u: isNaN(p[1]) ? p[1] : parseInt(p[1], 10) });
         });
         mod.elements = elArr;
@@ -3347,3 +3447,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
