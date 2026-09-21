@@ -2645,9 +2645,18 @@ const DijkstraModule = {
       </marker>
     </defs>`;
 
-    edges.forEach(e => {
+    function doSegmentsIntersect(p1, p2, q1, q2) {
+      if ((p1.x === q1.x && p1.y === q1.y) || (p1.x === q2.x && p1.y === q2.y)) return false;
+      if ((p2.x === q1.x && p2.y === q1.y) || (p2.x === q2.x && p2.y === q2.y)) return false;
+      function ccw(a, b, c) {
+        return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
+      }
+      return (ccw(p1, q1, q2) !== ccw(p2, q1, q2)) && (ccw(p1, p2, q1) !== ccw(p1, p2, q2));
+    }
+
+    const edgeLayouts = edges.map((e, idx) => {
       const p1 = nodes[e.u], p2 = nodes[e.v];
-      if (!p1 || !p2) return;
+      if (!p1 || !p2) return null;
       const isTreeEdge = step.parent[e.v] === e.u;
       const isAct = step.activeEdge && step.activeEdge.u === e.u && step.activeEdge.v === e.v;
 
@@ -2656,6 +2665,8 @@ const DijkstraModule = {
       if (isAct) { stroke = '#f59e0b'; strokeW = 3.5; marker = 'url(#dijk-arrow-active)'; }
 
       const hasReverse = edges.some(other => other.u === e.v && other.v === e.u);
+      let pathD = '', labelX = 0, labelY = 0;
+
       if (hasReverse) {
         const dx = p2.x - p1.x, dy = p2.y - p1.y;
         const dist = Math.sqrt(dx * dx + dy * dy) || 1;
@@ -2665,17 +2676,60 @@ const DijkstraModule = {
         const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
         const cx = mx + nx * curveOffset, cy = my + ny * curveOffset;
 
-        html += `<path d="M ${p1.x} ${p1.y} Q ${cx} ${cy} ${p2.x} ${p2.y}" fill="none" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
-        const labelX = mx + nx * (curveOffset * 0.72);
-        const labelY = my + ny * (curveOffset * 0.72);
-        html += `<rect x="${labelX - 14}" y="${labelY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
-        html += `<text x="${labelX}" y="${labelY + 4}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+        pathD = `M ${p1.x} ${p1.y} Q ${cx} ${cy} ${p2.x} ${p2.y}`;
+        labelX = mx + nx * (curveOffset * 0.72);
+        labelY = my + ny * (curveOffset * 0.72);
       } else {
-        html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
-        const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
-        html += `<rect x="${midX - 14}" y="${midY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
-        html += `<text x="${midX}" y="${midY + 4}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+        const dx = p2.x - p1.x, dy = p2.y - p1.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        const ux = dx / dist, uy = dy / dist;
+        const nx = -uy, ny = ux;
+
+        const crosses = edges.some((other, oIdx) => {
+          if (oIdx === idx) return false;
+          const q1 = nodes[other.u], q2 = nodes[other.v];
+          if (!q1 || !q2) return false;
+          return doSegmentsIntersect(p1, p2, q1, q2);
+        });
+
+        pathD = `line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}"`;
+        if (crosses) {
+          const t = 0.30;
+          labelX = p1.x + t * dx + nx * 12;
+          labelY = p1.y + t * dy + ny * 12;
+        } else {
+          labelX = (p1.x + p2.x) / 2;
+          labelY = (p1.y + p2.y) / 2;
+        }
       }
+
+      return { e, stroke, strokeW, marker, pathD, labelX, labelY, hasReverse };
+    }).filter(Boolean);
+
+    for (let i = 0; i < edgeLayouts.length; i++) {
+      for (let j = i + 1; j < edgeLayouts.length; j++) {
+        const a = edgeLayouts[i], b = edgeLayouts[j];
+        const dist = Math.hypot(a.labelX - b.labelX, a.labelY - b.labelY);
+        if (dist < 32) {
+          const angle = Math.atan2(b.labelY - a.labelY, b.labelX - a.labelX) || (Math.PI / 2);
+          const push = (34 - dist) / 2;
+          a.labelX -= Math.cos(angle) * push;
+          a.labelY -= Math.sin(angle) * push;
+          b.labelX += Math.cos(angle) * push;
+          b.labelY += Math.sin(angle) * push;
+        }
+      }
+    }
+
+    edgeLayouts.forEach(layout => {
+      const { e, stroke, strokeW, marker, pathD, labelX, labelY, hasReverse } = layout;
+      if (hasReverse) {
+        html += `<path d="${pathD}" fill="none" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+      } else {
+        html += `<${pathD} stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+      }
+      html += `<rect x="${labelX - 14}" y="${labelY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
+      html += `<text x="${labelX}" y="${labelY + 4}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
     });
 
     Object.keys(nodes).forEach(v => {
@@ -2937,9 +2991,18 @@ const BellmanFordModule = {
       </marker>
     </defs>`;
 
-    edges.forEach(e => {
+    function doSegmentsIntersect(p1, p2, q1, q2) {
+      if ((p1.x === q1.x && p1.y === q1.y) || (p1.x === q2.x && p1.y === q2.y)) return false;
+      if ((p2.x === q1.x && p2.y === q1.y) || (p2.x === q2.x && p2.y === q2.y)) return false;
+      function ccw(a, b, c) {
+        return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
+      }
+      return (ccw(p1, q1, q2) !== ccw(p2, q1, q2)) && (ccw(p1, p2, q1) !== ccw(p1, p2, q2));
+    }
+
+    const edgeLayouts = edges.map((e, idx) => {
       const p1 = nodes[e.u], p2 = nodes[e.v];
-      if (!p1 || !p2) return;
+      if (!p1 || !p2) return null;
       const isTreeEdge = step.parent[e.v] === e.u;
       const isAct = step.activeEdge && step.activeEdge.u === e.u && step.activeEdge.v === e.v;
       const isCycleEdge = step.cycleFound && isAct;
@@ -2952,7 +3015,17 @@ const BellmanFordModule = {
       if (isCycleEdge) { stroke = '#f43f5e'; strokeW = 4; marker = 'url(#bf-arrow-cycle)'; }
 
       const hasReverse = edges.some(other => other.u === e.v && other.v === e.u);
-      if (hasReverse) {
+      const isBottomBackEdge = (e.u === 'z' && e.v === 's' && p1.x > p2.x);
+
+      let pathD = '', labelX = 0, labelY = 0;
+
+      if (isBottomBackEdge) {
+        const cx = (p1.x + p2.x) / 2;
+        const cy = Math.max(p1.y, p2.y) + 70;
+        pathD = `M ${p1.x} ${p1.y} Q ${cx} ${cy} ${p2.x} ${p2.y}`;
+        labelX = cx;
+        labelY = cy - 15;
+      } else if (hasReverse) {
         const dx = p2.x - p1.x, dy = p2.y - p1.y;
         const dist = Math.sqrt(dx * dx + dy * dy) || 1;
         const ux = dx / dist, uy = dy / dist;
@@ -2961,17 +3034,60 @@ const BellmanFordModule = {
         const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
         const cx = mx + nx * curveOffset, cy = my + ny * curveOffset;
 
-        html += `<path d="M ${p1.x} ${p1.y} Q ${cx} ${cy} ${p2.x} ${p2.y}" fill="none" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
-        const labelX = mx + nx * (curveOffset * 0.72);
-        const labelY = my + ny * (curveOffset * 0.72);
-        html += `<rect x="${labelX - 14}" y="${labelY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
-        html += `<text x="${labelX}" y="${labelY + 4}" text-anchor="middle" fill="${e.w < 0 ? '#f43f5e' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+        pathD = `M ${p1.x} ${p1.y} Q ${cx} ${cy} ${p2.x} ${p2.y}`;
+        labelX = mx + nx * (curveOffset * 0.72);
+        labelY = my + ny * (curveOffset * 0.72);
       } else {
-        html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
-        const midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
-        html += `<rect x="${midX - 14}" y="${midY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
-        html += `<text x="${midX}" y="${midY + 4}" text-anchor="middle" fill="${e.w < 0 ? '#f43f5e' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+        const dx = p2.x - p1.x, dy = p2.y - p1.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        const ux = dx / dist, uy = dy / dist;
+        const nx = -uy, ny = ux;
+
+        const crosses = edges.some((other, oIdx) => {
+          if (oIdx === idx) return false;
+          const q1 = nodes[other.u], q2 = nodes[other.v];
+          if (!q1 || !q2) return false;
+          return doSegmentsIntersect(p1, p2, q1, q2);
+        });
+
+        pathD = `line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}"`;
+        if (crosses) {
+          const t = 0.30;
+          labelX = p1.x + t * dx + nx * 12;
+          labelY = p1.y + t * dy + ny * 12;
+        } else {
+          labelX = (p1.x + p2.x) / 2;
+          labelY = (p1.y + p2.y) / 2;
+        }
       }
+
+      return { e, stroke, strokeW, marker, pathD, labelX, labelY, isBottomBackEdge, hasReverse };
+    }).filter(Boolean);
+
+    for (let i = 0; i < edgeLayouts.length; i++) {
+      for (let j = i + 1; j < edgeLayouts.length; j++) {
+        const a = edgeLayouts[i], b = edgeLayouts[j];
+        const dist = Math.hypot(a.labelX - b.labelX, a.labelY - b.labelY);
+        if (dist < 32) {
+          const angle = Math.atan2(b.labelY - a.labelY, b.labelX - a.labelX) || (Math.PI / 2);
+          const push = (34 - dist) / 2;
+          a.labelX -= Math.cos(angle) * push;
+          a.labelY -= Math.sin(angle) * push;
+          b.labelX += Math.cos(angle) * push;
+          b.labelY += Math.sin(angle) * push;
+        }
+      }
+    }
+
+    edgeLayouts.forEach(layout => {
+      const { e, stroke, strokeW, marker, pathD, labelX, labelY, isBottomBackEdge, hasReverse } = layout;
+      if (isBottomBackEdge || hasReverse) {
+        html += `<path d="${pathD}" fill="none" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+      } else {
+        html += `<${pathD} stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+      }
+      html += `<rect x="${labelX - 14}" y="${labelY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
+      html += `<text x="${labelX}" y="${labelY + 4}" text-anchor="middle" fill="${e.w < 0 ? '#f43f5e' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
     });
 
     Object.keys(nodes).forEach(v => {
@@ -2990,7 +3106,7 @@ const BellmanFordModule = {
       }
     });
 
-    svg.setAttribute('viewBox', '0 0 800 380');
+    svg.setAttribute('viewBox', '0 0 800 400');
     svg.innerHTML = html;
   },
   renderTable(thead, tbody, step, nodes) {
@@ -3447,4 +3563,3 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
