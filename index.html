@@ -1788,11 +1788,22 @@ const DsuModule = {
     }
     ops.push({ op: 'find', u: Math.floor(Math.random() * n) });
     return { elements, operations: ops };
-  },
-  buildSteps(elements, operations) {
+     },
+    buildSteps(elements, operations) {
     const parent = {};
     const rank = {};
-    elements.forEach(e => { parent[e] = e; rank[e] = 0; });
+
+    elements.forEach(e => {
+    parent[e] = e;
+    rank[e] = 0;
+    });
+
+    const find = (x) => {
+    if (parent[x] !== x) {
+        parent[x] = find(parent[x]);
+    }
+    return parent[x];
+    };
 
     const steps = [];
     steps.push({
@@ -1865,9 +1876,10 @@ const DsuModule = {
           desc: `<b>Direct Chain Link:</b> Explicitly linked $parent[${u}] = ${v}$ to construct a deep branch ($rank[${v}] = ${rank[v]}$).`
         });
       } else if (cmd.op === 'union') {
-        const { u, v } = cmd;
-        rootU = find(u);
-        rootV = find(v);
+    const { u, v } = cmd;
+
+    let rootU = find(u);
+    let rootV = find(v);
 
         steps.push({
           type: 'union_eval',
