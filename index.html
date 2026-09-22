@@ -2708,31 +2708,53 @@ const DijkstraModule = {
       return { e, stroke, strokeW, marker, pathD, labelX, labelY, hasReverse };
     }).filter(Boolean);
 
-    for (let i = 0; i < edgeLayouts.length; i++) {
-      for (let j = i + 1; j < edgeLayouts.length; j++) {
-        const a = edgeLayouts[i], b = edgeLayouts[j];
-        const dist = Math.hypot(a.labelX - b.labelX, a.labelY - b.labelY);
-        if (dist < 32) {
-          const angle = Math.atan2(b.labelY - a.labelY, b.labelX - a.labelX) || (Math.PI / 2);
-          const push = (34 - dist) / 2;
-          a.labelX -= Math.cos(angle) * push;
-          a.labelY -= Math.sin(angle) * push;
-          b.labelX += Math.cos(angle) * push;
-          b.labelY += Math.sin(angle) * push;
+    // Push edge labels away from every node circle so a node never paints over a weight label
+    const NODE_R = 18, LABEL_HALF_W = 14, LABEL_HALF_H = 9, LABEL_CLEARANCE = NODE_R + Math.max(LABEL_HALF_W, LABEL_HALF_H) + 4;
+    edgeLayouts.forEach(layout => {
+      Object.values(nodes).forEach(np => {
+        const dx = layout.labelX - np.x, dy = layout.labelY - np.y;
+        const d = Math.hypot(dx, dy) || 1;
+        if (d < LABEL_CLEARANCE) {
+          const push = LABEL_CLEARANCE - d;
+          const ux = dx / d, uy = dy / d;
+          layout.labelX += ux * push;
+          layout.labelY += uy * push;
+        }
+      });
+    });
+
+    // Multi-pass separation so 3+ nearby labels actually converge instead of one shot
+    for (let pass = 0; pass < 4; pass++) {
+      for (let i = 0; i < edgeLayouts.length; i++) {
+        for (let j = i + 1; j < edgeLayouts.length; j++) {
+          const a = edgeLayouts[i], b = edgeLayouts[j];
+          const dist = Math.hypot(a.labelX - b.labelX, a.labelY - b.labelY);
+          if (dist < 34) {
+            const angle = Math.atan2(b.labelY - a.labelY, b.labelX - a.labelX) || (Math.PI / 2);
+            const push = (36 - dist) / 2;
+            a.labelX -= Math.cos(angle) * push;
+            a.labelY -= Math.sin(angle) * push;
+            b.labelX += Math.cos(angle) * push;
+            b.labelY += Math.sin(angle) * push;
+          }
         }
       }
     }
 
+    // Draw in strict layers: all edge lines first, then all labels, then all nodes on top —
+    // so a later edge's line can never paint over an earlier edge's weight label or a node.
+    let linesHtml = '', labelsHtml = '';
     edgeLayouts.forEach(layout => {
       const { e, stroke, strokeW, marker, pathD, labelX, labelY, hasReverse } = layout;
       if (hasReverse) {
-        html += `<path d="${pathD}" fill="none" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+        linesHtml += `<path d="${pathD}" fill="none" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
       } else {
-        html += `<${pathD} stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+        linesHtml += `<${pathD} stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
       }
-      html += `<rect x="${labelX - 14}" y="${labelY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
-      html += `<text x="${labelX}" y="${labelY + 4}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+      labelsHtml += `<rect x="${labelX - 14}" y="${labelY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
+      labelsHtml += `<text x="${labelX}" y="${labelY + 4}" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
     });
+    html += linesHtml + labelsHtml;
 
     Object.keys(nodes).forEach(v => {
       const p = nodes[v];
@@ -3066,31 +3088,53 @@ const BellmanFordModule = {
       return { e, stroke, strokeW, marker, pathD, labelX, labelY, isBottomBackEdge, hasReverse };
     }).filter(Boolean);
 
-    for (let i = 0; i < edgeLayouts.length; i++) {
-      for (let j = i + 1; j < edgeLayouts.length; j++) {
-        const a = edgeLayouts[i], b = edgeLayouts[j];
-        const dist = Math.hypot(a.labelX - b.labelX, a.labelY - b.labelY);
-        if (dist < 32) {
-          const angle = Math.atan2(b.labelY - a.labelY, b.labelX - a.labelX) || (Math.PI / 2);
-          const push = (34 - dist) / 2;
-          a.labelX -= Math.cos(angle) * push;
-          a.labelY -= Math.sin(angle) * push;
-          b.labelX += Math.cos(angle) * push;
-          b.labelY += Math.sin(angle) * push;
+    // Push edge labels away from every node circle so a node never paints over a weight label
+    const NODE_R = 18, LABEL_HALF_W = 14, LABEL_HALF_H = 9, LABEL_CLEARANCE = NODE_R + Math.max(LABEL_HALF_W, LABEL_HALF_H) + 4;
+    edgeLayouts.forEach(layout => {
+      Object.values(nodes).forEach(np => {
+        const dx = layout.labelX - np.x, dy = layout.labelY - np.y;
+        const d = Math.hypot(dx, dy) || 1;
+        if (d < LABEL_CLEARANCE) {
+          const push = LABEL_CLEARANCE - d;
+          const ux = dx / d, uy = dy / d;
+          layout.labelX += ux * push;
+          layout.labelY += uy * push;
+        }
+      });
+    });
+
+    // Multi-pass separation so 3+ nearby labels actually converge instead of one shot
+    for (let pass = 0; pass < 4; pass++) {
+      for (let i = 0; i < edgeLayouts.length; i++) {
+        for (let j = i + 1; j < edgeLayouts.length; j++) {
+          const a = edgeLayouts[i], b = edgeLayouts[j];
+          const dist = Math.hypot(a.labelX - b.labelX, a.labelY - b.labelY);
+          if (dist < 34) {
+            const angle = Math.atan2(b.labelY - a.labelY, b.labelX - a.labelX) || (Math.PI / 2);
+            const push = (36 - dist) / 2;
+            a.labelX -= Math.cos(angle) * push;
+            a.labelY -= Math.sin(angle) * push;
+            b.labelX += Math.cos(angle) * push;
+            b.labelY += Math.sin(angle) * push;
+          }
         }
       }
     }
 
+    // Draw in strict layers: all edge lines first, then all labels, then all nodes on top —
+    // so a later edge's line can never paint over an earlier edge's weight label or a node.
+    let linesHtml = '', labelsHtml = '';
     edgeLayouts.forEach(layout => {
       const { e, stroke, strokeW, marker, pathD, labelX, labelY, isBottomBackEdge, hasReverse } = layout;
       if (isBottomBackEdge || hasReverse) {
-        html += `<path d="${pathD}" fill="none" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+        linesHtml += `<path d="${pathD}" fill="none" stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
       } else {
-        html += `<${pathD} stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
+        linesHtml += `<${pathD} stroke="${stroke}" stroke-width="${strokeW}" marker-end="${marker}"/>`;
       }
-      html += `<rect x="${labelX - 14}" y="${labelY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
-      html += `<text x="${labelX}" y="${labelY + 4}" text-anchor="middle" fill="${e.w < 0 ? '#f43f5e' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
+      labelsHtml += `<rect x="${labelX - 14}" y="${labelY - 9}" width="28" height="18" rx="4" fill="#090d14" stroke="${stroke}" stroke-width="1"/>`;
+      labelsHtml += `<text x="${labelX}" y="${labelY + 4}" text-anchor="middle" fill="${e.w < 0 ? '#f43f5e' : '#94a3b8'}" font-size="10" font-family="JetBrains Mono" font-weight="600">${e.w}</text>`;
     });
+    html += linesHtml + labelsHtml;
 
     Object.keys(nodes).forEach(v => {
       const p = nodes[v];
