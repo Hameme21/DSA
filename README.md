@@ -1,1 +1,1 @@
-# DSA_Greedy_Algo
+# DSA
