@@ -1866,10 +1866,8 @@ const DsuModule = {
         });
       } else if (cmd.op === 'union') {
         const { u, v } = cmd;
-        let rootU = u;
-        while (rootU !== parent[rootU]) rootU = parent[rootU];
-        let rootV = v;
-        while (rootV !== parent[rootV]) rootV = parent[rootV];
+        rootU = find(u);
+        rootV = find(v);
 
         steps.push({
           type: 'union_eval',
