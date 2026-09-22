@@ -1830,9 +1830,11 @@ const DsuModule = {
         let compressed = false;
         const compressedNodes = [];
         for (let node of path) {
-          if (node !== root && parent[node] !== root) {
+          if (node !== root) {
+            if (parent[node] !== root) {
+              compressed = true;
+            }
             parent[node] = root;
-            compressed = true;
             compressedNodes.push(node);
           }
         }
