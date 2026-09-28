@@ -421,6 +421,10 @@
   .desc-box .tag-reject { color: var(--rose); font-weight: 600; }
   .desc-box .tag-skip { color: var(--gray); font-weight: 600; }
   .desc-box .tag-relax { color: var(--emerald); font-weight: 600; }
+  .desc-box .tag-match { color: var(--emerald); font-weight: 700; }
+  .desc-box .tag-spurious { color: var(--amber); font-weight: 700; }
+  .desc-box .tag-probe { color: var(--sky); font-weight: 600; }
+  .desc-box .tag-tombstone { color: var(--violet); font-weight: 600; }
 
   /* Legend */
   .legend {
@@ -869,7 +873,7 @@
 
 <div class="container">
   <header>
-    <div class="badge">Algorithmic Suite // Greedy, Graphs & Disjoint Sets</div>
+    <div class="badge">Algorithmic Suite // Greedy, Graphs, Hashing &amp; Strings</div>
     <h1>ALGORITHMS LABORATORY</h1>
     <p class="sub">Step-by-step interactive simulator, dynamic SVG graph & tree visualization, custom problem workbench, and live execution tracing.</p>
   </header>
@@ -920,6 +924,18 @@
     <button class="tab-btn" data-algo="bellmanford">
       <span class="tab-num">09</span>
       <span>Bellman-Ford SSSP</span>
+    </button>
+  </div>
+
+  <div class="tabs-category-label">Hashing &amp; String Matching</div>
+  <div class="tabs-grid">
+    <button class="tab-btn" data-algo="hashing">
+      <span class="tab-num">10</span>
+      <span>Hash Table</span>
+    </button>
+    <button class="tab-btn" data-algo="rabinkarp">
+      <span class="tab-num">11</span>
+      <span>Rabin-Karp Search</span>
     </button>
   </div>
 
@@ -1080,7 +1096,7 @@
       <span>&copy; 2026 <b>hameme 21</b>. All rights reserved.</span>
     </div>
     <div style="font-size: 11px; color: var(--text-dim);">
-      Algorithms Suite // Greedy Paradigms, Spanning Trees, Shortest Paths &amp; DSU
+      Algorithms Suite // Greedy Paradigms, Spanning Trees, Shortest Paths, DSU, Hashing &amp; String Search
     </div>
   </footer>
 </div>
@@ -3178,6 +3194,940 @@ const BellmanFordModule = {
 };
 
 /* =========================================================================
+   10. HASH TABLE & HASHING (OPEN ADDRESSING & CHAINING)
+   ========================================================================= */
+const HashModule = {
+  tableSize: 7,
+  method: 'linear',
+  operations: [
+    { op: 'insert', key: 10 },
+    { op: 'insert', key: 17 },
+    { op: 'insert', key: 24 },
+    { op: 'insert', key: 3 },
+    { op: 'search', key: 24 },
+    { op: 'delete', key: 17 },
+    { op: 'search', key: 24 }
+  ],
+  presets: [
+    {
+      name: "Linear Probing Collision Cascade",
+      tableSize: 7,
+      method: 'linear',
+      operations: [
+        { op: 'insert', key: 10 }, { op: 'insert', key: 17 }, { op: 'insert', key: 24 },
+        { op: 'insert', key: 3 }, { op: 'search', key: 24 }, { op: 'delete', key: 17 }, { op: 'search', key: 24 }
+      ]
+    },
+    {
+      name: "Double Hashing (h1 + i*h2)",
+      tableSize: 11,
+      method: 'double',
+      operations: [
+        { op: 'insert', key: 12 }, { op: 'insert', key: 23 }, { op: 'insert', key: 34 },
+        { op: 'insert', key: 45 }, { op: 'search', key: 23 }, { op: 'delete', key: 23 }, { op: 'search', key: 23 }
+      ]
+    },
+    {
+      name: "Quadratic Probing Resolution",
+      tableSize: 11,
+      method: 'quadratic',
+      operations: [
+        { op: 'insert', key: 10 }, { op: 'insert', key: 21 }, { op: 'insert', key: 32 },
+        { op: 'insert', key: 43 }, { op: 'search', key: 32 }
+      ]
+    },
+    {
+      name: "Separate Chaining Linked Buckets",
+      tableSize: 5,
+      method: 'chaining',
+      operations: [
+        { op: 'insert', key: 5 }, { op: 'insert', key: 10 }, { op: 'insert', key: 15 },
+        { op: 'insert', key: 7 }, { op: 'insert', key: 12 }, { op: 'search', key: 10 },
+        { op: 'delete', key: 10 }, { op: 'search', key: 10 }
+      ]
+    }
+  ],
+  pseudocode: [
+    { line: 1, code: "HASH-TABLE(Operations, m, method):", func: true },
+    { line: 2, code: "  T = array of size m (all NIL)" },
+    { line: 3, code: "  for each operation in Operations:" },
+    { line: 4, code: "    if op == INSERT(k):" },
+    { line: 5, code: "      i = 0; while i < m:" },
+    { line: 6, code: "        slot = h(k, i); if T[slot] is NIL or DEL: T[slot] = k; break" },
+    { line: 7, code: "        else: collision; i++" },
+    { line: 8, code: "    else if op == SEARCH(k):" },
+    { line: 9, code: "      i = 0; while i < m:" },
+    { line: 10, code: "        slot = h(k, i); if T[slot] == k: return slot; if T[slot] == NIL: return NOT_FOUND; i++" },
+    { line: 11, code: "    else if op == DELETE(k):" },
+    { line: 12, code: "      slot = SEARCH(k); if found: T[slot] = DELETED (Tombstone)" }
+  ],
+  theory: {
+    time: "Average O(1), Worst O(n)",
+    space: "O(m)",
+    choice: "Direct hashing h(k) + Probing/Chaining",
+    desc: "Hash tables map associative keys to table slots using hash functions h(k). When collisions occur, open addressing probes alternative slots along a deterministic sequence, while separate chaining maintains a linked list of entries at each bucket."
+  },
+  generateRandom() {
+    const m = 7;
+    const ops = [];
+    const inserted = [];
+    for (let i = 0; i < 5; i++) {
+      const k = Math.floor(Math.random() * 80) + 1;
+      ops.push({ op: 'insert', key: k });
+      inserted.push(k);
+    }
+    if (inserted.length) {
+      ops.push({ op: 'search', key: inserted[Math.floor(Math.random() * inserted.length)] });
+      ops.push({ op: 'delete', key: inserted[0] });
+      ops.push({ op: 'search', key: inserted[0] });
+    }
+    return { tableSize: m, method: 'linear', operations: ops };
+  },
+  h1(k, m) { return ((k % m) + m) % m; },
+  h2(k, m) {
+    const prime = m > 3 ? (m === 11 ? 7 : (m === 7 ? 5 : m - 2)) : 1;
+    return 1 + (((k % prime) + prime) % prime);
+  },
+  getProbeIndex(k, i, m, method) {
+    const base = this.h1(k, m);
+    if (method === 'linear') return (base + i) % m;
+    if (method === 'quadratic') return (base + i + i * i) % m;
+    if (method === 'double') {
+      const step = this.h2(k, m);
+      return (base + i * step) % m;
+    }
+    return base;
+  },
+  buildSteps(tableSize, method, operations) {
+    const m = tableSize;
+    const steps = [];
+
+    if (method === 'chaining') {
+      const buckets = Array.from({ length: m }, () => []);
+      steps.push({
+        type: 'init',
+        lineHighlight: 2,
+        method,
+        tableSize: m,
+        buckets: buckets.map(b => [...b]),
+        activeSlot: null,
+        activeKey: null,
+        desc: `<b>Separate Chaining Initialized:</b> Created hash table with <span class="num">${m}</span> buckets. All linked lists initially empty ($NIL$).`
+      });
+
+      operations.forEach((cmd, cmdIdx) => {
+        const k = cmd.key;
+        const bIdx = this.h1(k, m);
+
+        steps.push({
+          type: 'eval_hash',
+          lineHighlight: 4,
+          method,
+          tableSize: m,
+          buckets: buckets.map(b => [...b]),
+          activeSlot: bIdx,
+          activeKey: k,
+          cmd,
+          desc: `<b>Operation ${cmdIdx + 1}: ${cmd.op.toUpperCase()}(${k})</b>.<br>Compute bucket: $h(${k}) = ${k} \\bmod ${m} = <span class="num">${bIdx}</span>$. Inspecting bucket ${bIdx} chain.`
+        });
+
+        if (cmd.op === 'insert') {
+          buckets[bIdx].push(k);
+          steps.push({
+            type: 'insert_chain',
+            lineHighlight: 6,
+            method,
+            tableSize: m,
+            buckets: buckets.map(b => [...b]),
+            activeSlot: bIdx,
+            activeKey: k,
+            cmd,
+            desc: `<b>Insert Successful:</b> Appended key <span class="num">${k}</span> to linked list at bucket <span class="num">${bIdx}</span>.`
+          });
+        } else if (cmd.op === 'search') {
+          const found = buckets[bIdx].includes(k);
+          steps.push({
+            type: 'search_chain',
+            lineHighlight: 10,
+            method,
+            tableSize: m,
+            buckets: buckets.map(b => [...b]),
+            activeSlot: bIdx,
+            activeKey: k,
+            cmd,
+            found,
+            desc: found 
+              ? `<span class="tag-match">KEY FOUND!</span> Key <span class="num">${k}</span> exists in bucket ${bIdx} linked list.`
+              : `<span class="tag-reject">KEY NOT FOUND</span>. Key <span class="num">${k}</span> was not present in bucket ${bIdx}.`
+          });
+        } else if (cmd.op === 'delete') {
+          const idx = buckets[bIdx].indexOf(k);
+          const found = idx !== -1;
+          if (found) buckets[bIdx].splice(idx, 1);
+          steps.push({
+            type: 'delete_chain',
+            lineHighlight: 12,
+            method,
+            tableSize: m,
+            buckets: buckets.map(b => [...b]),
+            activeSlot: bIdx,
+            activeKey: k,
+            cmd,
+            found,
+            desc: found
+              ? `<b>Delete Successful:</b> Removed key <span class="num">${k}</span> from bucket ${bIdx} chain.`
+              : `<b>Delete Skipped:</b> Key <span class="num">${k}</span> not found in bucket ${bIdx}.`
+          });
+        }
+      });
+
+      steps.push({
+        type: 'done',
+        lineHighlight: 1,
+        method,
+        tableSize: m,
+        buckets: buckets.map(b => [...b]),
+        activeSlot: null,
+        activeKey: null,
+        desc: `<b>All Operations Complete:</b> Separate chaining maintains dynamic collision buckets.`
+      });
+      return steps;
+    }
+
+    const table = new Array(m).fill(null);
+    let count = 0;
+
+    steps.push({
+      type: 'init',
+      lineHighlight: 2,
+      method,
+      tableSize: m,
+      table: [...table],
+      activeSlot: null,
+      activeKey: null,
+      probeTrail: [],
+      loadFactor: 0,
+      desc: `<b>Open Addressing Initialized (${method.toUpperCase()} PROBING):</b> Table size $m = <span class="num">${m}</span>$. All slots initialized to $NIL$. Load factor $\\alpha = 0.00$.`
+    });
+
+    operations.forEach((cmd, cmdIdx) => {
+      const k = cmd.key;
+      const probeTrail = [];
+
+      steps.push({
+        type: 'start_op',
+        lineHighlight: cmd.op === 'insert' ? 4 : (cmd.op === 'search' ? 8 : 11),
+        method,
+        tableSize: m,
+        table: [...table],
+        activeSlot: null,
+        activeKey: k,
+        probeTrail: [],
+        loadFactor: count / m,
+        cmd,
+        desc: `<b>Operation ${cmdIdx + 1} &bull; ${cmd.op.toUpperCase()}(${k}):</b> Base hash: $h_1(${k}) = ${k} \\bmod ${m} = <span class="num">${this.h1(k, m)}</span>$` +
+              (method === 'double' ? `, secondary step $h_2(${k}) = 1 + (${k} \\bmod 7) = <span class="num">${this.h2(k, m)}</span>$` : '') +
+              `. Begin probing sequence.`
+      });
+
+      if (cmd.op === 'insert') {
+        let placed = false;
+        for (let i = 0; i < m; i++) {
+          const slot = this.getProbeIndex(k, i, m, method);
+          probeTrail.push(slot);
+          const currentVal = table[slot];
+
+          if (currentVal === null || currentVal === 'DEL') {
+            table[slot] = k;
+            count++;
+            placed = true;
+            steps.push({
+              type: 'insert_success',
+              lineHighlight: 6,
+              method,
+              tableSize: m,
+              table: [...table],
+              activeSlot: slot,
+              activeKey: k,
+              probeTrail: [...probeTrail],
+              probeCount: i + 1,
+              loadFactor: count / m,
+              cmd,
+              desc: `<b>Probe #${i} &rarr; Slot ${slot}:</b> Slot was ${currentVal === null ? '$NIL$ (empty)' : '$DEL$ (tombstone)'}.<br>` +
+                    `<span class="tag-match">INSERT SUCCESSFUL</span>: Key <span class="num">${k}</span> stored at <b>Slot ${slot}</b> after ${i + 1} probe(s). Load factor $\\alpha = <span class="num">${(count / m).toFixed(2)}</span>$.`
+            });
+            break;
+          } else {
+            steps.push({
+              type: 'collision',
+              lineHighlight: 7,
+              method,
+              tableSize: m,
+              table: [...table],
+              activeSlot: slot,
+              activeKey: k,
+              probeTrail: [...probeTrail],
+              probeCount: i + 1,
+              loadFactor: count / m,
+              cmd,
+              desc: `<b>Probe #${i} &rarr; Slot ${slot}:</b> Occupied by key <span class="num">${currentVal}</span>.<br>` +
+                    `<span class="tag-reject">COLLISION DETECTED</span> at Slot ${slot}. Probing next sequence index...`
+            });
+          }
+        }
+        if (!placed) {
+          steps.push({
+            type: 'overflow',
+            lineHighlight: 6,
+            method,
+            tableSize: m,
+            table: [...table],
+            activeSlot: null,
+            activeKey: k,
+            probeTrail: [...probeTrail],
+            loadFactor: count / m,
+            cmd,
+            desc: `<b style="color:var(--rose)">TABLE OVERFLOW!</b> Probed all ${m} slots without finding an available entry. Insert failed.`
+          });
+        }
+      } else if (cmd.op === 'search') {
+        let foundSlot = -1;
+        for (let i = 0; i < m; i++) {
+          const slot = this.getProbeIndex(k, i, m, method);
+          probeTrail.push(slot);
+          const currentVal = table[slot];
+
+          if (currentVal === k) {
+            foundSlot = slot;
+            steps.push({
+              type: 'search_hit',
+              lineHighlight: 10,
+              method,
+              tableSize: m,
+              table: [...table],
+              activeSlot: slot,
+              activeKey: k,
+              probeTrail: [...probeTrail],
+              probeCount: i + 1,
+              loadFactor: count / m,
+              cmd,
+              desc: `<b>Probe #${i} &rarr; Slot ${slot}:</b> Matches target key <span class="num">${k}</span>!<br>` +
+                    `<span class="tag-match">KEY FOUND AT SLOT ${slot}</span> after ${i + 1} probe(s).`
+            });
+            break;
+          } else if (currentVal === null) {
+            steps.push({
+              type: 'search_miss',
+              lineHighlight: 10,
+              method,
+              tableSize: m,
+              table: [...table],
+              activeSlot: slot,
+              activeKey: k,
+              probeTrail: [...probeTrail],
+              probeCount: i + 1,
+              loadFactor: count / m,
+              cmd,
+              desc: `<b>Probe #${i} &rarr; Slot ${slot}:</b> Reached $NIL$ (empty slot).<br>` +
+                    `<span class="tag-reject">SEARCH TERMINATED: NOT FOUND</span>. In open addressing, hitting $NIL$ guarantees key ${k} was never inserted.`
+            });
+            break;
+          } else if (currentVal === 'DEL') {
+            steps.push({
+              type: 'tombstone_skip',
+              lineHighlight: 10,
+              method,
+              tableSize: m,
+              table: [...table],
+              activeSlot: slot,
+              activeKey: k,
+              probeTrail: [...probeTrail],
+              probeCount: i + 1,
+              loadFactor: count / m,
+              cmd,
+              desc: `<b>Probe #${i} &rarr; Slot ${slot}:</b> Encountered <span class="tag-tombstone">[DEL] Tombstone</span>.<br>` +
+                    `Tombstone indicates a previously deleted element; search <b>must continue</b> along probe sequence.`
+            });
+          } else {
+            steps.push({
+              type: 'search_step',
+              lineHighlight: 10,
+              method,
+              tableSize: m,
+              table: [...table],
+              activeSlot: slot,
+              activeKey: k,
+              probeTrail: [...probeTrail],
+              probeCount: i + 1,
+              loadFactor: count / m,
+              cmd,
+              desc: `<b>Probe #${i} &rarr; Slot ${slot}:</b> Holds key <span class="num">${currentVal}</span> ($\\ne ${k}$). Continue probing.`
+            });
+          }
+        }
+      } else if (cmd.op === 'delete') {
+        let foundSlot = -1;
+        for (let i = 0; i < m; i++) {
+          const slot = this.getProbeIndex(k, i, m, method);
+          probeTrail.push(slot);
+          const currentVal = table[slot];
+
+          if (currentVal === k) {
+            foundSlot = slot;
+            table[slot] = 'DEL';
+            count--;
+            steps.push({
+              type: 'delete_success',
+              lineHighlight: 12,
+              method,
+              tableSize: m,
+              table: [...table],
+              activeSlot: slot,
+              activeKey: k,
+              probeTrail: [...probeTrail],
+              probeCount: i + 1,
+              loadFactor: count / m,
+              cmd,
+              desc: `<b>Probe #${i} &rarr; Slot ${slot}:</b> Target key <span class="num">${k}</span> located.<br>` +
+                    `<span class="tag-match">DELETE COMPLETED</span>: Replaced key with <span class="tag-tombstone">[DEL] Tombstone</span>. Preserves continuity of probe chains!`
+            });
+            break;
+          } else if (currentVal === null) {
+            steps.push({
+              type: 'delete_miss',
+              lineHighlight: 12,
+              method,
+              tableSize: m,
+              table: [...table],
+              activeSlot: slot,
+              activeKey: k,
+              probeTrail: [...probeTrail],
+              probeCount: i + 1,
+              loadFactor: count / m,
+              cmd,
+              desc: `<b>Probe #${i} &rarr; Slot ${slot}:</b> Hit $NIL$. Key <span class="num">${k}</span> is not in table; deletion skipped.`
+            });
+            break;
+          }
+        }
+      }
+    });
+
+    steps.push({
+      type: 'done',
+      lineHighlight: 1,
+      method,
+      tableSize: m,
+      table: [...table],
+      activeSlot: null,
+      activeKey: null,
+      probeTrail: [],
+      loadFactor: count / m,
+      desc: `<b>All Operations Complete:</b> Final active elements in table: <span class="num">${count} / ${m}</span> (Load factor $\\alpha = <span class="num">${(count / m).toFixed(2)}</span>$).`
+    });
+
+    return steps;
+  },
+  renderCanvas(svg, step) {
+    if (step.method === 'chaining') {
+      let html = `<defs>
+        <marker id="hash-arrow" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#14b8a6"/>
+        </marker>
+      </defs>`;
+      html += `<text x="400" y="24" text-anchor="middle" fill="#94a3b8" font-size="12" font-family="JetBrains Mono">Separate Chaining Hash Table (${step.tableSize} buckets)</text>`;
+
+      const m = step.tableSize;
+      const rowH = Math.min(48, 250 / m);
+      const startY = 48;
+
+      for (let b = 0; b < m; b++) {
+        const y = startY + b * (rowH + 8);
+        const isActBucket = step.activeSlot === b;
+        const bucketFill = isActBucket ? '#0f766e' : '#141d2c';
+        const bucketStroke = isActBucket ? '#14b8a6' : '#223249';
+
+        html += `<rect x="60" y="${y}" width="90" height="${rowH}" rx="6" fill="${bucketFill}" stroke="${bucketStroke}" stroke-width="${isActBucket ? 2 : 1}"/>`;
+        html += `<text x="105" y="${y + rowH / 2 - 2}" text-anchor="middle" fill="${isActBucket ? '#fff' : '#94a3b8'}" font-size="11" font-family="JetBrains Mono" font-weight="700">Bucket [${b}]</text>`;
+        html += `<text x="105" y="${y + rowH / 2 + 12}" text-anchor="middle" fill="#2dd4bf" font-size="9" font-family="JetBrains Mono">h(k)=${b}</text>`;
+
+        const chain = step.buckets[b] || [];
+        let nodeX = 180;
+        if (chain.length === 0) {
+          html += `<line x1="150" y1="${y + rowH / 2}" x2="190" y2="${y + rowH / 2}" stroke="#334155" stroke-width="1.5" marker-end="url(#hash-arrow)"/>`;
+          html += `<text x="210" y="${y + rowH / 2 + 4}" fill="#475569" font-size="11" font-family="JetBrains Mono">NIL</text>`;
+        } else {
+          for (let i = 0; i < chain.length; i++) {
+            const keyVal = chain[i];
+            const prevX = (i === 0) ? 150 : (nodeX - 30);
+            html += `<line x1="${prevX}" y1="${y + rowH / 2}" x2="${nodeX}" y2="${y + rowH / 2}" stroke="#14b8a6" stroke-width="1.8" marker-end="url(#hash-arrow)"/>`;
+
+            const isHitKey = step.activeKey === keyVal && isActBucket;
+            const nodeFill = isHitKey ? '#f59e0b' : '#1e293b';
+            const nodeStroke = isHitKey ? '#fbbf24' : '#334155';
+
+            html += `<rect x="${nodeX}" y="${y + 4}" width="65" height="${rowH - 8}" rx="6" fill="${nodeFill}" stroke="${nodeStroke}" stroke-width="${isHitKey ? 2 : 1}"/>`;
+            html += `<text x="${nodeX + 32}" y="${y + rowH / 2 + 4}" text-anchor="middle" fill="#fff" font-size="12" font-family="JetBrains Mono" font-weight="700">${keyVal}</text>`;
+            nodeX += 95;
+          }
+          html += `<line x1="${nodeX - 30}" y1="${y + rowH / 2}" x2="${nodeX}" y2="${y + rowH / 2}" stroke="#334155" stroke-width="1.5" marker-end="url(#hash-arrow)"/>`;
+          html += `<text x="${nodeX + 20}" y="${y + rowH / 2 + 4}" fill="#475569" font-size="11" font-family="JetBrains Mono">NIL</text>`;
+        }
+      }
+      svg.setAttribute('viewBox', `0 0 800 ${Math.max(260, startY + m * (rowH + 8) + 20)}`);
+      svg.innerHTML = html;
+      return;
+    }
+
+    const m = step.tableSize;
+    const slotW = Math.min(85, (720 - (m - 1) * 8) / m);
+    const slotH = 75;
+    const startX = 40 + (720 - (m * slotW + (m - 1) * 8)) / 2;
+    const slotY = 100;
+
+    let html = `<defs>
+      <marker id="hash-probe-arrow" viewBox="0 0 10 10" refX="5" refY="10" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 0 L 10 0 L 5 10 z" fill="#f59e0b"/>
+      </marker>
+    </defs>`;
+
+    html += `<text x="40" y="32" fill="#94a3b8" font-size="12" font-family="JetBrains Mono" font-weight="600">Open Addressing: <tspan fill="#14b8a6">${step.method.toUpperCase()} PROBING</tspan></text>`;
+    html += `<text x="760" y="32" text-anchor="end" fill="#94a3b8" font-size="12" font-family="JetBrains Mono">Load Factor &alpha; = <tspan fill="#f59e0b" font-weight="700">${(step.loadFactor || 0).toFixed(2)}</tspan></text>`;
+
+    if (step.cmd) {
+      html += `<rect x="40" y="44" width="720" height="30" rx="6" fill="#141d2c" stroke="#223249"/>`;
+      html += `<text x="400" y="64" text-anchor="middle" fill="#f1f5f9" font-size="12" font-family="JetBrains Mono" font-weight="600">Op: ${step.cmd.op.toUpperCase()}(${step.cmd.key}) &bull; Probe Count: <tspan fill="#f59e0b">${step.probeCount || 0}</tspan> / ${m}</text>`;
+    }
+
+    for (let i = 0; i < m; i++) {
+      const x = startX + i * (slotW + 8);
+      const val = step.table[i];
+      const isAct = step.activeSlot === i;
+      const isCol = step.type === 'collision' && isAct;
+      const isHit = (step.type === 'insert_success' || step.type === 'search_hit') && isAct;
+      const isDel = val === 'DEL';
+
+      let fill = '#141d2c', stroke = '#223249', strokeW = 1;
+      if (val !== null && val !== 'DEL') { fill = '#1e293b'; stroke = '#334155'; }
+      if (isDel) { fill = 'rgba(139, 92, 246, 0.15)'; stroke = 'rgba(139, 92, 246, 0.4)'; }
+      if (isAct) { fill = '#223249'; stroke = '#f59e0b'; strokeW = 2.5; }
+      if (isCol) { fill = 'rgba(244, 63, 94, 0.18)'; stroke = '#f43f5e'; strokeW = 2.5; }
+      if (isHit) { fill = 'rgba(20, 184, 166, 0.25)'; stroke = '#14b8a6'; strokeW = 3; }
+
+      html += `<rect x="${x}" y="${slotY}" width="${slotW}" height="${slotH}" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}"/>`;
+      html += `<text x="${x + slotW / 2}" y="${slotY - 8}" text-anchor="middle" fill="#64748b" font-size="10" font-family="JetBrains Mono">Slot [${i}]</text>`;
+
+      if (val === null) {
+        html += `<text x="${x + slotW / 2}" y="${slotY + slotH / 2 + 4}" text-anchor="middle" fill="#475569" font-size="11" font-family="JetBrains Mono">NIL</text>`;
+      } else if (isDel) {
+        html += `<rect x="${x + slotW / 2 - 20}" y="${slotY + slotH / 2 - 14}" width="40" height="18" rx="4" fill="#8b5cf6" fill-opacity="0.25" stroke="#8b5cf6"/>`;
+        html += `<text x="${x + slotW / 2}" y="${slotY + slotH / 2 - 1}" text-anchor="middle" fill="#c4b5fd" font-size="9" font-family="JetBrains Mono" font-weight="700">DEL</text>`;
+        html += `<text x="${x + slotW / 2}" y="${slotY + slotH / 2 + 16}" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono">Tombstone</text>`;
+      } else {
+        html += `<text x="${x + slotW / 2}" y="${slotY + slotH / 2 + 6}" text-anchor="middle" fill="${isHit ? '#2dd4bf' : '#fff'}" font-size="15" font-family="JetBrains Mono" font-weight="700">${val}</text>`;
+      }
+
+      if (isAct) {
+        html += `<line x1="${x + slotW / 2}" y1="${slotY - 32}" x2="${x + slotW / 2}" y2="${slotY - 14}" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#hash-probe-arrow)"/>`;
+        html += `<text x="${x + slotW / 2}" y="${slotY - 38}" text-anchor="middle" fill="#f59e0b" font-size="10" font-family="JetBrains Mono" font-weight="700">PROBE</text>`;
+      }
+    }
+
+    if (step.probeTrail && step.probeTrail.length > 1) {
+      for (let p = 0; p < step.probeTrail.length - 1; p++) {
+        const s1 = step.probeTrail[p];
+        const s2 = step.probeTrail[p + 1];
+        const x1 = startX + s1 * (slotW + 8) + slotW / 2;
+        const x2 = startX + s2 * (slotW + 8) + slotW / 2;
+        const midX = (x1 + x2) / 2;
+        const curveY = slotY + slotH + 20 + Math.abs(s2 - s1) * 6;
+        html += `<path d="M ${x1} ${slotY + slotH} Q ${midX} ${curveY} ${x2} ${slotY + slotH}" fill="none" stroke="#f59e0b" stroke-dasharray="3,3" stroke-width="1.8"/>`;
+      }
+    }
+
+    svg.setAttribute('viewBox', '0 0 800 240');
+    svg.innerHTML = html;
+  },
+  renderTable(thead, tbody, step) {
+    if (step.method === 'chaining') {
+      thead.innerHTML = `<tr><th>Bucket Index</th><th>Hash Formula</th><th>Stored Chain (Linked List)</th><th>Chain Length</th></tr>`;
+      let rows = '';
+      for (let b = 0; b < step.tableSize; b++) {
+        const chain = step.buckets[b] || [];
+        const isAct = step.activeSlot === b;
+        rows += `<tr class="${isAct ? 'active-row' : ''}">
+          <td><b>Bucket [${b}]</b></td>
+          <td>h(k) = k mod ${step.tableSize} = ${b}</td>
+          <td><b>${chain.length ? chain.join(' &rarr; ') + ' &rarr; NIL' : '<span style="color:var(--text-dim)">NIL (Empty)</span>'}</b></td>
+          <td><b style="color:var(--teal)">${chain.length}</b></td>
+        </tr>`;
+      }
+      tbody.innerHTML = rows;
+      return;
+    }
+
+    thead.innerHTML = `<tr><th>Slot Index</th><th>Stored Key</th><th>Status</th><th>Probe Notes</th></tr>`;
+    let rows = '';
+    for (let i = 0; i < step.tableSize; i++) {
+      const val = step.table[i];
+      const isAct = step.activeSlot === i;
+      let status = '<span style="color:var(--text-dim)">NIL (Free Slot)</span>';
+      if (val === 'DEL') status = '<span style="color:var(--violet); font-weight:600;">[DEL] Tombstone (Available for Insert, Skips on Search)</span>';
+      else if (val !== null) status = `<span style="color:var(--teal); font-weight:600;">Occupied (${val})</span>`;
+
+      rows += `<tr class="${isAct ? 'active-row' : ''}">
+        <td><b>Slot [${i}]</b></td>
+        <td><b style="color:var(--amber)">${val === null ? '—' : val}</b></td>
+        <td>${status}</td>
+        <td>h(k, i) sequence entry</td>
+      </tr>`;
+    }
+    tbody.innerHTML = rows;
+  },
+  legend: [
+    { color: 'var(--teal)', label: 'Occupied Slot / Stored Key' },
+    { color: 'var(--amber)', label: 'Active Probing / Collision' },
+    { color: 'var(--violet)', label: 'Tombstone [DEL]' },
+    { color: 'var(--gray)', label: 'Empty Slot (NIL)' }
+  ]
+};
+
+/* =========================================================================
+   11. RABIN-KARP STRING MATCHING ALGORITHM
+   ========================================================================= */
+const RabinKarpModule = {
+  text: "3141592653589793",
+  pattern: "26",
+  radix: 10,
+  prime: 11,
+  presets: [
+    {
+      name: "CLRS Textbook Numerical (d=10, q=11)",
+      text: "3141592653589793",
+      pattern: "26",
+      radix: 10,
+      prime: 11
+    },
+    {
+      name: "Spurious Hit Demonstration (d=26, q=13)",
+      text: "AABAACAADAABAABA",
+      pattern: "AABA",
+      radix: 26,
+      prime: 13
+    },
+    {
+      name: "DNA Sequence Search (d=4, q=17)",
+      text: "GATCGATCGATC",
+      pattern: "GATC",
+      radix: 4,
+      prime: 17
+    },
+    {
+      name: "Keyword Search (d=256, q=101)",
+      text: "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG",
+      pattern: "FOX",
+      radix: 256,
+      prime: 101
+    }
+  ],
+  pseudocode: [
+    { line: 1, code: "RABIN-KARP-MATCHER(T, P, d, q):", func: true },
+    { line: 2, code: "  n = T.length; m = P.length; h = d^(m-1) mod q" },
+    { line: 3, code: "  p = 0; t_0 = 0" },
+    { line: 4, code: "  for i = 1 to m: p = (d*p + P[i]) mod q; t_0 = (d*t_0 + T[i]) mod q" },
+    { line: 5, code: "  for s = 0 to n - m:  // Slide window" },
+    { line: 6, code: "    if p == t_s:" },
+    { line: 7, code: "      if P[1..m] == T[s+1 .. s+m]: print \"Occurrence at\" s" },
+    { line: 8, code: "      else: print \"Spurious Hit (Hash match, text mismatch)\"" },
+    { line: 9, code: "    if s < n - m:" },
+    { line: 10, code: "      t_{s+1} = (d * (t_s - T[s+1]*h) + T[s+m+1]) mod q" }
+  ],
+  theory: {
+    time: "Average O(n + m), Worst O((n - m + 1)m)",
+    space: "O(1) auxiliary",
+    choice: "Rolling hash arithmetic modulo prime q",
+    desc: "Rabin-Karp treats strings as base-d integers. By updating the window hash in O(1) time through high-order subtraction and low-order addition, character comparisons only occur when hashes match."
+  },
+  generateRandom() {
+    const chars = "ABC";
+    let text = "";
+    for (let i = 0; i < 16; i++) text += chars[Math.floor(Math.random() * chars.length)];
+    const pLen = 3;
+    const s = Math.floor(Math.random() * (text.length - pLen));
+    const pattern = text.slice(s, s + pLen);
+    return { text, pattern, radix: 3, prime: 11 };
+  },
+  charVal(ch) {
+    if (ch >= '0' && ch <= '9') return parseInt(ch, 10);
+    const code = ch.charCodeAt(0);
+    if (code >= 65 && code <= 90) return code - 65 + 1;
+    return code;
+  },
+  buildSteps(text, pattern, d, q) {
+    const n = text.length;
+    const m = pattern.length;
+    const steps = [];
+
+    let h = 1;
+    for (let i = 0; i < m - 1; i++) {
+      h = (h * d) % q;
+    }
+
+    let p = 0;
+    let t = 0;
+    for (let i = 0; i < m; i++) {
+      p = (d * p + this.charVal(pattern[i])) % q;
+      t = (d * t + this.charVal(text[i])) % q;
+    }
+
+    steps.push({
+      type: 'init',
+      lineHighlight: 2,
+      shift: 0,
+      text, pattern, d, q, h, p, t,
+      matchShifts: [],
+      spuriousShifts: [],
+      desc: `<b>Rabin-Karp Initialized:</b> Radix $d = <span class="num">${d}</span>$, prime $q = <span class="num">${q}</span>$. Multiplier $h = d^{m-1} \\bmod q = ${d}^{${m - 1}} \\bmod ${q} = <span class="num">${h}</span>$.<br>` +
+            `Pattern hash $p = <span class="num">${p}</span>$. Initial window $T[0..${m - 1}] = \\text{"${text.slice(0, m)}"}$ has hash $t_0 = <span class="num">${t}</span>$.`
+    });
+
+    const matchShifts = [];
+    const spuriousShifts = [];
+
+    for (let s = 0; s <= n - m; s++) {
+      const windowStr = text.slice(s, s + m);
+      const hashMatch = (p === t);
+
+      steps.push({
+        type: 'compare_hash',
+        lineHighlight: 6,
+        shift: s,
+        text, pattern, d, q, h, p, t,
+        windowStr, hashMatch,
+        matchShifts: [...matchShifts],
+        spuriousShifts: [...spuriousShifts],
+        desc: `<b>Shift $s = ${s}$</b> &bull; Window $T[${s}..${s + m - 1}] = \\text{"${windowStr}"}$ [hash: <span class="num">${t}</span>].<br>` +
+              (hashMatch
+                ? `&bull; Hash match: $t_{${s}} (${t}) == p (${p})$ &rarr; <span class="tag-match">HASH COINCIDENCE</span>! Proceeding to character verification.`
+                : `&bull; Hash mismatch: $t_{${s}} (${t}) \\ne p (${p})$ &rarr; Pattern cannot occur here. Skip character checks.`)
+      });
+
+      if (hashMatch) {
+        let isExact = true;
+        const charChecks = [];
+        for (let j = 0; j < m; j++) {
+          const matchChar = pattern[j] === windowStr[j];
+          charChecks.push({ j, pChar: pattern[j], tChar: windowStr[j], matchChar });
+          if (!matchChar) isExact = false;
+        }
+
+        if (isExact) {
+          matchShifts.push(s);
+          steps.push({
+            type: 'exact_match',
+            lineHighlight: 7,
+            shift: s,
+            text, pattern, d, q, h, p, t,
+            windowStr, charChecks, isExact,
+            matchShifts: [...matchShifts],
+            spuriousShifts: [...spuriousShifts],
+            desc: `<span class="tag-match">EXACT PATTERN MATCH OCCURS AT SHIFT ${s}</span>!<br>` +
+                  `All ${m} characters match: $\\text{"${windowStr}"} == \\text{"${pattern}"}$.`
+          });
+        } else {
+          spuriousShifts.push(s);
+          steps.push({
+            type: 'spurious_hit',
+            lineHighlight: 8,
+            shift: s,
+            text, pattern, d, q, h, p, t,
+            windowStr, charChecks, isExact,
+            matchShifts: [...matchShifts],
+            spuriousShifts: [...spuriousShifts],
+            desc: `<span class="tag-spurious">SPURIOUS HIT AT SHIFT ${s}</span>!<br>` +
+                  `Hashes match ($t_{${s}} = p = ${p}$), but characters differ: $\\text{"${windowStr}"} \\ne \\text{"${pattern}"}$. This is a hash collision modulo $q = ${q}$.`
+          });
+        }
+      }
+
+      if (s < n - m) {
+        const outChar = text[s];
+        const inChar = text[s + m];
+        const outVal = this.charVal(outChar);
+        const inVal = this.charVal(inChar);
+
+        const highTerm = (outVal * h) % q;
+        let rem = (t - highTerm) % q;
+        if (rem < 0) rem += q;
+        const nextT = ((rem * d) + inVal) % q;
+
+        steps.push({
+          type: 'roll_hash',
+          lineHighlight: 10,
+          shift: s,
+          nextShift: s + 1,
+          text, pattern, d, q, h, p, t, nextT,
+          windowStr,
+          outChar, outVal, inChar, inVal, highTerm,
+          matchShifts: [...matchShifts],
+          spuriousShifts: [...spuriousShifts],
+          desc: `<b>Rolling Hash from $s = ${s} \\to ${s + 1}$</b>:<br>` +
+                `1. Subtract leading digit: $(${t} - ${outVal} \\times ${h}) \\bmod ${q} = ${rem}$.<br>` +
+                `2. Shift left & add trailing digit: $(${d} \\times ${rem} + ${inVal}) \\bmod ${q} = <span class="num">${nextT}</span>$.<br>` +
+                `New hash $t_{${s + 1}} = <span class="num">${nextT}</span>$ computed in <b>$O(1)$ constant time</b>!`
+        });
+
+        t = nextT;
+      }
+    }
+
+    steps.push({
+      type: 'done',
+      lineHighlight: 1,
+      shift: n - m,
+      text, pattern, d, q, h, p, t,
+      matchShifts: [...matchShifts],
+      spuriousShifts: [...spuriousShifts],
+      desc: `<b>Rabin-Karp Search Complete:</b> Found <span class="num">${matchShifts.length}</span> exact match(es) at shift(s): [${matchShifts.join(', ')}]. Encountered <span class="num">${spuriousShifts.length}</span> spurious hit(s).`
+    });
+
+    return steps;
+  },
+  renderCanvas(svg, step) {
+    const text = step.text;
+    const pattern = step.pattern;
+    const n = text.length;
+    const m = pattern.length;
+    const s = step.shift !== undefined ? step.shift : 0;
+
+    const charW = Math.min(38, 720 / n);
+    const startX = 40 + (720 - n * charW) / 2;
+    const textY = 70;
+    const charH = 45;
+
+    let html = '';
+
+    html += `<text x="40" y="30" fill="#94a3b8" font-size="12" font-family="JetBrains Mono" font-weight="600">Text Stream T (|T| = ${n}) &amp; Pattern P (|P| = ${m})</text>`;
+    html += `<text x="760" y="30" text-anchor="end" fill="#94a3b8" font-size="12" font-family="JetBrains Mono">Radix d = <tspan fill="#14b8a6">${step.d}</tspan> | Prime q = <tspan fill="#f59e0b">${step.q}</tspan> | h = <tspan fill="#2dd4bf">${step.h}</tspan></text>`;
+
+    for (let i = 0; i < n; i++) {
+      const x = startX + i * charW;
+      const inWindow = i >= s && i < s + m;
+      const isOut = step.type === 'roll_hash' && i === s;
+      const isIn = step.type === 'roll_hash' && i === s + m;
+
+      let fill = inWindow ? '#141d2c' : '#0e141f';
+      let stroke = inWindow ? '#14b8a6' : '#223249';
+
+      html += `<rect x="${x}" y="${textY}" width="${charW - 3}" height="${charH}" rx="4" fill="${fill}" stroke="${stroke}" stroke-width="${inWindow ? 1.8 : 1}"/>`;
+      html += `<text x="${x + (charW - 3) / 2}" y="${textY - 6}" text-anchor="middle" fill="#64748b" font-size="9" font-family="JetBrains Mono">${i}</text>`;
+      html += `<text x="${x + (charW - 3) / 2}" y="${textY + charH / 2 + 5}" text-anchor="middle" fill="#fff" font-size="14" font-family="JetBrains Mono" font-weight="700">${text[i]}</text>`;
+
+      if (isOut) {
+        html += `<rect x="${x - 4}" y="${textY + charH + 4}" width="${charW + 5}" height="16" rx="3" fill="#f43f5e" fill-opacity="0.25" stroke="#f43f5e"/>`;
+        html += `<text x="${x + (charW - 3) / 2}" y="${textY + charH + 15}" text-anchor="middle" fill="#fb7185" font-size="8" font-family="JetBrains Mono" font-weight="700">[-] OUT</text>`;
+      }
+      if (isIn) {
+        html += `<rect x="${x - 4}" y="${textY + charH + 4}" width="${charW + 5}" height="16" rx="3" fill="#10b981" fill-opacity="0.25" stroke="#10b981"/>`;
+        html += `<text x="${x + (charW - 3) / 2}" y="${textY + charH + 15}" text-anchor="middle" fill="#34d399" font-size="8" font-family="JetBrains Mono" font-weight="700">[+] IN</text>`;
+      }
+    }
+
+    const winX = startX + s * charW - 4;
+    const winW = m * charW + 5;
+    let winStroke = '#14b8a6';
+    if (step.type === 'exact_match') winStroke = '#10b981';
+    else if (step.type === 'spurious_hit') winStroke = '#f59e0b';
+
+    html += `<rect x="${winX}" y="${textY - 12}" width="${winW}" height="${charH + 24}" rx="8" fill="none" stroke="${winStroke}" stroke-width="${step.type === 'roll_hash' ? 2 : 2.5}" stroke-dasharray="${step.type === 'roll_hash' ? '4,4' : 'none'}"/>`;
+    html += `<text x="${winX + winW / 2}" y="${textY - 18}" text-anchor="middle" fill="${winStroke}" font-size="10" font-family="JetBrains Mono" font-weight="700">Window T[${s}..${s + m - 1}]</text>`;
+
+    const patY = textY + charH + 34;
+    html += `<text x="${winX - 10}" y="${patY + charH / 2 + 4}" text-anchor="end" fill="#94a3b8" font-size="11" font-family="JetBrains Mono" font-weight="600">P =</text>`;
+
+    for (let j = 0; j < m; j++) {
+      const px = startX + (s + j) * charW;
+      const chk = step.charChecks ? step.charChecks.find(c => c.j === j) : null;
+      let pFill = '#1e293b', pStroke = '#334155', tagGlyph = '';
+
+      if (chk) {
+        pFill = chk.matchChar ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)';
+        pStroke = chk.matchChar ? '#10b981' : '#f43f5e';
+        tagGlyph = chk.matchChar ? '✓' : '✕';
+      }
+
+      html += `<rect x="${px}" y="${patY}" width="${charW - 3}" height="${charH}" rx="4" fill="${pFill}" stroke="${pStroke}" stroke-width="1.8"/>`;
+      html += `<text x="${px + (charW - 3) / 2}" y="${patY + charH / 2 + 5}" text-anchor="middle" fill="#fff" font-size="14" font-family="JetBrains Mono" font-weight="700">${pattern[j]}</text>`;
+      if (tagGlyph) {
+        html += `<text x="${px + (charW - 3) / 2}" y="${patY + charH + 16}" text-anchor="middle" fill="${pStroke}" font-size="12" font-family="JetBrains Mono" font-weight="800">${tagGlyph}</text>`;
+      }
+    }
+
+    const gaugeY = patY + charH + 28;
+    const isMatch = step.hashMatch || step.p === step.t;
+
+    html += `<rect x="180" y="${gaugeY}" width="180" height="60" rx="8" fill="#141d2c" stroke="#14b8a6" stroke-width="1.8"/>`;
+    html += `<text x="270" y="${gaugeY + 22}" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="JetBrains Mono">Pattern Hash (p)</text>`;
+    html += `<text x="270" y="${gaugeY + 48}" text-anchor="middle" fill="#14b8a6" font-size="18" font-family="JetBrains Mono" font-weight="800">p = ${step.p}</text>`;
+
+    html += `<text x="400" y="${gaugeY + 38}" text-anchor="middle" fill="${isMatch ? '#10b981' : '#64748b'}" font-size="24" font-family="JetBrains Mono" font-weight="800">${isMatch ? '==' : '≠'}</text>`;
+
+    const winHashStroke = isMatch ? (step.type === 'exact_match' ? '#10b981' : '#f59e0b') : '#334155';
+    html += `<rect x="440" y="${gaugeY}" width="180" height="60" rx="8" fill="#141d2c" stroke="${winHashStroke}" stroke-width="1.8"/>`;
+    html += `<text x="530" y="${gaugeY + 22}" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="JetBrains Mono">Window Hash (t_${s})</text>`;
+    html += `<text x="530" y="${gaugeY + 48}" text-anchor="middle" fill="${isMatch ? (step.type === 'exact_match' ? '#10b981' : '#f59e0b') : '#f1f5f9'}" font-size="18" font-family="JetBrains Mono" font-weight="800">t_${s} = ${step.t}</text>`;
+
+    svg.setAttribute('viewBox', '0 0 800 320');
+    svg.innerHTML = html;
+  },
+  renderTable(thead, tbody, step) {
+    thead.innerHTML = `<tr><th>Shift (s)</th><th>Window Substring</th><th>Window Hash ($t_s$)</th><th>Pattern Hash ($p$)</th><th>Hash Match?</th><th>Status</th></tr>`;
+    const text = step.text;
+    const pattern = step.pattern;
+    const n = text.length;
+    const m = pattern.length;
+    const currS = step.shift !== undefined ? step.shift : 0;
+
+    let rows = '';
+    for (let s = 0; s <= n - m; s++) {
+      const winStr = text.slice(s, s + m);
+      const isPast = s < currS;
+      const isCurr = s === currS;
+      const isMatch = step.matchShifts && step.matchShifts.includes(s);
+      const isSpurious = step.spuriousShifts && step.spuriousShifts.includes(s);
+
+      let status = '<span style="color:var(--text-dim)">Pending</span>';
+      let rowClass = isCurr ? 'active-row' : '';
+
+      if (isMatch) status = '<span style="color:var(--emerald); font-weight:700;">✔ Exact Pattern Match</span>';
+      else if (isSpurious) status = '<span style="color:var(--amber); font-weight:700;">⚠ Spurious Hit (Collision)</span>';
+      else if (isPast) status = '<span style="color:var(--gray)">Hash Mismatch (Skipped)</span>';
+      else if (isCurr) {
+        if (step.type === 'exact_match') status = '<span style="color:var(--emerald); font-weight:700;">✔ Exact Pattern Match</span>';
+        else if (step.type === 'spurious_hit') status = '<span style="color:var(--amber); font-weight:700;">⚠ Spurious Hit (Collision)</span>';
+        else status = '<span style="color:var(--teal); font-weight:600;">Comparing hashes...</span>';
+      }
+
+      rows += `<tr class="${rowClass}">
+        <td><b>s = ${s}</b></td>
+        <td><code>"${winStr}"</code></td>
+        <td>${isCurr ? `<b style="color:var(--amber)">${step.t}</b>` : '—'}</td>
+        <td>${step.p}</td>
+        <td>${isCurr ? (step.hashMatch ? '<span style="color:var(--teal); font-weight:700;">YES</span>' : '<span style="color:var(--rose)">NO</span>') : (isMatch || isSpurious ? 'YES' : '—')}</td>
+        <td>${status}</td>
+      </tr>`;
+    }
+    tbody.innerHTML = rows;
+  },
+  legend: [
+    { color: 'var(--emerald)', label: 'Exact Pattern Match' },
+    { color: 'var(--amber)', label: 'Spurious Hit (Hash Match, Chars Differ)' },
+    { color: 'var(--teal)', label: 'Sliding Window / Pattern Hash' },
+    { color: 'var(--gray)', label: 'Mismatched Window / Text' }
+  ]
+};
+
+/* =========================================================================
    CONTROLLER & UI MANAGEMENT
    ========================================================================= */
 const Modules = {
@@ -3189,7 +4139,9 @@ const Modules = {
   prim: PrimModule,
   kruskal: KruskalModule,
   dijkstra: DijkstraModule,
-  bellmanford: BellmanFordModule
+  bellmanford: BellmanFordModule,
+  hashing: HashModule,
+  rabinkarp: RabinKarpModule
 };
 
 function getActiveModule() {
@@ -3244,6 +4196,8 @@ function computeStepsForCurrent() {
   else if (currentAlgo === 'kruskal') steps = mod.buildSteps(mod.nodes, mod.edges);
   else if (currentAlgo === 'dijkstra') steps = mod.buildSteps(mod.nodes, mod.edges, mod.source);
   else if (currentAlgo === 'bellmanford') steps = mod.buildSteps(mod.nodes, mod.edges, mod.source);
+  else if (currentAlgo === 'hashing') steps = mod.buildSteps(mod.tableSize, mod.method, mod.operations);
+  else if (currentAlgo === 'rabinkarp') steps = mod.buildSteps(mod.text, mod.pattern, mod.radix, mod.prime);
 }
 
 function renderCurrentStep() {
@@ -3272,6 +4226,8 @@ function renderCurrentStep() {
   else if (currentAlgo === 'kruskal') mod.renderCanvas(svg, step, mod.nodes);
   else if (currentAlgo === 'dijkstra') mod.renderCanvas(svg, step, mod.nodes, mod.edges);
   else if (currentAlgo === 'bellmanford') mod.renderCanvas(svg, step, mod.nodes, mod.edges);
+  else if (currentAlgo === 'hashing') mod.renderCanvas(svg, step);
+  else if (currentAlgo === 'rabinkarp') mod.renderCanvas(svg, step);
 
   document.getElementById('step-description').innerHTML = step.desc || '';
 
@@ -3289,6 +4245,8 @@ function renderCurrentStep() {
   else if (currentAlgo === 'kruskal') mod.renderTable(thead, tbody, step);
   else if (currentAlgo === 'dijkstra') mod.renderTable(thead, tbody, step, mod.nodes);
   else if (currentAlgo === 'bellmanford') mod.renderTable(thead, tbody, step, mod.nodes);
+  else if (currentAlgo === 'hashing') mod.renderTable(thead, tbody, step);
+  else if (currentAlgo === 'rabinkarp') mod.renderTable(thead, tbody, step);
 
   document.getElementById('ctrl-prev').disabled = currentStepIdx === 0;
   document.getElementById('ctrl-next').disabled = currentStepIdx === steps.length - 1;
@@ -3369,7 +4327,9 @@ function switchAlgorithm(algoKey) {
     prim: { title: "Prim's Algorithm", sub: 'Minimum Spanning Tree (Greedy Cut Property)' },
     kruskal: { title: "Kruskal's Algorithm", sub: 'Minimum Spanning Tree (Greedy Lightest Edge via DSU)' },
     dijkstra: { title: "Dijkstra's Algorithm", sub: 'Single-Source Shortest Path (Non-Negative Weights)' },
-    bellmanford: { title: "Bellman-Ford Algorithm", sub: 'Single-Source Shortest Path & Negative Cycle Detection' }
+    bellmanford: { title: "Bellman-Ford Algorithm", sub: 'Single-Source Shortest Path & Negative Cycle Detection' },
+    hashing: { title: 'Hash Table & Collision Resolution', sub: 'Chaining, Linear/Quadratic Probing & Double Hashing' },
+    rabinkarp: { title: 'Rabin-Karp String Matching', sub: 'Rolling Hash Arithmetic & Spurious Hit Detection' }
   };
 
   document.getElementById('algo-heading').textContent = titles[algoKey].title;
@@ -3447,6 +4407,27 @@ const Modal = {
         html += `<div class="form-group"><label class="form-label">Source / Start Vertex:</label><input type="text" class="form-control" id="custom-graph-source" value="${srcVal}"></div>`;
       }
       html += `<div class="form-group"><label class="form-label">Graph Edges ("u,v,weight"):</label><textarea class="form-control" id="custom-graph-edges" rows="7">${edgeTxt}</textarea></div>`;
+    } else if (currentAlgo === 'hashing') {
+      const opsTxt = mod.operations.map(o => `${o.op} ${o.key}`).join('\n');
+      html += `<div class="form-row">
+        <div class="form-group"><label class="form-label">Table Size (m):</label><input type="number" class="form-control" id="custom-hash-size" value="${mod.tableSize}"></div>
+        <div class="form-group"><label class="form-label">Collision Resolution Method:</label>
+          <select class="form-control" id="custom-hash-method">
+            <option value="linear"${mod.method === 'linear' ? ' selected' : ''}>Linear Probing</option>
+            <option value="quadratic"${mod.method === 'quadratic' ? ' selected' : ''}>Quadratic Probing</option>
+            <option value="double"${mod.method === 'double' ? ' selected' : ''}>Double Hashing (h1 + i*h2)</option>
+            <option value="chaining"${mod.method === 'chaining' ? ' selected' : ''}>Separate Chaining</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Operations (one per line: "insert k", "search k", or "delete k"):</label><textarea class="form-control" id="custom-hash-ops" rows="7">${opsTxt}</textarea></div>`;
+    } else if (currentAlgo === 'rabinkarp') {
+      html += `<div class="form-group"><label class="form-label">Target Text (T):</label><input type="text" class="form-control" id="custom-rk-text" value="${mod.text}"></div>
+      <div class="form-group"><label class="form-label">Search Pattern (P):</label><input type="text" class="form-control" id="custom-rk-pattern" value="${mod.pattern}"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Alphabet Radix (d):</label><input type="number" class="form-control" id="custom-rk-radix" value="${mod.radix}"></div>
+        <div class="form-group"><label class="form-label">Modulo Prime (q):</label><input type="number" class="form-control" id="custom-rk-prime" value="${mod.prime}"></div>
+      </div>`;
     }
 
     this.fieldsBox.innerHTML = html;
@@ -3466,6 +4447,15 @@ const Modal = {
       mod.edges = JSON.parse(JSON.stringify(p.edges));
       if (p.startNode) mod.startNode = p.startNode;
       if (p.source) mod.source = p.source;
+    } else if (currentAlgo === 'hashing') {
+      mod.tableSize = p.tableSize;
+      mod.method = p.method;
+      mod.operations = JSON.parse(JSON.stringify(p.operations));
+    } else if (currentAlgo === 'rabinkarp') {
+      mod.text = p.text;
+      mod.pattern = p.pattern;
+      mod.radix = p.radix;
+      mod.prime = p.prime;
     }
     this.renderFormFields();
   },
@@ -3534,6 +4524,37 @@ const Modal = {
           if (currentAlgo === 'prim') mod.startNode = srcEl.value.trim();
           else mod.source = srcEl.value.trim();
         }
+      } else if (currentAlgo === 'hashing') {
+        const sz = parseInt(document.getElementById('custom-hash-size').value, 10);
+        if (isNaN(sz) || sz < 1) throw new Error("Table size must be at least 1.");
+        mod.tableSize = sz;
+        mod.method = document.getElementById('custom-hash-method').value;
+        const opLines = document.getElementById('custom-hash-ops').value.trim().split('\n');
+        const ops = [];
+        opLines.forEach(l => {
+          if (!l.trim()) return;
+          const parts = l.trim().split(/\s+/);
+          const op = parts[0].toLowerCase();
+          const key = isNaN(parts[1]) ? parts[1] : parseInt(parts[1], 10);
+          if (['insert', 'search', 'delete'].includes(op) && parts[1] !== undefined) {
+            ops.push({ op, key });
+          }
+        });
+        if (ops.length === 0) throw new Error("Please specify at least one operation.");
+        mod.operations = ops;
+      } else if (currentAlgo === 'rabinkarp') {
+        const text = document.getElementById('custom-rk-text').value;
+        const pattern = document.getElementById('custom-rk-pattern').value;
+        const radix = parseInt(document.getElementById('custom-rk-radix').value, 10);
+        const prime = parseInt(document.getElementById('custom-rk-prime').value, 10);
+        if (!text || !pattern) throw new Error("Text and Pattern cannot be empty.");
+        if (pattern.length > text.length) throw new Error("Pattern length cannot exceed text length.");
+        if (isNaN(radix) || radix < 1) throw new Error("Radix d must be >= 1.");
+        if (isNaN(prime) || prime < 2) throw new Error("Prime q must be >= 2.");
+        mod.text = text;
+        mod.pattern = pattern;
+        mod.radix = radix;
+        mod.prime = prime;
       }
 
       this.close();
@@ -3587,6 +4608,15 @@ document.addEventListener('DOMContentLoaded', () => {
       mod.nodes = res.nodes; mod.edges = res.edges;
       if (res.startNode) mod.startNode = res.startNode;
       if (res.source) mod.source = res.source;
+    } else if (currentAlgo === 'hashing') {
+      mod.tableSize = res.tableSize;
+      mod.method = res.method;
+      mod.operations = res.operations;
+    } else if (currentAlgo === 'rabinkarp') {
+      mod.text = res.text;
+      mod.pattern = res.pattern;
+      mod.radix = res.radix;
+      mod.prime = res.prime;
     }
     resetSimulation();
     computeStepsForCurrent();
@@ -3603,6 +4633,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const algos = ['activity', 'knapsack', 'huffman', 'jobseq', 'dsu', 'prim', 'kruskal', 'dijkstra', 'bellmanford'];
       const target = algos[parseInt(e.key, 10) - 1];
       if (target) switchAlgorithm(target);
+    } else if (e.key === '0') {
+      switchAlgorithm('hashing');
+    } else if (e.key === '-') {
+      switchAlgorithm('rabinkarp');
     }
   });
 
