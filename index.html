@@ -56,132 +56,332 @@
     color: var(--text);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     min-height: 100vh;
-    padding: clamp(12px, 3vw, 24px) clamp(10px, 3vw, 20px) clamp(40px, 6vw, 80px);
+    padding: 0;
+    margin: 0;
     background-image: 
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(20, 184, 166, 0.12), transparent 70%),
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(20, 184, 166, 0.10), transparent 70%),
       radial-gradient(ellipse 60% 40% at 80% 100%, rgba(139, 92, 246, 0.08), transparent 70%);
     touch-action: manipulation;
   }
 
-  .container {
-    max-width: 1240px;
-    margin: 0 auto;
+  /* App Layout Structure */
+  .app-layout {
+    display: flex;
+    min-height: 100vh;
     width: 100%;
+    position: relative;
   }
 
-  /* Header */
-  header {
+  /* Left Sidebar Navigation */
+  .sidebar-nav {
+    width: 280px;
+    background: #090e17;
+    border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100vh;
+    z-index: 100;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .sidebar-brand {
+    padding: 18px 16px 14px;
+    display: flex;
     align-items: center;
-    text-align: center;
-    margin-bottom: clamp(16px, 3vw, 24px);
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
     position: relative;
-    padding: 0 4px;
   }
 
-  .badge {
-    display: inline-flex;
+  .brand-icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(14, 165, 233, 0.2));
+    border: 1px solid var(--teal);
+    display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    border-radius: 9999px;
-    background: rgba(20, 184, 166, 0.1);
-    border: 1px solid rgba(20, 184, 166, 0.3);
+    justify-content: center;
     color: var(--teal);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(10px, 2.5vw, 11px);
-    letter-spacing: 0.5px;
-    margin-bottom: 10px;
-    text-transform: uppercase;
+    box-shadow: 0 0 15px var(--teal-glow);
+    flex-shrink: 0;
   }
 
-  h1 {
+  .brand-icon-box svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .brand-title {
     font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(20px, 5vw, 28px);
+    font-size: 15px;
     font-weight: 700;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.3px;
     color: #fff;
-    margin-bottom: 6px;
     background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    line-height: 1.25;
   }
 
-  .sub {
-    color: var(--text-muted);
-    font-size: clamp(12px, 3.2vw, 14px);
-    max-width: 720px;
-    line-height: 1.5;
-  }
-
-  /* Nav Tabs */
-  .tabs-category-label {
+  .brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 10px;
+    color: var(--teal);
+    letter-spacing: 0.5px;
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 8px var(--teal);
+    animation: pulseGlow 2s infinite ease-in-out;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  .sidebar-close-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 24px;
+    cursor: pointer;
+    margin-left: auto;
+    line-height: 1;
+    padding: 4px;
+  }
+
+  .sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .sidebar-content::-webkit-scrollbar {
+    width: 5px;
+  }
+  .sidebar-content::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+  }
+
+  .nav-category-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
     text-transform: uppercase;
     color: var(--text-dim);
     letter-spacing: 0.8px;
-    margin: 12px 0 6px 4px;
+    padding: 10px 8px 4px;
     display: flex;
     align-items: center;
     gap: 6px;
   }
-  .tabs-category-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
 
-  .tabs-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 6px;
-    margin-bottom: 16px;
+  .nav-items-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 8px;
   }
 
   .tab-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: transparent;
+    border: 1px solid transparent;
     border-radius: var(--radius-sm);
-    padding: 10px 8px;
+    padding: 8px 10px;
     color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
     font-size: 11.5px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.15s ease;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
-    text-align: center;
-    min-height: 48px;
+    gap: 9px;
+    text-align: left;
+    min-height: 38px;
     user-select: none;
+    position: relative;
+    width: 100%;
   }
 
   .tab-btn:hover {
     color: var(--text);
     background: var(--surface2);
-    border-color: var(--border-light);
+    border-color: var(--border);
   }
 
   .tab-btn.active {
-    background: var(--surface2);
-    color: var(--teal);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
-    border-color: var(--teal);
+    background: rgba(20, 184, 166, 0.12);
+    color: #5eead4;
+    border-color: rgba(20, 184, 166, 0.35);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    font-weight: 600;
+  }
+
+  .tab-btn.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 3px;
+    background: var(--teal);
+    border-radius: 0 2px 2px 0;
+    box-shadow: 0 0 8px var(--teal);
   }
 
   .tab-btn .tab-num {
     font-size: 9.5px;
-    opacity: 0.7;
+    opacity: 0.75;
     background: rgba(255,255,255,0.06);
-    padding: 1px 5px;
+    padding: 2px 5px;
     border-radius: 4px;
+    min-width: 22px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .tab-btn.active .tab-num {
+    background: var(--teal);
+    color: #042f2e;
+    opacity: 1;
+    font-weight: 700;
+  }
+
+  .tab-btn .tab-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .shortcut-chip {
+    font-size: 9.5px;
+    padding: 1px 5px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-dim);
+    font-weight: 600;
+  }
+
+  .sidebar-footer {
+    padding: 12px 14px;
+    border-top: 1px solid var(--border);
+    background: #070a0f;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .shortcuts-legend {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .shortcuts-legend kbd {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0 4px;
+    font-size: 9px;
+    color: var(--teal);
+  }
+
+  .sidebar-copyright {
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .sidebar-copyright b {
+    color: var(--teal);
+  }
+
+  /* Main Area */
+  .app-main {
+    flex: 1;
+    margin-left: 280px;
+    padding: 20px 24px 60px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .app-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    box-shadow: var(--shadow);
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .mobile-toggle-btn {
+    display: none;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .mobile-toggle-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .status-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(20, 184, 166, 0.15);
+    border: 1px solid rgba(20, 184, 166, 0.35);
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
   }
 
   /* Main Workspace Grid */
@@ -190,6 +390,30 @@
     grid-template-columns: 1fr 340px;
     gap: 16px;
     width: 100%;
+    align-items: start;
+    transition: all 0.2s ease;
+  }
+
+  .workspace.hide-theory {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace.hide-theory .sidebar {
+    display: none;
+  }
+
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 95;
+    opacity: 0;
+    transition: opacity 0.2s;
   }
 
   /* Cards */
@@ -831,17 +1055,38 @@
     color: var(--teal);
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1200px) {
     .workspace {
       grid-template-columns: 1fr;
     }
   }
 
-  @media (max-width: 640px) {
-    .tabs-grid {
-      grid-template-columns: repeat(3, 1fr);
+  @media (max-width: 1024px) {
+    .sidebar-nav {
+      transform: translateX(-100%);
+      box-shadow: 0 0 35px rgba(0,0,0,0.85);
     }
-    .action-bar-inner {
+    .sidebar-nav.open {
+      transform: translateX(0);
+    }
+    .sidebar-close-btn {
+      display: block;
+    }
+    .sidebar-backdrop.open {
+      display: block;
+      opacity: 1;
+    }
+    .app-main {
+      margin-left: 0;
+      padding: 14px 14px 40px;
+    }
+    .mobile-toggle-btn {
+      display: inline-flex;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .app-topbar {
       flex-direction: column;
       align-items: stretch;
     }
@@ -850,6 +1095,9 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
+    }
+    #btn-toggle-theory {
+      grid-column: span 2;
     }
     .stepper-buttons-row {
       grid-template-columns: repeat(2, 1fr);
@@ -871,98 +1119,159 @@
 </head>
 <body>
 
-<div class="container">
-  <header>
-    <div class="badge">Algorithmic Suite // Greedy, Graphs, Hashing &amp; Strings</div>
-    <h1>ALGORITHMS LABORATORY</h1>
-    <p class="sub">Step-by-step interactive simulator, dynamic SVG graph & tree visualization, custom problem workbench, and live execution tracing.</p>
-  </header>
+<!-- Backdrop for mobile sidebar drawer -->
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 
-  <!-- Categorized Tabs -->
-  <div class="tabs-category-label">Greedy Paradigms</div>
-  <div class="tabs-grid">
-    <button class="tab-btn active" data-algo="activity">
-      <span class="tab-num">01</span>
-      <span>Activity Selection</span>
-    </button>
-    <button class="tab-btn" data-algo="knapsack">
-      <span class="tab-num">02</span>
-      <span>Fractional Knapsack</span>
-    </button>
-    <button class="tab-btn" data-algo="huffman">
-      <span class="tab-num">03</span>
-      <span>Huffman Coding</span>
-    </button>
-    <button class="tab-btn" data-algo="jobseq">
-      <span class="tab-num">04</span>
-      <span>Job Sequencing</span>
-    </button>
-  </div>
+<div class="app-layout">
 
-  <div class="tabs-category-label">Trees & Minimum Spanning Forests</div>
-  <div class="tabs-grid">
-    <button class="tab-btn" data-algo="dsu">
-      <span class="tab-num">05</span>
-      <span>Disjoint Set (DSU)</span>
-    </button>
-    <button class="tab-btn" data-algo="prim">
-      <span class="tab-num">06</span>
-      <span>Prim's MST</span>
-    </button>
-    <button class="tab-btn" data-algo="kruskal">
-      <span class="tab-num">07</span>
-      <span>Kruskal's MST</span>
-    </button>
-  </div>
+  <!-- LEFT SIDEBAR WITH ALL ALGORITHM NAMES -->
+  <aside class="sidebar-nav" id="app-sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="5" r="3"/>
+          <circle cx="5" cy="19" r="3"/>
+          <circle cx="19" cy="19" r="3"/>
+          <line x1="12" y1="8" x2="5" y2="16"/>
+          <line x1="12" y1="8" x2="19" y2="16"/>
+          <line x1="8" y1="19" x2="16" y2="19"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">ALGO LAB</div>
+        <div class="brand-badge"><span class="pulse-dot"></span> 11 ENGINES</div>
+      </div>
+      <button class="sidebar-close-btn" id="btn-sidebar-close" aria-label="Close sidebar">&times;</button>
+    </div>
 
-  <div class="tabs-category-label">Shortest Path Algorithms</div>
-  <div class="tabs-grid">
-    <button class="tab-btn" data-algo="dijkstra">
-      <span class="tab-num">08</span>
-      <span>Dijkstra's SSSP</span>
-    </button>
-    <button class="tab-btn" data-algo="bellmanford">
-      <span class="tab-num">09</span>
-      <span>Bellman-Ford SSSP</span>
-    </button>
-  </div>
+    <!-- Algorithm Nav List Categorized -->
+    <div class="sidebar-content">
+      <div class="nav-category-title">Greedy Paradigms</div>
+      <div class="nav-items-group">
+        <button class="tab-btn active" data-algo="activity" title="Activity Selection (Key: 1)">
+          <span class="tab-num">01</span>
+          <span class="tab-name">Activity Selection</span>
+          <span class="shortcut-chip">1</span>
+        </button>
+        <button class="tab-btn" data-algo="knapsack" title="Fractional Knapsack (Key: 2)">
+          <span class="tab-num">02</span>
+          <span class="tab-name">Fractional Knapsack</span>
+          <span class="shortcut-chip">2</span>
+        </button>
+        <button class="tab-btn" data-algo="huffman" title="Huffman Coding (Key: 3)">
+          <span class="tab-num">03</span>
+          <span class="tab-name">Huffman Coding</span>
+          <span class="shortcut-chip">3</span>
+        </button>
+        <button class="tab-btn" data-algo="jobseq" title="Job Sequencing (Key: 4)">
+          <span class="tab-num">04</span>
+          <span class="tab-name">Job Sequencing</span>
+          <span class="shortcut-chip">4</span>
+        </button>
+      </div>
 
-  <div class="tabs-category-label">Hashing &amp; String Matching</div>
-  <div class="tabs-grid">
-    <button class="tab-btn" data-algo="hashing">
-      <span class="tab-num">10</span>
-      <span>Hash Table</span>
-    </button>
-    <button class="tab-btn" data-algo="rabinkarp">
-      <span class="tab-num">11</span>
-      <span>Rabin-Karp Search</span>
-    </button>
-  </div>
+      <div class="nav-category-title">Trees &amp; Spanning Forests</div>
+      <div class="nav-items-group">
+        <button class="tab-btn" data-algo="dsu" title="Disjoint Set Union (Key: 5)">
+          <span class="tab-num">05</span>
+          <span class="tab-name">Disjoint Set (DSU)</span>
+          <span class="shortcut-chip">5</span>
+        </button>
+        <button class="tab-btn" data-algo="prim" title="Prim's MST (Key: 6)">
+          <span class="tab-num">06</span>
+          <span class="tab-name">Prim's MST</span>
+          <span class="shortcut-chip">6</span>
+        </button>
+        <button class="tab-btn" data-algo="kruskal" title="Kruskal's MST (Key: 7)">
+          <span class="tab-num">07</span>
+          <span class="tab-name">Kruskal's MST</span>
+          <span class="shortcut-chip">7</span>
+        </button>
+      </div>
 
-  <!-- Main Workspace -->
-  <div class="workspace">
-    <!-- Left Column: Visualizer, Controls, and Explanation -->
-    <div class="main-content">
-      
-      <!-- Top Action & Config Bar -->
-      <div class="card" style="padding: 14px 18px; margin-bottom: 14px;">
-        <div class="action-bar-inner">
-          <div class="algo-titles-box">
-            <span id="algo-heading" style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:14px; color:var(--teal);">Activity Selection Problem</span>
-            <span id="algo-subheading" style="font-size:12px; color:var(--text-muted);">Interval Scheduling</span>
+      <div class="nav-category-title">Shortest Path Algorithms</div>
+      <div class="nav-items-group">
+        <button class="tab-btn" data-algo="dijkstra" title="Dijkstra's SSSP (Key: 8)">
+          <span class="tab-num">08</span>
+          <span class="tab-name">Dijkstra's SSSP</span>
+          <span class="shortcut-chip">8</span>
+        </button>
+        <button class="tab-btn" data-algo="bellmanford" title="Bellman-Ford SSSP (Key: 9)">
+          <span class="tab-num">09</span>
+          <span class="tab-name">Bellman-Ford SSSP</span>
+          <span class="shortcut-chip">9</span>
+        </button>
+      </div>
+
+      <div class="nav-category-title">Hashing &amp; String Search</div>
+      <div class="nav-items-group">
+        <button class="tab-btn" data-algo="hashing" title="Hash Table & Collision Resolution (Key: 0)">
+          <span class="tab-num">10</span>
+          <span class="tab-name">Hash Table</span>
+          <span class="shortcut-chip">0</span>
+        </button>
+        <button class="tab-btn" data-algo="rabinkarp" title="Rabin-Karp Rolling Hash Matcher (Key: -)">
+          <span class="tab-num">11</span>
+          <span class="tab-name">Rabin-Karp Search</span>
+          <span class="shortcut-chip">-</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <div class="shortcuts-legend">
+        <div><kbd>Space</kbd> Play / Pause</div>
+        <div><kbd>&larr;</kbd> <kbd>&rarr;</kbd> Step Prev / Next</div>
+        <div><kbd>R</kbd> Reset Step</div>
+      </div>
+      <div class="sidebar-copyright">
+        <span>&copy; 2026 <b>hameme 21</b> &bull; Suite</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN SIMULATION AREA -->
+  <main class="app-main">
+    <!-- Top Action & Info Bar -->
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle-btn" id="btn-sidebar-toggle" aria-label="Toggle algorithm menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="algo-titles-box">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span id="algo-heading" style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; color:var(--teal);">Activity Selection Problem</span>
+            <span id="canvas-status-badge" class="status-pill">Ready</span>
           </div>
-          <div class="btn-group">
-            <button class="btn btn-accent" id="btn-open-custom">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-              Custom / Presets
-            </button>
-            <button class="btn" id="btn-random-gen">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-              Random Case
-            </button>
-          </div>
+          <span id="algo-subheading" style="font-size:12.5px; color:var(--text-muted);">Interval Scheduling</span>
         </div>
       </div>
+
+      <div class="btn-group">
+        <button class="btn btn-accent" id="btn-open-custom">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Custom / Presets
+        </button>
+        <button class="btn" id="btn-random-gen">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Random Case
+        </button>
+        <button class="btn" id="btn-toggle-theory" title="Toggle Code & Complexity Panel for maximum canvas view">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Focus Simulation
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Grid -->
+    <div class="workspace">
+      <!-- Left Column: Visualizer, Controls, and Explanation -->
+      <div class="main-content">
 
       <!-- SVG Visualizer Canvas Card -->
       <div class="card">
@@ -1089,16 +1398,7 @@
 
     </div>
   </div>
-
-  <!-- Footer -->
-  <footer>
-    <div class="copyright-badge">
-      <span>&copy; 2026 <b>hameme 21</b>. All rights reserved.</span>
-    </div>
-    <div style="font-size: 11px; color: var(--text-dim);">
-      Algorithms Suite // Greedy Paradigms, Spanning Trees, Shortest Paths, DSU, Hashing &amp; String Search
-    </div>
-  </footer>
+  </main>
 </div>
 
 <!-- Custom Problem Modal -->
@@ -4571,9 +4871,37 @@ const Modal = {
    EVENT LISTENERS & INIT
    ========================================================================= */
 document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.getElementById('app-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  function toggleSidebar(open) {
+    if (!sidebar || !backdrop) return;
+    sidebar.classList.toggle('open', open);
+    backdrop.classList.toggle('open', open);
+  }
+  const btnToggle = document.getElementById('btn-sidebar-toggle');
+  if (btnToggle) btnToggle.onclick = () => toggleSidebar(true);
+  const btnClose = document.getElementById('btn-sidebar-close');
+  if (btnClose) btnClose.onclick = () => toggleSidebar(false);
+  if (backdrop) backdrop.onclick = () => toggleSidebar(false);
+
   document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.onclick = () => switchAlgorithm(btn.dataset.algo);
+    btn.onclick = () => {
+      switchAlgorithm(btn.dataset.algo);
+      if (window.innerWidth <= 1024) toggleSidebar(false);
+    };
   });
+
+  const btnFocus = document.getElementById('btn-toggle-theory');
+  const workspace = document.querySelector('.workspace');
+  if (btnFocus && workspace) {
+    btnFocus.onclick = () => {
+      workspace.classList.toggle('hide-theory');
+      const isHidden = workspace.classList.contains('hide-theory');
+      btnFocus.innerHTML = isHidden 
+        ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Show Code &amp; Theory`
+        : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Focus Simulation`;
+    };
+  }
 
   document.getElementById('ctrl-play').onclick = togglePlay;
   document.getElementById('ctrl-reset').onclick = resetSimulation;
