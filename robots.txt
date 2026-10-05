@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hameme21.github.io/algo-lab/sitemap.xml
