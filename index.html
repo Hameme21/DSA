@@ -437,6 +437,47 @@
     color: var(--teal);
   }
 
+  /* Application Footer */
+  .app-footer {
+    margin-top: 8px;
+    padding: 14px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    box-shadow: var(--shadow);
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+
+  .footer-copyright b {
+    color: var(--teal);
+    font-weight: 700;
+  }
+
+  .footer-version-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: rgba(20, 184, 166, 0.1);
+    border: 1px solid rgba(20, 184, 166, 0.25);
+    color: var(--teal);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
   /* Main Area */
   .app-main {
     flex: 1;
@@ -1404,7 +1445,8 @@
         <div><kbd>R</kbd> Reset Step</div>
       </div>
       <div class="sidebar-copyright">
-        <span>&copy; 2026 <b>hameme 21</b> &bull; 22 Engine Suite</span>
+        <div>&copy;copyright&copy; 2026 <b>Hameme21</b></div>
+        <div style="font-size: 10.5px; color: var(--teal); margin-top: 3px; font-weight: 600;">version 1.0.0</div>
       </div>
     </div>
   </aside>
@@ -1593,6 +1635,16 @@
 
     </div>
   </div>
+
+    <!-- Application Footer -->
+    <footer class="app-footer">
+      <div class="footer-left">
+        <div class="footer-copyright">&copy;copyright&copy; 2026 <b>Hameme21</b></div>
+      </div>
+      <div class="footer-right">
+        <span class="footer-version-badge">version 1.0.0</span>
+      </div>
+    </footer>
   </main>
 </div>
 
