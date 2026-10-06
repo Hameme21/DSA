@@ -9,7 +9,7 @@ An interactive, zero-dependency, single-file algorithmic laboratory and visualiz
 ---
 
 ## 🚀 Live Demo
-Deployable with **1 click** on **GitHub Pages** (runs directly from `index.html`).
+🌐 **[https://dsa-sandy.vercel.app/](https://dsa-sandy.vercel.app/)**
 
 ---
 
@@ -71,12 +71,10 @@ Deployable with **1 click** on **GitHub Pages** (runs directly from `index.html`
 
 ---
 
-## 🚢 GitHub Pages Deployment
+## 🚢 Deployment (Vercel &amp; GitHub Pages)
 
-1. Push this repository to GitHub.
-2. Go to **Settings** &rarr; **Pages**.
-3. Under **Branch**, select `main` (or `master`) and folder `/ (root)`.
-4. Click **Save**. Your site will be live at `https://<username>.github.io/<repo-name>/`.
+- **Vercel**: Deploy with zero configuration by importing this repository. Live at [https://dsa-sandy.vercel.app/](https://dsa-sandy.vercel.app/).
+- **GitHub Pages**: Go to **Settings** &rarr; **Pages**, select branch `main` and folder `/ (root)`.
 
 ---
 
@@ -85,4 +83,8 @@ Deployable with **1 click** on **GitHub Pages** (runs directly from `index.html`
 - **Schema.org Structured Data**: Integrated `WebApplication`, `ItemList` (all 22 algorithms), and `FAQPage` JSON-LD schemas for Google Rich Snippets and Knowledge Panels.
 - **Search Engine Discovery**: Includes [`robots.txt`](robots.txt) and [`sitemap.xml`](sitemap.xml) for Googlebot discovery.
 - **Meta & Open Graph**: Full support for canonical tags, Open Graph cards, Twitter summary cards, and SVG favicons.
+
+---
+
+&copy;copyright&copy; 2026 **Hameme21** &bull; `version 1.0.0`
 
