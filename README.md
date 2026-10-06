@@ -86,5 +86,25 @@ An interactive, zero-dependency, single-file algorithmic laboratory and visualiz
 
 ---
 
+## 📖 Course Notes Repository (CSE 251)
+
+The application features a dedicated **Course Notes Hub** supporting two primary note sources:
+1. **Faculty's Notes (Created by Faculty)**:
+   - Notes, dry-run derivations, and problem breakdowns authored directly by course faculties for section-specific lectures and exam walkthroughs.
+2. **University's Notes (Centrally Provided by University)**:
+   - Centrally provided standardized slide decks, departmental syllabi, official exam banks, and universal teaching resources used by instructors.
+3. **Interactive Upload & Local Persistence**:
+   - Students and faculty can upload notes with direct file attachments (PDF, DOCX, PPTX, TXT, images) or external cloud links (Google Drive, OneDrive, Notion) saved securely via browser local storage.
+
+---
+
+## 👤 Developer Profile
+
+- **Author**: **Asir Hamim**
+- **Course**: **CSE 251** (Data Structures & Algorithms)
+- **GitHub**: [github link-https://github.com/Hameme21](https://github.com/Hameme21)
+
+---
+
 &copy;copyright&copy; 2026 **Hameme21** &bull; `version 1.0.0`
 

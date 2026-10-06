@@ -1282,6 +1282,426 @@
       grid-template-columns: 1fr;
     }
   }
+
+  /* =========================================================================
+     COURSE NOTES REPOSITORY (FACULTY & UNIVERSITY NOTES)
+     ========================================================================= */
+  .notes-modal-card {
+    max-width: 820px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .notes-tab-container {
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+  }
+  .notes-tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .notes-tab-btn:hover {
+    background: var(--surface3);
+    color: var(--text);
+    border-color: var(--border-light);
+  }
+  .notes-tab-btn.active {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(99, 102, 241, 0.15));
+    border-color: var(--teal);
+    color: #fff;
+    box-shadow: 0 0 14px rgba(20, 184, 166, 0.25);
+  }
+  .notes-tab-badge {
+    font-size: 10.5px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .notes-tab-btn.active .notes-tab-badge {
+    background: rgba(20, 184, 166, 0.25);
+    color: var(--teal);
+  }
+  .notes-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid var(--border);
+    font-size: 12.5px;
+    line-height: 1.45;
+    margin-bottom: 14px;
+    color: var(--text);
+  }
+  .notes-banner-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .notes-toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .notes-search-box {
+    flex: 1;
+    min-width: 220px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .notes-search-box svg {
+    position: absolute;
+    left: 12px;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+  .notes-search-box input {
+    width: 100%;
+    padding: 8px 12px 8px 34px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .notes-search-box input:focus {
+    border-color: var(--teal);
+  }
+  .notes-upload-box {
+    background: var(--surface2);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 16px;
+    animation: fadeIn 0.2s ease;
+  }
+  .notes-upload-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 12px;
+  }
+  .notes-list-viewport {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .note-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .note-card:hover {
+    border-color: var(--border-light);
+    transform: translateY(-1px);
+  }
+  .note-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .note-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .note-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .note-pill {
+    font-size: 10.5px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .note-pill-faculty {
+    background: rgba(20, 184, 166, 0.15);
+    color: var(--teal);
+    border: 1px solid rgba(20, 184, 166, 0.3);
+  }
+  .note-pill-university {
+    background: rgba(99, 102, 241, 0.15);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+  }
+  .note-pill-topic {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--text-muted);
+  }
+  .note-pill-custom {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+  .note-meta {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .note-desc {
+    font-size: 12.5px;
+    color: #cbd5e1;
+    line-height: 1.45;
+  }
+  .note-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    align-items: center;
+    margin-top: 4px;
+  }
+  .note-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+  .note-btn-view {
+    background: rgba(20, 184, 166, 0.15);
+    color: var(--teal);
+    border-color: rgba(20, 184, 166, 0.3);
+  }
+  .note-btn-view:hover {
+    background: var(--teal);
+    color: #0b1120;
+  }
+  .note-btn-delete {
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.25);
+  }
+  .note-btn-delete:hover {
+    background: #ef4444;
+    color: #fff;
+  }
+
+  /* =========================================================================
+     FLOATING "ABOUT ME" CIRCLE & POPOVER
+     ========================================================================= */
+  .floating-about-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s;
+    outline: none;
+  }
+  .floating-about-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 26px rgba(99, 102, 241, 0.65);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+  .floating-about-btn:active {
+    transform: scale(0.96);
+  }
+  .floating-about-avatar {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    font-size: 15px;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    user-select: none;
+  }
+  .floating-pulse-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid rgba(14, 165, 233, 0.6);
+    animation: floatingPulse 2.8s infinite;
+    pointer-events: none;
+  }
+  @keyframes floatingPulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.35); opacity: 0; }
+    100% { transform: scale(1); opacity: 0; }
+  }
+
+  .about-popover-card {
+    position: fixed;
+    bottom: 86px;
+    right: 24px;
+    width: 320px;
+    max-width: calc(100vw - 36px);
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 20px rgba(14, 165, 233, 0.2);
+    z-index: 1001;
+    display: none;
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .about-popover-card.open {
+    display: block;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .about-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .about-header-tag {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    color: var(--teal);
+  }
+  .about-close-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+    transition: color 0.15s;
+  }
+  .about-close-btn:hover {
+    color: #fff;
+  }
+  .about-profile-hero {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .about-profile-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0ea5e9, #6366f1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 12px rgba(14, 165, 233, 0.35);
+  }
+  .about-name {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .about-dept-badge {
+    display: inline-block;
+    margin-top: 3px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--teal);
+    background: rgba(20, 184, 166, 0.15);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(20, 184, 166, 0.25);
+  }
+  .about-meta-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 14px 0 12px;
+  }
+  .about-github-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .about-github-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .about-github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #38bdf8;
+    text-decoration: none;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    word-break: break-all;
+    padding: 6px 10px;
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 6px;
+    transition: all 0.15s ease;
+  }
+  .about-github-link:hover {
+    background: rgba(56, 189, 248, 0.18);
+    border-color: #38bdf8;
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
 </style>
 </head>
 <body>
@@ -1506,6 +1926,10 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
           Custom / Presets
         </button>
+        <button class="btn" id="btn-open-notes" title="Open Course Notes Repository (Faculty & University Notes)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Course Notes
+        </button>
         <button class="btn" id="btn-random-gen">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
           Random Case
@@ -1677,6 +2101,167 @@
         <button class="btn" id="btn-modal-cancel">Cancel</button>
         <button class="btn btn-primary" id="btn-modal-apply">Apply &amp; Simulate</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Course Notes Repository Modal -->
+<div class="modal-overlay" id="notes-modal">
+  <div class="modal notes-modal-card">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" style="display:flex; align-items:center; gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>Course Notes Repository (CSE 251)</span>
+        </div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:3px;">
+          Explore or upload Faculty's notes &amp; University's centrally provided teaching resources.
+        </div>
+      </div>
+      <button class="close-modal" id="btn-close-notes" aria-label="Close notes modal">&times;</button>
+    </div>
+
+    <!-- Category Switcher Tabs: Faculty vs University -->
+    <div class="notes-tab-container">
+      <button class="notes-tab-btn active" id="tab-faculty-notes" data-category="faculty">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Faculty's Notes</span>
+        <span class="notes-tab-badge">Created by Faculty</span>
+      </button>
+      <button class="notes-tab-btn" id="tab-university-notes" data-category="university">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        <span>University's Notes</span>
+        <span class="notes-tab-badge">Centrally Provided</span>
+      </button>
+    </div>
+
+    <!-- Category Explanatory Banner -->
+    <div id="notes-category-banner" class="notes-banner">
+      <span class="notes-banner-icon" id="notes-banner-icon">👨‍🏫</span>
+      <div id="notes-banner-desc">
+        <strong>Faculty's Notes:</strong> Notes and lecture walkthroughs authored directly by course faculties to explain topics, dry-runs, and problem-solving techniques.
+      </div>
+    </div>
+
+    <!-- Toolbar: Search & Upload Toggle -->
+    <div class="notes-toolbar">
+      <div class="notes-search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="notes-search-input" placeholder="Search notes by title, topic, or instructor..." />
+      </div>
+      <button class="btn btn-accent" id="btn-toggle-upload-form">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span id="btn-toggle-upload-text">Upload Note</span>
+      </button>
+    </div>
+
+    <!-- Collapsible Upload Form -->
+    <div id="notes-upload-container" class="notes-upload-box" style="display:none;">
+      <div class="notes-upload-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>Upload / Share Course Resource</span>
+      </div>
+      <form id="note-upload-form">
+        <div class="form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px;">
+          <div>
+            <label class="form-label">Note Category</label>
+            <select class="form-input" id="upload-category" required>
+              <option value="faculty">Faculty's Notes (Created by Faculty)</option>
+              <option value="university">University's Notes (Centrally Provided by University)</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Course / Program</label>
+            <input class="form-input" id="upload-course" value="CSE 251" required />
+          </div>
+        </div>
+
+        <div class="form-row" style="display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:10px;">
+          <div>
+            <label class="form-label">Note Title</label>
+            <input class="form-input" id="upload-title" placeholder="e.g. Graph Traversals BFS &amp; DFS Detailed Guide" required />
+          </div>
+          <div>
+            <label class="form-label" id="upload-author-label">Author / Faculty / Provider</label>
+            <input class="form-input" id="upload-author" placeholder="e.g. Course Faculty / Dept" required />
+          </div>
+        </div>
+
+        <div class="form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px;">
+          <div>
+            <label class="form-label">Topic / Unit</label>
+            <input class="form-input" id="upload-topic" placeholder="e.g. Sorting, Graph Theory, Trees, DSU" required />
+          </div>
+          <div>
+            <label class="form-label">Resource Format</label>
+            <select class="form-input" id="upload-format">
+              <option value="url">External Drive / Cloud / Web Link</option>
+              <option value="file">File Attachment (PDF / Document / Image)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" id="group-upload-url" style="margin-bottom:10px;">
+          <label class="form-label">Resource URL (Google Drive, Onedrive, Notion, Web link)</label>
+          <input type="url" class="form-input" id="upload-url" placeholder="https://drive.google.com/..." />
+        </div>
+
+        <div class="form-group" id="group-upload-file" style="margin-bottom:10px; display:none;">
+          <label class="form-label">Select File to Attach</label>
+          <input type="file" class="form-input" id="upload-file" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.png,.jpg,.jpeg" />
+          <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">Supports PDF, PPTX, DOCX, TXT, images. Encoded safely in local storage.</div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:10px;">
+          <label class="form-label">Brief Description / Notes Summary</label>
+          <textarea class="form-input" id="upload-description" rows="2" placeholder="Brief outline of concepts covered, lecture week, or problem breakdown..."></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" class="btn" id="btn-cancel-upload">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-note">Publish Note</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Notes List Viewport -->
+    <div class="notes-list-viewport" id="notes-list-container">
+      <!-- Injected dynamically -->
+    </div>
+
+    <div class="modal-actions" style="margin-top:14px;">
+      <button class="btn" id="btn-close-notes-footer">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating "About Me" Circle Button -->
+<button class="floating-about-btn" id="floating-about-btn" aria-label="About Developer Asir Hamim" title="About Me">
+  <div class="floating-about-avatar">AH</div>
+  <div class="floating-pulse-ring"></div>
+</button>
+
+<!-- Floating "About Me" Popover Card -->
+<div class="about-popover-card" id="about-popover-card">
+  <div class="about-card-header">
+    <div class="about-header-tag">Developer Profile</div>
+    <button class="about-close-btn" id="about-card-close" aria-label="Close Profile Card">&times;</button>
+  </div>
+  <div class="about-card-body">
+    <div class="about-profile-hero">
+      <div class="about-profile-avatar">AH</div>
+      <div class="about-profile-info">
+        <h3 class="about-name">Asir Hamim</h3>
+        <div class="about-dept-badge">CSE 251</div>
+      </div>
+    </div>
+    <div class="about-meta-divider"></div>
+    <div class="about-github-box">
+      <span class="about-github-label">GitHub Profile:</span>
+      <a href="https://github.com/Hameme21" target="_blank" rel="noopener noreferrer" class="about-github-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        <span>github link-https://github.com/Hameme21</span>
+      </a>
     </div>
   </div>
 </div>
@@ -7166,9 +7751,470 @@ const Modal = {
 };
 
 /* =========================================================================
+   COURSE NOTES ARCHIVE (FACULTY'S NOTES & UNIVERSITY'S NOTES)
+   ========================================================================= */
+const DEFAULT_FACULTY_NOTES = [
+  {
+    id: 'fac-1',
+    category: 'faculty',
+    title: 'Sorting Algorithms & Master Method Breakdown',
+    author: 'Course Faculty',
+    course: 'CSE 251',
+    topic: 'Sorting & Divide and Conquer',
+    format: 'url',
+    url: 'https://dsa-sandy.vercel.app/',
+    description: 'Detailed analysis of QuickSort partition schemes (Lomuto vs Hoare), recursion trees, and worst-case vs expected time proofs.',
+    date: '2026-03-05',
+    isDefault: true
+  },
+  {
+    id: 'fac-2',
+    category: 'faculty',
+    title: 'Graph Traversals (BFS & DFS) with Cycle Detection & Adjacency Lists',
+    author: 'Course Faculty',
+    course: 'CSE 251',
+    topic: 'Graph Theory',
+    format: 'url',
+    url: 'https://dsa-sandy.vercel.app/',
+    description: 'Step-by-step trace of queue and recursion stack states, discovery/finish timestamps, and tree vs back edges.',
+    date: '2026-03-12',
+    isDefault: true
+  },
+  {
+    id: 'fac-3',
+    category: 'faculty',
+    title: 'Minimum Spanning Trees: Kruskal & Prim with DSU Rank Compression',
+    author: 'Course Faculty',
+    course: 'CSE 251',
+    topic: 'Greedy & Graphs',
+    format: 'url',
+    url: 'https://dsa-sandy.vercel.app/',
+    description: 'Dry-run matrices and priority queue transitions comparing Kruskal edge-sorting with Prim vertex growth.',
+    date: '2026-03-18',
+    isDefault: true
+  },
+  {
+    id: 'fac-4',
+    category: 'faculty',
+    title: 'Binary Search Trees & Binary Heap Invariants Handout',
+    author: 'Course Faculty',
+    course: 'CSE 251',
+    topic: 'Trees & Heaps',
+    format: 'url',
+    url: 'https://dsa-sandy.vercel.app/',
+    description: 'Pointer-based BST deletion cases (leaf, one-child, two-child with successor) and array-based Max/Min Heap heapify operations.',
+    date: '2026-03-24',
+    isDefault: true
+  }
+];
+
+const DEFAULT_UNIVERSITY_NOTES = [
+  {
+    id: 'uni-1',
+    category: 'university',
+    title: 'UIU Central Syllabus: CSE 251 Course Outline & Lab Policies',
+    author: 'UIU Dept. of Computer Science & Engineering',
+    course: 'CSE 251',
+    topic: 'Course Curriculum',
+    format: 'url',
+    url: 'https://dsa-sandy.vercel.app/',
+    description: 'Centrally provided standardized course syllabus, textbook references (CLRS 3rd/4th Edition), grading rubrics, and weekly lab schedules.',
+    date: '2026-01-10',
+    isDefault: true
+  },
+  {
+    id: 'uni-2',
+    category: 'university',
+    title: 'University Standard Slides: Asymptotic Notations & Recurrence Relations',
+    author: 'UIU Central DSA Teaching Committee',
+    course: 'CSE 251',
+    topic: 'Algorithm Analysis',
+    format: 'url',
+    url: 'https://dsa-sandy.vercel.app/',
+    description: 'Centrally provided lecture slides used across all faculty sections for Big-O, Big-Omega, Big-Theta definitions and recursion tree solving.',
+    date: '2026-01-20',
+    isDefault: true
+  },
+  {
+    id: 'uni-3',
+    category: 'university',
+    title: 'University Standard Slides: Dynamic Programming & Greedy Paradigms',
+    author: 'UIU Central DSA Teaching Committee',
+    course: 'CSE 251',
+    topic: 'DP & Greedy Strategy',
+    format: 'url',
+    url: 'https://dsa-sandy.vercel.app/',
+    description: 'Master slides covering Optimal Substructure, Overlapping Subproblems, Activity Selection, Knapsack (0/1 vs Fractional), and Job Sequencing.',
+    date: '2026-02-14',
+    isDefault: true
+  },
+  {
+    id: 'uni-4',
+    category: 'university',
+    title: 'University Exam Bank: Midterm & Final Lab Exam Question Archive',
+    author: 'UIU Central Examination Board',
+    course: 'CSE 251',
+    topic: 'Assessment & Problem Bank',
+    format: 'url',
+    url: 'https://dsa-sandy.vercel.app/',
+    description: 'Centrally curated past semester coding questions, time complexity reasoning prompts, and sample viva voce problems.',
+    date: '2026-02-28',
+    isDefault: true
+  }
+];
+
+const NotesManager = {
+  activeCategory: 'faculty',
+  searchQuery: '',
+  customNotes: [],
+
+  init() {
+    try {
+      const stored = localStorage.getItem('uiu_dsa_notes_custom');
+      if (stored) {
+        this.customNotes = JSON.parse(stored);
+      }
+    } catch (e) {
+      this.customNotes = [];
+    }
+
+    const btnOpen = document.getElementById('btn-open-notes');
+    const btnClose = document.getElementById('btn-close-notes');
+    const btnCloseFooter = document.getElementById('btn-close-notes-footer');
+    const tabFaculty = document.getElementById('tab-faculty-notes');
+    const tabUni = document.getElementById('tab-university-notes');
+    const searchInput = document.getElementById('notes-search-input');
+    const btnToggleUpload = document.getElementById('btn-toggle-upload-form');
+    const uploadContainer = document.getElementById('notes-upload-container');
+    const uploadForm = document.getElementById('note-upload-form');
+    const btnCancelUpload = document.getElementById('btn-cancel-upload');
+    const selectFormat = document.getElementById('upload-format');
+    const groupUrl = document.getElementById('group-upload-url');
+    const groupFile = document.getElementById('group-upload-file');
+
+    if (btnOpen) btnOpen.onclick = () => this.open();
+    if (btnClose) btnClose.onclick = () => this.close();
+    if (btnCloseFooter) btnCloseFooter.onclick = () => this.close();
+
+    if (tabFaculty) tabFaculty.onclick = () => this.setCategory('faculty');
+    if (tabUni) tabUni.onclick = () => this.setCategory('university');
+
+    if (searchInput) {
+      searchInput.oninput = (e) => {
+        this.searchQuery = e.target.value.trim().toLowerCase();
+        this.render();
+      };
+    }
+
+    if (btnToggleUpload && uploadContainer) {
+      btnToggleUpload.onclick = () => {
+        const isHidden = uploadContainer.style.display === 'none';
+        uploadContainer.style.display = isHidden ? 'block' : 'none';
+        const textSpan = document.getElementById('btn-toggle-upload-text');
+        if (textSpan) textSpan.textContent = isHidden ? 'Hide Form' : 'Upload Note';
+      };
+    }
+
+    if (btnCancelUpload && uploadContainer) {
+      btnCancelUpload.onclick = () => {
+        uploadContainer.style.display = 'none';
+        const textSpan = document.getElementById('btn-toggle-upload-text');
+        if (textSpan) textSpan.textContent = 'Upload Note';
+      };
+    }
+
+    if (selectFormat) {
+      selectFormat.onchange = (e) => {
+        if (e.target.value === 'file') {
+          if (groupUrl) groupUrl.style.display = 'none';
+          if (groupFile) groupFile.style.display = 'block';
+        } else {
+          if (groupUrl) groupUrl.style.display = 'block';
+          if (groupFile) groupFile.style.display = 'none';
+        }
+      };
+    }
+
+    if (uploadForm) {
+      uploadForm.onsubmit = (e) => {
+        e.preventDefault();
+        this.handleUploadSubmit();
+      };
+    }
+
+    this.render();
+  },
+
+  open() {
+    const modal = document.getElementById('notes-modal');
+    if (modal) modal.classList.add('open');
+  },
+
+  close() {
+    const modal = document.getElementById('notes-modal');
+    if (modal) modal.classList.remove('open');
+  },
+
+  setCategory(category) {
+    this.activeCategory = category;
+    const tabFaculty = document.getElementById('tab-faculty-notes');
+    const tabUni = document.getElementById('tab-university-notes');
+    const bannerIcon = document.getElementById('notes-banner-icon');
+    const bannerDesc = document.getElementById('notes-banner-desc');
+    const uploadCategorySelect = document.getElementById('upload-category');
+
+    if (tabFaculty && tabUni) {
+      tabFaculty.classList.toggle('active', category === 'faculty');
+      tabUni.classList.toggle('active', category === 'university');
+    }
+
+    if (uploadCategorySelect) {
+      uploadCategorySelect.value = category;
+    }
+
+    if (bannerIcon && bannerDesc) {
+      if (category === 'faculty') {
+        bannerIcon.textContent = '👨‍🏫';
+        bannerDesc.innerHTML = '<strong>Faculty\'s Notes:</strong> Notes, dry-run derivations, and problem breakdowns authored directly by course faculties.';
+      } else {
+        bannerIcon.textContent = '🏛️';
+        bannerDesc.innerHTML = '<strong>University\'s Notes:</strong> Centrally provided standardized slides, master curriculum, and departmental resources used by faculty for teaching.';
+      }
+    }
+
+    this.render();
+  },
+
+  handleUploadSubmit() {
+    const category = document.getElementById('upload-category')?.value || this.activeCategory;
+    const course = document.getElementById('upload-course')?.value || 'CSE 251';
+    const title = document.getElementById('upload-title')?.value || 'Untitled Note';
+    const author = document.getElementById('upload-author')?.value || (category === 'faculty' ? 'Course Faculty' : 'UIU Central Department');
+    const topic = document.getElementById('upload-topic')?.value || 'General DSA';
+    const format = document.getElementById('upload-format')?.value || 'url';
+    const desc = document.getElementById('upload-description')?.value || '';
+    const dateStr = new Date().toISOString().split('T')[0];
+
+    const noteObj = {
+      id: 'custom-' + Date.now(),
+      category,
+      course,
+      title,
+      author,
+      topic,
+      format,
+      description: desc,
+      date: dateStr,
+      isDefault: false
+    };
+
+    if (format === 'file') {
+      const fileInput = document.getElementById('upload-file');
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        noteObj.fileName = file.name;
+        const reader = new FileReader();
+        reader.onload = (re) => {
+          noteObj.fileData = re.target.result;
+          this.saveAndFinalizeUpload(noteObj);
+        };
+        reader.readAsDataURL(file);
+        return;
+      } else {
+        alert('Please choose a file to attach.');
+        return;
+      }
+    } else {
+      let rawUrl = document.getElementById('upload-url')?.value.trim() || '';
+      if (!rawUrl) rawUrl = 'https://dsa-sandy.vercel.app/';
+      else if (!/^https?:\/\//i.test(rawUrl)) rawUrl = 'https://' + rawUrl;
+      noteObj.url = rawUrl;
+      this.saveAndFinalizeUpload(noteObj);
+    }
+  },
+
+  saveAndFinalizeUpload(noteObj) {
+    this.customNotes.unshift(noteObj);
+    try {
+      localStorage.setItem('uiu_dsa_notes_custom', JSON.stringify(this.customNotes));
+    } catch (e) {
+      console.warn('LocalStorage limit reached; note preserved in active memory.', e);
+    }
+
+    const form = document.getElementById('note-upload-form');
+    if (form && typeof form.reset === 'function') form.reset();
+    const uploadContainer = document.getElementById('notes-upload-container');
+    if (uploadContainer) uploadContainer.style.display = 'none';
+    const textSpan = document.getElementById('btn-toggle-upload-text');
+    if (textSpan) textSpan.textContent = 'Upload Note';
+
+    this.setCategory(noteObj.category);
+  },
+
+  deleteNote(noteId) {
+    if (!confirm('Are you sure you want to remove this uploaded note?')) return;
+    this.customNotes = this.customNotes.filter(n => n.id !== noteId);
+    try {
+      localStorage.setItem('uiu_dsa_notes_custom', JSON.stringify(this.customNotes));
+    } catch (e) {}
+    this.render();
+  },
+
+  render() {
+    const container = document.getElementById('notes-list-container');
+    if (!container) return;
+
+    const baseList = this.activeCategory === 'faculty' ? DEFAULT_FACULTY_NOTES : DEFAULT_UNIVERSITY_NOTES;
+    const userCategoryList = this.customNotes.filter(n => n.category === this.activeCategory);
+    const combined = [...userCategoryList, ...baseList];
+
+    const filtered = combined.filter(n => {
+      if (!this.searchQuery) return true;
+      const q = this.searchQuery;
+      return (n.title && n.title.toLowerCase().includes(q)) ||
+             (n.author && n.author.toLowerCase().includes(q)) ||
+             (n.topic && n.topic.toLowerCase().includes(q)) ||
+             (n.description && n.description.toLowerCase().includes(q));
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center; padding:32px 16px; color:var(--text-muted); font-size:13px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:8px; opacity:0.6;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <div>No notes matching current filter. Try a different search keyword or upload a note above.</div>
+        </div>
+      `;
+      return;
+    }
+
+    let html = '';
+    filtered.forEach(item => {
+      const isFaculty = item.category === 'faculty';
+      const catBadge = isFaculty 
+        ? `<span class="note-pill note-pill-faculty">Faculty's Note</span>` 
+        : `<span class="note-pill note-pill-university">University's Note</span>`;
+      const customBadge = !item.isDefault ? `<span class="note-pill note-pill-custom">User Upload</span>` : '';
+      const courseBadge = `<span class="note-pill note-pill-topic">${item.course || 'CSE 251'}</span>`;
+      const topicBadge = `<span class="note-pill note-pill-topic">${item.topic || 'General'}</span>`;
+
+      let actionBtn = '';
+      if (item.format === 'file' && item.fileData) {
+        actionBtn = `<a href="${item.fileData}" download="${item.fileName || 'note-attachment'}" class="note-btn note-btn-view">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Attachment
+        </a>`;
+      } else {
+        const link = item.url || 'https://dsa-sandy.vercel.app/';
+        actionBtn = `<a href="${link}" target="_blank" rel="noopener noreferrer" class="note-btn note-btn-view">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View Resource
+        </a>`;
+      }
+
+      const deleteBtn = !item.isDefault 
+        ? `<button class="note-btn note-btn-delete" onclick="NotesManager.deleteNote('${item.id}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Delete
+          </button>`
+        : '';
+
+      html += `
+        <div class="note-card">
+          <div class="note-card-top">
+            <div class="note-card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>${item.title}</span>
+            </div>
+            <div class="note-tags">
+              ${catBadge}
+              ${customBadge}
+              ${courseBadge}
+              ${topicBadge}
+            </div>
+          </div>
+          <div class="note-meta">
+            <span><strong>Author / Faculty:</strong> ${item.author}</span>
+            <span><strong>Date:</strong> ${item.date || 'Active'}</span>
+            <span><strong>Format:</strong> ${item.format === 'file' ? 'Attached File' : 'Cloud / Web Link'}</span>
+          </div>
+          <div class="note-desc">${item.description}</div>
+          <div class="note-card-actions">
+            ${deleteBtn}
+            ${actionBtn}
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  }
+};
+
+/* =========================================================================
+   FLOATING "ABOUT ME" POPUP MANAGER
+   ========================================================================= */
+const AboutMeManager = {
+  isOpen: false,
+
+  init() {
+    const btn = document.getElementById('floating-about-btn');
+    const card = document.getElementById('about-popover-card');
+    const closeBtn = document.getElementById('about-card-close');
+
+    if (btn) {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        this.toggle();
+      };
+    }
+
+    if (closeBtn) {
+      closeBtn.onclick = (e) => {
+        e.stopPropagation();
+        this.close();
+      };
+    }
+
+    if (card) {
+      card.onclick = (e) => {
+        e.stopPropagation();
+      };
+    }
+
+    document.addEventListener('click', (e) => {
+      if (this.isOpen && card && !card.contains(e.target) && e.target !== btn) {
+        this.close();
+      }
+    });
+  },
+
+  toggle() {
+    if (this.isOpen) this.close();
+    else this.open();
+  },
+
+  open() {
+    this.isOpen = true;
+    const card = document.getElementById('about-popover-card');
+    if (card) card.classList.add('open');
+  },
+
+  close() {
+    this.isOpen = false;
+    const card = document.getElementById('about-popover-card');
+    if (card) card.classList.remove('open');
+  }
+};
+
+window.NotesManager = NotesManager;
+window.AboutMeManager = AboutMeManager;
+
+/* =========================================================================
    EVENT LISTENERS & INIT
    ========================================================================= */
 document.addEventListener('DOMContentLoaded', () => {
+  NotesManager.init();
+  AboutMeManager.init();
   const sidebar = document.getElementById('app-sidebar');
   const backdrop = document.getElementById('sidebar-backdrop');
   function toggleSidebar(open) {
