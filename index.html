@@ -29,23 +29,39 @@
 <meta name="twitter:description" content="Interactive step-by-step algorithmic simulations with dynamic SVG, audio synthesis, and CLRS pseudocode.">
 <meta name="twitter:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630' width='1200' height='630'%3E%3Crect width='1200' height='630' fill='%23070a0f'/%3E%3Ccircle cx='600' cy='250' r='100' fill='none' stroke='%2314b8a6' stroke-width='8'/%3E%3Ctext x='600' y='420' fill='%23ffffff' font-family='sans-serif' font-weight='bold' font-size='56' text-anchor='middle'%3EDSA ALGO LAB%3C/text%3E%3Ctext x='600' y='480' fill='%2314b8a6' font-family='sans-serif' font-size='28' text-anchor='middle'%3E22 Interactive Algorithm Visualizers%3C/text%3E%3C/svg%3E">
 
-<!-- Favicon Assets (Google 48x48 Multiples and Vector SVG) -->
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+<!-- Favicon Assets (Google Search Guidelines & High-DPI Multiples) -->
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 
 <!-- Google Fonts Preconnect & Optimized Loading -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- Schema.org WebSite Structured Data (Google Site Name) -->
+<!-- Schema.org WebSite Structured Data (Google Site Name & Logo) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "DSA Algo Lab",
   "alternateName": "DSA Simulations",
-  "url": "https://dsa-sandy.vercel.app/"
+  "url": "https://dsa-sandy.vercel.app/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "DSA Algo Lab",
+    "url": "https://dsa-sandy.vercel.app/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dsa-sandy.vercel.app/favicon-192x192.png",
+      "width": 192,
+      "height": 192
+    }
+  }
 }
 </script>
 
@@ -59,6 +75,8 @@
       "@id": "https://dsa-sandy.vercel.app/#webapp",
       "name": "DSA Algo Lab",
       "url": "https://dsa-sandy.vercel.app/",
+      "image": "https://dsa-sandy.vercel.app/favicon-192x192.png",
+      "logo": "https://dsa-sandy.vercel.app/favicon-192x192.png",
       "description": "Interactive step-by-step visualizer and educational simulator for 22 fundamental algorithms and data structures.",
       "applicationCategory": "EducationalApplication",
       "operatingSystem": "All modern web browsers",
