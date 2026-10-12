@@ -2110,8 +2110,8 @@
       <button class="close-modal" id="btn-close-modal" aria-label="Close modal">&times;</button>
     </div>
     <div>
-      <div class="form-group">
-        <label class="form-label">Select a Preset Scenario:</label>
+      <div class="form-group" id="preset-picker-group">
+        <label class="form-label">Optional example scenario:</label>
         <div class="preset-pills" id="preset-container"></div>
       </div>
       <div id="modal-form-fields"></div>
@@ -7445,6 +7445,9 @@ const Modal = {
     pause();
     const mod = getActiveModule();
     this.title.textContent = `Custom Setup: ${document.getElementById('algo-heading').textContent}`;
+    const presetGroup = document.getElementById('preset-picker-group');
+    const isSorting = ['bubblesort', 'selectionsort', 'insertionsort', 'mergesort', 'quicksort', 'heapsort'].includes(currentAlgo);
+    if (presetGroup) presetGroup.style.display = isSorting ? 'none' : '';
 
     let presetHtml = '';
     mod.presets.forEach((p, idx) => {
@@ -7473,7 +7476,8 @@ const Modal = {
 
     if (currentAlgo === 'activity') {
       const txt = mod.data.map(d => `${d.s},${d.f}`).join('\n');
-      html += `<div class="form-group"><label class="form-label">Activities ("start,finish"):</label><textarea class="form-control" id="custom-activity-input" rows="7">${txt}</textarea></div>`;
+      html += `<div class="form-group"><label class="form-label">Activities (one start,finish pair per line):</label><textarea class="form-control" id="custom-activity-input" rows="7" placeholder="1, 4">${txt}</textarea></div>
+      <div class="form-row" style="align-items:end"><div class="form-group" style="margin-bottom:0"><label class="form-label">Start</label><input type="number" class="form-control" id="quick-activity-start"></div><div class="form-group" style="margin-bottom:0"><label class="form-label">Finish</label><input type="number" class="form-control" id="quick-activity-finish"></div><button type="button" class="btn btn-accent" id="quick-activity-add">Add activity</button></div>`;
     } else if (currentAlgo === 'knapsack') {
       const txt = mod.data.map(d => `${d.name},${d.v},${d.w}`).join('\n');
       html += `<div class="form-row"><div class="form-group"><label class="form-label">Knapsack Capacity:</label><input type="number" class="form-control" id="custom-knapsack-cap" value="${mod.capacity}"></div></div>
@@ -7496,7 +7500,8 @@ const Modal = {
         const srcVal = currentAlgo === 'prim' ? mod.startNode : mod.source;
         html += `<div class="form-group"><label class="form-label">Source / Start Vertex:</label><input type="text" class="form-control" id="custom-graph-source" value="${srcVal}"></div>`;
       }
-      html += `<div class="form-group"><label class="form-label">Graph Edges ("u,v,weight"):</label><textarea class="form-control" id="custom-graph-edges" rows="7">${edgeTxt}</textarea></div>`;
+      html += `<div class="form-group"><label class="form-label">Graph edges (one U,V,W per line):</label><textarea class="form-control" id="custom-graph-edges" rows="7" placeholder="A, B, 5">${edgeTxt}</textarea></div>
+      <div class="form-row" style="align-items:end"><div class="form-group" style="margin-bottom:0"><label class="form-label">U</label><input type="text" class="form-control" id="quick-edge-u" placeholder="Vertex"></div><div class="form-group" style="margin-bottom:0"><label class="form-label">V</label><input type="text" class="form-control" id="quick-edge-v" placeholder="Vertex"></div><div class="form-group" style="margin-bottom:0"><label class="form-label">W (weight)</label><input type="number" class="form-control" id="quick-edge-w" placeholder="Weight"></div><button type="button" class="btn btn-accent" id="quick-edge-add">Add edge</button></div>`;
     } else if (currentAlgo === 'hashing') {
       const opsTxt = mod.operations.map(o => `${o.op} ${o.key}`).join('\n');
       html += `<div class="form-row">
@@ -7510,7 +7515,8 @@ const Modal = {
           </select>
         </div>
       </div>
-      <div class="form-group"><label class="form-label">Operations (one per line: "insert k", "search k", or "delete k"):</label><textarea class="form-control" id="custom-hash-ops" rows="7">${opsTxt}</textarea></div>`;
+      <div class="form-group"><label class="form-label">Operations (one per line: insert, search, or delete followed by a key):</label><textarea class="form-control" id="custom-hash-ops" rows="7" placeholder="insert 42">${opsTxt}</textarea></div>
+      <div class="form-row" style="align-items:end"><div class="form-group" style="margin-bottom:0"><label class="form-label">Action</label><select class="form-control" id="quick-hash-op"><option>insert</option><option>search</option><option>delete</option></select></div><div class="form-group" style="margin-bottom:0"><label class="form-label">Key</label><input type="text" class="form-control" id="quick-hash-key" placeholder="e.g. 42"></div><button type="button" class="btn btn-accent" id="quick-hash-add">Add operation</button></div>`;
     } else if (currentAlgo === 'rabinkarp') {
       html += `<div class="form-group"><label class="form-label">Target Text (T):</label><input type="text" class="form-control" id="custom-rk-text" value="${mod.text}"></div>
       <div class="form-group"><label class="form-label">Search Pattern (P):</label><input type="text" class="form-control" id="custom-rk-pattern" value="${mod.pattern}"></div>
@@ -7519,11 +7525,13 @@ const Modal = {
         <div class="form-group"><label class="form-label">Modulo Prime (q):</label><input type="number" class="form-control" id="custom-rk-prime" value="${mod.prime}"></div>
       </div>`;
     } else if (['bubblesort', 'selectionsort', 'insertionsort', 'mergesort', 'quicksort', 'heapsort'].includes(currentAlgo)) {
-      html += `<div class="form-group"><label class="form-label">Array Elements (comma-separated numbers):</label><input type="text" class="form-control" id="custom-sort-array" value="${mod.array.join(', ')}"></div>`;
+      html += `<div class="form-group"><label class="form-label">Numbers to sort (comma-separated):</label><input type="text" class="form-control" id="custom-sort-array" value="${mod.array.join(', ')}" placeholder="e.g. 8, 3, 12, 1"></div>
+      <div class="form-row" style="align-items:end"><div class="form-group" style="margin-bottom:0"><label class="form-label">Add one number</label><input type="number" class="form-control" id="quick-sort-number" placeholder="Number"></div><button type="button" class="btn btn-accent" id="quick-sort-add">Add number</button></div>`;
     } else if (['bfs', 'dfs'].includes(currentAlgo)) {
       const edgeTxt = mod.edges.map(e => `${e.u},${e.v}`).join('\n');
       html += `<div class="form-group"><label class="form-label">Start Vertex:</label><input type="text" class="form-control" id="custom-graph-source" value="${mod.startNode || 'A'}"></div>
-               <div class="form-group"><label class="form-label">Graph Edges ("u,v"):</label><textarea class="form-control" id="custom-graph-edges" rows="7">${edgeTxt}</textarea></div>`;
+               <div class="form-group"><label class="form-label">Graph edges (one U,V pair per line):</label><textarea class="form-control" id="custom-graph-edges" rows="7" placeholder="A, B">${edgeTxt}</textarea></div>
+               <div class="form-row" style="align-items:end"><div class="form-group" style="margin-bottom:0"><label class="form-label">U</label><input type="text" class="form-control" id="quick-edge-u" placeholder="Vertex"></div><div class="form-group" style="margin-bottom:0"><label class="form-label">V</label><input type="text" class="form-control" id="quick-edge-v" placeholder="Vertex"></div><button type="button" class="btn btn-accent" id="quick-edge-add">Add edge</button></div>`;
     } else if (currentAlgo === 'linkedlist') {
       const opsTxt = mod.operations.map(o => {
         if (o.op === 'reverse') return 'reverse';
@@ -7533,16 +7541,29 @@ const Modal = {
         if (o.op === 'delete') return `delete ${o.val}`;
         return `${o.op} ${o.val !== undefined ? o.val : ''}`.trim();
       }).join('\n');
-      html += `<div class="form-group"><label class="form-label">Linked List Operations (one per line: "insert_tail v", "insert_head v", "search v", "delete v", "reverse"):</label><textarea class="form-control" id="custom-ds-ops" rows="7">${opsTxt}</textarea></div>`;
+      html += `<div class="form-group"><label class="form-label">Linked list operations (one per line):</label><textarea class="form-control" id="custom-ds-ops" rows="7" placeholder="insert_tail 12">${opsTxt}</textarea></div>
+      <div class="form-row" style="align-items:end"><div class="form-group" style="margin-bottom:0"><label class="form-label">Action</label><select class="form-control" id="quick-ds-op"><option value="insert_tail">Insert at end</option><option value="insert_head">Insert at start</option><option value="search">Search</option><option value="delete">Remove</option><option value="reverse">Reverse</option></select></div><div class="form-group" style="margin-bottom:0"><label class="form-label">Number</label><input type="number" class="form-control" id="quick-ds-value" placeholder="Value"></div><button type="button" class="btn btn-accent" id="quick-ds-add">Add operation</button></div>`;
     } else if (currentAlgo === 'binaryheap') {
       const opsTxt = mod.operations.map(o => (o.op === 'extract_min' || o.op === 'extractMin') ? 'extract_min' : `insert ${o.val}`).join('\n');
-      html += `<div class="form-group"><label class="form-label">Min-Heap Operations (one per line: "insert v", "extract_min"):</label><textarea class="form-control" id="custom-ds-ops" rows="7">${opsTxt}</textarea></div>`;
+      html += `<div class="form-group"><label class="form-label">Min-heap operations (one per line):</label><textarea class="form-control" id="custom-ds-ops" rows="7" placeholder="insert 12">${opsTxt}</textarea></div>
+      <div class="form-row" style="align-items:end"><div class="form-group" style="margin-bottom:0"><label class="form-label">Action</label><select class="form-control" id="quick-ds-op"><option value="insert">Insert number</option><option value="extract_min">Remove minimum</option></select></div><div class="form-group" style="margin-bottom:0"><label class="form-label">Number</label><input type="number" class="form-control" id="quick-ds-value" placeholder="Value"></div><button type="button" class="btn btn-accent" id="quick-ds-add">Add operation</button></div>`;
     } else if (currentAlgo === 'bst') {
       const opsTxt = mod.operations.map(o => o.op === 'inorder' ? 'inorder' : `${o.op} ${o.val}`).join('\n');
-      html += `<div class="form-group"><label class="form-label">BST Operations (one per line: "insert v", "search v", "delete v", "inorder"):</label><textarea class="form-control" id="custom-ds-ops" rows="7">${opsTxt}</textarea></div>`;
+      html += `<div class="form-group"><label class="form-label">BST operations (one per line):</label><textarea class="form-control" id="custom-ds-ops" rows="7" placeholder="insert 12">${opsTxt}</textarea></div>
+      <div class="form-row" style="align-items:end"><div class="form-group" style="margin-bottom:0"><label class="form-label">Action</label><select class="form-control" id="quick-ds-op"><option value="insert">Insert</option><option value="search">Search</option><option value="delete">Remove</option><option value="inorder">Inorder traversal</option></select></div><div class="form-group" style="margin-bottom:0"><label class="form-label">Number</label><input type="number" class="form-control" id="quick-ds-value" placeholder="Value"></div><button type="button" class="btn btn-accent" id="quick-ds-add">Add operation</button></div>`;
     }
 
     this.fieldsBox.innerHTML = html;
+    const bind = (buttonId, callback) => { const button = document.getElementById(buttonId); if (button) button.onclick = callback; };
+    const appendLine = (targetId, line, separator = '\n') => {
+      const target = document.getElementById(targetId);
+      if (target) target.value = target.value.trim() ? `${target.value.trim()}${separator}${line}` : line;
+    };
+    bind('quick-sort-add', () => { const input = document.getElementById('quick-sort-number'), target = document.getElementById('custom-sort-array'); if (input.value !== '') { target.value = target.value.trim() ? `${target.value.trim()}, ${input.value}` : input.value; input.value = ''; input.focus(); } });
+    bind('quick-activity-add', () => { const start = document.getElementById('quick-activity-start'), finish = document.getElementById('quick-activity-finish'); if (start.value !== '' && finish.value !== '') { appendLine('custom-activity-input', `${start.value}, ${finish.value}`); start.value = ''; finish.value = ''; start.focus(); } });
+    bind('quick-edge-add', () => { const u = document.getElementById('quick-edge-u'), v = document.getElementById('quick-edge-v'), w = document.getElementById('quick-edge-w'); if (u.value.trim() && v.value.trim() && (!w || w.value !== '')) { appendLine('custom-graph-edges', w ? `${u.value.trim()}, ${v.value.trim()}, ${w.value}` : `${u.value.trim()}, ${v.value.trim()}`); u.value = ''; v.value = ''; if (w) w.value = ''; u.focus(); } });
+    bind('quick-hash-add', () => { const key = document.getElementById('quick-hash-key'); if (key.value.trim()) { appendLine('custom-hash-ops', `${document.getElementById('quick-hash-op').value} ${key.value.trim()}`); key.value = ''; key.focus(); } });
+    bind('quick-ds-add', () => { const input = document.getElementById('quick-ds-value'), op = document.getElementById('quick-ds-op').value; if (['reverse', 'extract_min', 'inorder'].includes(op)) { appendLine('custom-ds-ops', op); return; } if (input.value !== '') { appendLine('custom-ds-ops', `${op} ${input.value}`); input.value = ''; input.focus(); } });
   },
 
   loadPreset(p) {
